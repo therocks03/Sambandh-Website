@@ -1,0 +1,30 @@
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+.env.local
+
+# Node modules (if added later)
+node_modules/
+
+# Build files (if added later)
+dist/
+build/
+
+# Firebase cache
+.firebase/
+firebase-debug.log
