@@ -1,4 +1,4 @@
-// Sambadh.ai CRM Application
+// sambandh.ai CRM Application
 // Firebase-powered customer relationship management system
 
 // ====================================
@@ -63,7 +63,7 @@ class FirebaseManager {
                 email: email,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 isActive: true,
-                role: email === 'admin@sambadh.ai' ? 'admin' : 'user',
+                role: email === 'admin@sambandh.ai' ? 'admin' : 'user',
                 stats: {
                     totalCustomers: 0,
                     monthlyGrowth: 0,
@@ -95,7 +95,7 @@ class FirebaseManager {
 
     async logoutUser() {
         if (this.useLocalStorage) {
-            localStorage.removeItem('sambadh_current_user');
+            localStorage.removeItem('sambandh_current_user');
             return { success: true };
         }
 
@@ -204,7 +204,7 @@ class FirebaseManager {
 
     // LocalStorage Fallback Methods
     createUserLocal(email, password, userData) {
-        const users = JSON.parse(localStorage.getItem('sambadh_users') || '[]');
+        const users = JSON.parse(localStorage.getItem('sambandh_users') || '[]');
         
         if (users.some(u => u.email === email)) {
             return { success: false, error: 'Email already exists' };
@@ -217,7 +217,7 @@ class FirebaseManager {
             ...userData,
             createdAt: new Date().toISOString(),
             isActive: true,
-            role: email === 'admin@sambadh.ai' ? 'admin' : 'user',
+            role: email === 'admin@sambandh.ai' ? 'admin' : 'user',
             stats: {
                 totalCustomers: 0,
                 monthlyGrowth: 0,
@@ -227,18 +227,18 @@ class FirebaseManager {
         };
 
         users.push(newUser);
-        localStorage.setItem('sambadh_users', JSON.stringify(users));
-        localStorage.setItem('sambadh_current_user', newUser.uid);
+        localStorage.setItem('sambandh_users', JSON.stringify(users));
+        localStorage.setItem('sambandh_current_user', newUser.uid);
         
         return { success: true, user: newUser };
     }
 
     loginUserLocal(email, password) {
-        const users = JSON.parse(localStorage.getItem('sambadh_users') || '[]');
+        const users = JSON.parse(localStorage.getItem('sambandh_users') || '[]');
         const user = users.find(u => u.email === email && u.password === password);
         
         if (user) {
-            localStorage.setItem('sambadh_current_user', user.uid);
+            localStorage.setItem('sambandh_current_user', user.uid);
             return { success: true, user: user };
         }
         
@@ -246,7 +246,7 @@ class FirebaseManager {
     }
 
     loadUserDataLocal(uid) {
-        const users = JSON.parse(localStorage.getItem('sambadh_users') || '[]');
+        const users = JSON.parse(localStorage.getItem('sambandh_users') || '[]');
         const user = users.find(u => u.uid === uid);
         
         if (user) {
@@ -259,17 +259,17 @@ class FirebaseManager {
     }
 
     getUserDataLocal(uid) {
-        const users = JSON.parse(localStorage.getItem('sambadh_users') || '[]');
+        const users = JSON.parse(localStorage.getItem('sambandh_users') || '[]');
         return users.find(u => u.uid === uid) || null;
     }
 
     getAllUsersLocal() {
-        return JSON.parse(localStorage.getItem('sambadh_users') || '[]');
+        return JSON.parse(localStorage.getItem('sambandh_users') || '[]');
     }
 
     addCustomerLocal(userId, customerData) {
-        const customers = JSON.parse(localStorage.getItem('sambadh_customers') || '[]');
-        const users = JSON.parse(localStorage.getItem('sambadh_users') || '[]');
+        const customers = JSON.parse(localStorage.getItem('sambandh_customers') || '[]');
+        const users = JSON.parse(localStorage.getItem('sambandh_users') || '[]');
         
         const newCustomer = {
             id: 'cust_' + Date.now(),
@@ -279,26 +279,26 @@ class FirebaseManager {
         };
         
         customers.push(newCustomer);
-        localStorage.setItem('sambadh_customers', JSON.stringify(customers));
+        localStorage.setItem('sambandh_customers', JSON.stringify(customers));
         
         // Update user stats
         const userIndex = users.findIndex(u => u.uid === userId);
         if (userIndex !== -1) {
             users[userIndex].stats.totalCustomers = (users[userIndex].stats.totalCustomers || 0) + 1;
-            localStorage.setItem('sambadh_users', JSON.stringify(users));
+            localStorage.setItem('sambandh_users', JSON.stringify(users));
         }
         
         return { success: true, id: newCustomer.id };
     }
 
     getCustomersLocal(userId) {
-        const customers = JSON.parse(localStorage.getItem('sambadh_customers') || '[]');
+        const customers = JSON.parse(localStorage.getItem('sambandh_customers') || '[]');
         return customers.filter(c => c.userId === userId);
     }
 
     getCurrentUserId() {
         if (this.useLocalStorage) {
-            return localStorage.getItem('sambadh_current_user');
+            return localStorage.getItem('sambandh_current_user');
         }
         return this.currentUser ? this.currentUser.uid : null;
     }
@@ -323,21 +323,21 @@ function createDemoDataIfNeeded() {
     const users = fbManager.getAllUsersLocal();
     
     // Create admin if doesn't exist
-    if (!users.some(u => u.email === 'admin@sambadh.ai')) {
-        fbManager.createUserLocal('admin@sambadh.ai', 'admin123', {
-            businessName: 'Sambadh Admin',
+    if (!users.some(u => u.email === 'admin@sambandh.ai')) {
+        fbManager.createUserLocal('admin@sambandh.ai', 'admin123', {
+            businessName: 'sambandh Admin',
             businessType: 'admin',
             ownerName: 'Admin',
             mobile: '9999999999',
             city: 'System',
             plan: 'admin'
         });
-        console.log('✅ Admin account created: admin@sambadh.ai / admin123');
+        console.log('✅ Admin account created: admin@sambandh.ai / admin123');
     }
     
     // Create demo account if doesn't exist
-    if (!users.some(u => u.email === 'demo@sambadh.ai')) {
-        const result = fbManager.createUserLocal('demo@sambadh.ai', 'demo123', {
+    if (!users.some(u => u.email === 'demo@sambandh.ai')) {
+        const result = fbManager.createUserLocal('demo@sambandh.ai', 'demo123', {
             businessName: 'Style Studio Salon',
             businessType: 'salon',
             ownerName: 'Priya Sharma',
@@ -358,7 +358,7 @@ function createDemoDataIfNeeded() {
                 fbManager.addCustomerLocal(result.user.uid, customer);
             });
             
-            console.log('✅ Demo account created: demo@sambadh.ai / demo123');
+            console.log('✅ Demo account created: demo@sambandh.ai / demo123');
         }
     }
 }
@@ -479,7 +479,7 @@ async function handleSignup(event) {
     document.getElementById('signupBtnLoading').classList.add('hidden');
     
     if (result.success) {
-        alert('Account created successfully! Welcome to Sambadh.ai 🎉');
+        alert('Account created successfully! Welcome to sambandh.ai 🎉');
         closeAuthModal();
         showDashboard();
         document.getElementById('signupForm').reset();
@@ -671,7 +671,7 @@ function exportAllData() {
     const dataStr = JSON.stringify(exportData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     
-    const exportFileDefaultName = 'sambadh_data_' + Date.now() + '.json';
+    const exportFileDefaultName = 'sambandh_data_' + Date.now() + '.json';
     
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
@@ -742,4 +742,4 @@ window.exportAllData = exportAllData;
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', init);
 
-console.log('🚀 Sambadh.ai CRM Application loaded successfully!');
+console.log('🚀 sambandh.ai CRM Application loaded successfully!');
