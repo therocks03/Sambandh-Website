@@ -163,6 +163,39 @@ function init() {
     }
 }
 
+function showHome() {
+    document.getElementById('landingPage').style.display = 'block';
+    document.getElementById('dashboard').classList.remove('active');
+    document.getElementById('adminDashboard').classList.remove('active');
+}
+
+function showLogin() {
+    document.getElementById('authModal').classList.add('active');
+    switchToLogin();
+}
+
+function showSignup() {
+    document.getElementById('authModal').classList.add('active');
+    switchToSignup();
+}
+
+function closeAuthModal() {
+    document.getElementById('authModal').classList.remove('active');
+}
+
+function switchToLogin() {
+    document.getElementById('loginTab').classList.add('active');
+    document.getElementById('signupTab').classList.remove('active');
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('signupForm').classList.add('hidden');
+}
+
+function switchToSignup() {
+    document.getElementById('loginTab').classList.remove('active');
+    document.getElementById('signupTab').classList.add('active');
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('signupForm').classList.remove('hidden');
+}
 // DEMO DATA
 function addDemoData() {
     const demoUser = db.addUser({
@@ -314,3 +347,10 @@ document.addEventListener('DOMContentLoaded', init);
 window.handleLogin = handleLogin;
 window.handleSignup = handleSignup;
 window.logout = logout;
+
+window.showHome = showHome;
+window.showLogin = showLogin;
+window.showSignup = showSignup;
+window.closeAuthModal = closeAuthModal;
+window.switchToLogin = switchToLogin;
+window.switchToSignup = switchToSignup;
