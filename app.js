@@ -14,12 +14,14 @@ class DataStore {
         if (!localStorage.getItem('sambadh_current_user')) {
             localStorage.setItem('sambadh_current_user', null);
         }
+
         this.createAdminAccount();
     }
 
     createAdminAccount() {
         const users = this.getUsers();
         const adminExists = users.some(u => u.email === 'admin@sambadh.ai');
+
         if (!adminExists) {
             const admin = {
                 id: this.generateId(),
@@ -80,7 +82,7 @@ class DataStore {
             ...userData,
             createdAt: new Date().toISOString(),
             isActive: true,
-            role: userData.role || 'owner',
+            role: userData.role || 'owner', // ✅ updated
             customers: [],
             stats: {
                 totalCustomers: 0,
@@ -121,14 +123,12 @@ class DataStore {
     addCustomer(userId, customerData) {
         const users = this.getUsers();
         const user = users.find(u => u.id === userId);
+
         if (user) {
             const customer = {
                 id: 'cust_' + Date.now(),
                 ...customerData,
-                createdAt: new Date().toISOString(),
-                tags: [],
-                lastInteraction: '',
-                preferences: []
+                createdAt: new Date().toISOString()
             };
             user.customers.push(customer);
             user.stats.totalCustomers = user.customers.length;
@@ -137,97 +137,180 @@ class DataStore {
         }
         return null;
     }
+
+    getCustomers() {
+        const user = this.getCurrentUser();
+        return user ? user.customers : [];
+    }
 }
 
-const BUSINESS_TYPES = ['salon','retail','restaurant','gym','clinic','electronics','fashion','grocery','pharmacy','services'];
+// ✅ BUSINESS TYPES
+const BUSINESS_TYPES = [
+    'salon','retail','restaurant','gym','clinic',
+    'electronics','fashion','grocery','pharmacy','services'
+];
 
+// Initialize
 const db = new DataStore();
 
-function hasPermission(user, action) {
-    const roles = {
-        admin: ['all'],
-        owner: ['all'],
-        manager: ['view','edit','customers'],
-        staff: ['view','customers']
-    };
-    return roles[user.role]?.includes('all') || roles[user.role]?.includes(action);
+// INIT
+function init() {
+    checkAuth();
+
+    const users = db.getUsers();
+    if (users.length <= 1) {
+        addDemoData();
+    }
 }
 
-function generateReport(userId, type='summary') {
-    const user = db.getUsers().find(u=>u.id===userId);
-    if(!user) return null;
-    const c = user.customers;
-
-    if(type==='summary') return {
-        totalCustomers: c.length,
-        avgVisits: c.length ? c.reduce((s,x)=>s+(x.totalVisits||0),0)/c.length : 0
-    };
-
-    if(type==='retention') return c.filter(x=>x.totalVisits>2).length;
-
-    if(type==='inactive') return c.filter(x=>{
-        return (new Date()-new Date(x.lastVisit))/(1000*60*60*24)>30;
+// DEMO DATA
+function addDemoData() {
+    const demoUser = db.addUser({
+        businessName: 'Style Studio Salon',
+        businessType: 'salon',
+        ownerName: 'Priya Sharma',
+        mobile: '9876543210',
+        email: 'demo@sambadh.ai',
+        password: 'demo123',
+        city: 'Jaipur',
+        plan: 'pro'
     });
 
-    if(type==='topCustomers') return [...c].sort((a,b)=>b.totalVisits-a.totalVisits).slice(0,5);
+    const demoCustomers = [
+        { name: 'Rahul Kumar', phone: '9876543211', lastVisit: '2024-03-15', totalVisits: 5 },
+        { name: 'Anita Singh', phone: '9876543212', lastVisit: '2024-03-18', totalVisits: 3 },
+        { name: 'Vikram Patel', phone: '9876543213', lastVisit: '2024-03-20', totalVisits: 8 }
+    ];
+
+    demoCustomers.forEach(c => db.addCustomer(demoUser.id, c));
 }
 
-function updateInsights(user){
-    console.log('Insights', {
-        repeat: user.customers.filter(c=>c.totalVisits>1).length
-    });
-}
-
-function updateRecentActivity(user){
-    console.log('Recent', user.customers.slice(-5));
-}
-
-function showDashboard(){
+// AUTH CHECK
+function checkAuth() {
     const user = db.getCurrentUser();
-    if(!user) return;
+    if (!user) return;
 
-    document.getElementById('dashboardBusinessName').textContent = user.businessName;
-    document.getElementById('totalCustomers').textContent = user.stats.totalCustomers || 0;
-
-    updateInsights(user);
-    updateRecentActivity(user);
+    if (user.role === 'admin') showAdminDashboard();
+    else showDashboard();
 }
 
-function handleSignup(e){
+// LOGIN
+function handleLogin(e) {
     e.preventDefault();
 
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    const user = db.authenticateUser(email, password);
+
+    if (!user) return alert('Invalid email or password');
+
+    db.setCurrentUser(user.id);
+    closeAuthModal();
+
+    user.role === 'admin' ? showAdminDashboard() : showDashboard();
+}
+
+// SIGNUP
+function handleSignup(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('signupEmail').value;
+
+    if (db.emailExists(email)) {
+        alert('Email already exists');
+        return;
+    }
+
     const userData = {
-        businessName: signupBusinessName.value,
-        businessType: signupBusinessType.value,
-        ownerName: signupOwnerName.value,
-        mobile: signupMobile.value,
-        email: signupEmail.value,
-        password: signupPassword.value,
-        city: signupCity.value,
-        plan: signupPlan.value
+        businessName: document.getElementById('signupBusinessName').value,
+        businessType: document.getElementById('signupBusinessType').value,
+        ownerName: document.getElementById('signupOwnerName').value,
+        mobile: document.getElementById('signupMobile').value,
+        email: email,
+        password: document.getElementById('signupPassword').value,
+        city: document.getElementById('signupCity').value,
+        plan: document.getElementById('signupPlan').value
     };
 
-    if(!BUSINESS_TYPES.includes(userData.businessType)){
+    // ✅ validation
+    if (!BUSINESS_TYPES.includes(userData.businessType)) {
         alert('Invalid business type');
         return;
     }
 
-    const u = db.addUser(userData);
-    db.setCurrentUser(u.id);
+    const user = db.addUser(userData);
+    db.setCurrentUser(user.id);
+    closeAuthModal();
     showDashboard();
 }
 
-function exportData(){
-    const data = {
-        users: db.getUsers(),
-        exportedAt: new Date().toISOString()
-    };
-    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'sambadh_export.json';
-    a.click();
+// DASHBOARD
+function showDashboard() {
+    const user = db.getCurrentUser();
+    if (!user) return;
+
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('dashboard').classList.add('active');
+
+    document.getElementById('dashboardBusinessName').textContent = user.businessName;
+    document.getElementById('totalCustomers').textContent = user.stats.totalCustomers || 0;
+
+    updateCustomersTable(user.customers);
+
+    // ✅ NEW
+    updateInsights(user);
 }
 
-window.exportData = exportData;
-document.addEventListener('DOMContentLoaded', ()=>{});
+// CUSTOMERS TABLE
+function updateCustomersTable(customers) {
+    const tbody = document.querySelector('#customersTable tbody');
+
+    if (!customers.length) {
+        tbody.innerHTML = `<tr><td colspan="5">No customers yet</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = customers.map(c => `
+        <tr>
+            <td>${c.name}</td>
+            <td>${c.phone}</td>
+            <td>${c.lastVisit}</td>
+            <td>${c.totalVisits}</td>
+            <td>Active</td>
+        </tr>
+    `).join('');
+}
+
+// INSIGHTS
+function updateInsights(user) {
+    const repeat = user.customers.filter(c => c.totalVisits > 1).length;
+    console.log("Repeat Customers:", repeat);
+}
+
+// REPORT ENGINE
+function generateReport(userId) {
+    const user = db.getUsers().find(u => u.id === userId);
+    if (!user) return null;
+
+    return {
+        totalCustomers: user.customers.length,
+        avgVisits: user.customers.length
+            ? user.customers.reduce((s, c) => s + (c.totalVisits || 0), 0) / user.customers.length
+            : 0
+    };
+}
+
+// LOGOUT
+function logout() {
+    db.clearCurrentUser();
+    location.reload();
+}
+
+// INIT
+document.addEventListener('DOMContentLoaded', init);
+
+// EXPORT
+window.handleLogin = handleLogin;
+window.handleSignup = handleSignup;
+window.logout = logout;
