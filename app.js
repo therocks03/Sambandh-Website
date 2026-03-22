@@ -848,19 +848,37 @@ console.log('🚀 sambandh.ai v2.0 loaded!');
 // HAMBURGER & SIDEBAR NAV
 // ===================================================
 function toggleMobileNav() {
-    const nav = document.getElementById('mobileNav');
-    const btn = document.getElementById('hamburgerBtn');
+    var nav = document.getElementById('mobileNav');
+    var btn = document.getElementById('hamburgerBtn');
     if (!nav) return;
-    const isOpen = nav.classList.contains('open');
-    if (isOpen) { nav.classList.remove('open'); btn.classList.remove('open'); document.body.style.overflow = ''; }
-    else { nav.style.display = 'block'; requestAnimationFrame(() => nav.classList.add('open')); btn.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    if (nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        if (btn) btn.classList.remove('open');
+        nav.style.pointerEvents = 'none';
+        document.body.style.overflow = '';
+        setTimeout(function() { nav.style.display = 'none'; }, 320);
+    } else {
+        nav.style.display = 'flex';
+        nav.style.pointerEvents = 'all';
+        document.body.style.overflow = 'hidden';
+        // Double rAF so CSS transition fires
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                nav.classList.add('open');
+                if (btn) btn.classList.add('open');
+            });
+        });
+    }
 }
 function closeMobileNav() {
-    const nav = document.getElementById('mobileNav');
-    const btn = document.getElementById('hamburgerBtn');
+    var nav = document.getElementById('mobileNav');
+    var btn = document.getElementById('hamburgerBtn');
     if (!nav) return;
-    nav.classList.remove('open'); btn.classList.remove('open'); document.body.style.overflow = '';
-    setTimeout(() => { if (!nav.classList.contains('open')) nav.style.display = 'block'; }, 350);
+    nav.classList.remove('open');
+    if (btn) btn.classList.remove('open');
+    nav.style.pointerEvents = 'none';
+    document.body.style.overflow = '';
+    setTimeout(function() { nav.style.display = 'none'; }, 320);
 }
 function closeMobileNavOnBg(e) { if (e.target === document.getElementById('mobileNav')) closeMobileNav(); }
 
@@ -2029,6 +2047,12 @@ function saveWAConfig(config) {
 }
 
 function openWhatsAppConfig() {
+    // Admin-only gate
+    const _uid = fbManager.getCurrentUserId();
+    const _ud = fbManager.getUserDataLocal(_uid);
+    if (_ud && _ud.role !== 'admin') { openWhatsAppSend(); return; }
+
+
     const cfg = getWAConfig();
     let modal = document.getElementById('waConfigModal');
     if (!modal) { modal = document.createElement('div'); modal.id = 'waConfigModal'; modal.className = 'modal'; document.body.appendChild(modal); }
@@ -2504,3 +2528,225 @@ window.openGoogleReview = openGoogleReview;
 window.saveGoogleReview = saveGoogleReview;
 window.previewReviewMsg = previewReviewMsg;
 window.sendReviewRequests = sendReviewRequests;
+
+// Alias for HTML compatibility
+window.openUpgradeModal = openUpgradePlan;
+
+// ============================================================
+// STORE OWNER: WhatsApp Send (no API config, admin-only)
+// ============================================================
+function openWhatsAppSend() {
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const custs = fbManager.getCustomersLocal(uid);
+    const cfg = WA_API ? WA_API.getConfig() : {};
+    const isConfigured = !!(cfg.apiKey && cfg.phoneId);
+    const logs = WA_API ? WA_API.getLogs().slice(0, 8) : [];
+
+    let m = document.getElementById('waSendModal');
+    if (!m) { m = document.createElement('div'); m.id = 'waSendModal'; m.className = 'modal'; document.body.appendChild(m); }
+
+    m.innerHTML = `
+    <div class="modal-content" style="max-width:620px;">
+        <div class="modal-header">
+            <h2>💬 Send WhatsApp Message</h2>
+            <button class="close-modal" onclick="closeModal('waSendModal')">&times;</button>
+        </div>
+        <div style="background:${isConfigured ? 'rgba(0,201,122,0.08)' : 'rgba(255,92,0,0.06)'};border:2px solid ${isConfigured ? 'rgba(0,201,122,0.3)' : 'rgba(255,92,0,0.2)'};border-radius:14px;padding:14px;margin-bottom:20px;display:flex;gap:10px;align-items:center;">
+            <span style="font-size:22px;">${isConfigured ? '✅' : '⚙️'}</span>
+            <div>
+                <div style="font-weight:700;font-size:14px;">${isConfigured ? 'WhatsApp API Connected' : 'WhatsApp API Not Configured'}</div>
+                <div style="font-size:12px;color:var(--text-secondary);">${isConfigured ? 'Messages send directly to customers via WhatsApp' : 'Contact admin to configure WhatsApp API. Messages will be queued.'}</div>
+            </div>
+        </div>
+        <div class="form-tabs">
+            <button class="form-tab active" id="wsSendTab" onclick="switchWSTab('Send')">📤 Quick Send</button>
+            <button class="form-tab" id="wsBulkTab" onclick="switchWSTab('Bulk')">📢 Bulk Send</button>
+            <button class="form-tab" id="wsLogsTab" onclick="switchWSTab('Logs')">📋 Logs</button>
+            <button class="form-tab" id="wsBookTab" onclick="switchWSTab('Book')">📅 Bookings</button>
+        </div>
+
+        <div id="wsPanelSend" style="margin-top:18px;">
+            <div class="form-group">
+                <label>Customer Phone Number</label>
+                <div style="display:flex;gap:10px;">
+                    <input type="tel" id="wsToPhone" placeholder="919876543210" style="flex:1;padding:14px;border:2px solid var(--border);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;">
+                    <button onclick="wsLookupCustomer()" style="padding:14px 18px;background:var(--bg-main);border:2px solid var(--border);border-radius:12px;cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap;">Look up</button>
+                </div>
+                <div id="wsCustomerInfo" style="margin-top:8px;display:none;padding:10px;background:rgba(0,201,122,0.06);border-radius:8px;font-size:13px;"></div>
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea id="wsMsgText" rows="5" placeholder="Type your message here..." style="width:100%;padding:14px;border:2px solid var(--border);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;resize:vertical;"></textarea>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+                ${['Hi {name}! 👋','Thank you for visiting!','Your appointment is confirmed ✅','Special offer for you 🎁'].map(t => `<button onclick="wsInsertTemplate('${t}')" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-main);cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;">${t.substring(0,20)}...</button>`).join('')}
+            </div>
+            <button onclick="wsSendSingle()" class="btn" style="width:100%;">📤 Send Message</button>
+            <div id="wsSendResult" style="margin-top:12px;"></div>
+        </div>
+
+        <div id="wsPanelBulk" class="hidden" style="margin-top:18px;">
+            <div class="form-group"><label>Target Audience</label>
+                <select id="wsBulkAud" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;">
+                    <option value="all">All Customers (${custs.length})</option>
+                    <option value="active">Active Customers (${custs.filter(c=>c.status!=='inactive').length})</option>
+                    <option value="inactive">Inactive Customers (${custs.filter(c=>c.status==='inactive').length})</option>
+                    <option value="vip">VIP (5+ visits) (${custs.filter(c=>c.totalVisits>=5).length})</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Message <span style="font-size:12px;color:var(--text-muted);">{name} and {business} will be personalised</span></label>
+                <textarea id="wsBulkMsg" rows="5" placeholder="Hi {name}! Special offer from {business}..." style="width:100%;padding:14px;border:2px solid var(--border);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;resize:vertical;"></textarea>
+            </div>
+            <button onclick="wsSendBulk()" class="btn" style="width:100%;">🚀 Send to All Selected</button>
+        </div>
+
+        <div id="wsPanelLogs" class="hidden" style="margin-top:18px;">
+            <div style="font-weight:700;margin-bottom:12px;">Recent Messages (${logs.length})</div>
+            ${!logs.length ? '<div style="text-align:center;padding:30px;color:var(--text-muted);">No messages sent yet</div>' :
+                logs.map(l => `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-main);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+                    <div><div style="font-size:13px;font-weight:600;">${l.to}</div><div style="font-size:11px;color:var(--text-muted);">${(l.message||'').substring(0,50)}...</div></div>
+                    <span class="badge ${l.status==='sent'?'badge-green':'badge-orange'}">${l.status}</span>
+                </div>`).join('')}
+        </div>
+
+        <div id="wsPanelBook" class="hidden" style="margin-top:18px;">
+            <div style="font-weight:700;margin-bottom:12px;">📅 Send Booking Confirmations</div>
+            ${fbManager.getBookings(uid).filter(b=>!b.confirmSent).slice(0,5).map(b => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg-main);border:2px solid var(--border);border-radius:12px;margin-bottom:8px;flex-wrap:wrap;gap:10px;">
+                    <div>
+                        <div style="font-weight:600;">${b.customerName}</div>
+                        <div style="font-size:12px;color:var(--text-muted);">${b.service} · ${b.date} at ${b.time}</div>
+                        <div style="font-size:11px;color:var(--text-muted);">${b.customerPhone}</div>
+                    </div>
+                    <button onclick="wsSendBookingConfirm('${b.id}','${b.customerPhone}','${b.customerName}','${b.service}','${b.date}','${b.time}')" class="btn" style="padding:8px 16px;font-size:12px;">
+                        ✅ Send Confirmation
+                    </button>
+                </div>`).join('') || '<div style="text-align:center;padding:30px;color:var(--text-muted);">All bookings confirmed ✅</div>'}
+        </div>
+    </div>`;
+    openModal('waSendModal');
+}
+
+function switchWSTab(tab) {
+    ['Send','Bulk','Logs','Book'].forEach(t => {
+        const p = document.getElementById('wsPanel'+t), b = document.getElementById('ws'+t+'Tab');
+        if (p) p.classList.toggle('hidden', t !== tab);
+        if (b) b.classList.toggle('active', t === tab);
+    });
+}
+
+function wsLookupCustomer() {
+    const phone = document.getElementById('wsToPhone').value.trim();
+    const uid = fbManager.getCurrentUserId();
+    const custs = fbManager.getCustomersLocal(uid);
+    const found = custs.find(c => c.phone === phone || c.phone === phone.replace(/^91/,'') || ('91'+c.phone) === phone);
+    const info = document.getElementById('wsCustomerInfo');
+    if (found) {
+        info.style.display = 'block';
+        info.innerHTML = `<strong>${found.name}</strong> · ${found.totalVisits} visits · ₹${found.revenue||0} revenue · <span class="badge ${found.status==='inactive'?'badge-orange':'badge-green'}">${found.status||'active'}</span>`;
+        // Pre-fill name in message
+        const msgEl = document.getElementById('wsMsgText');
+        if (msgEl && msgEl.value.includes('{name}')) msgEl.value = msgEl.value.replace(/{name}/g, found.name);
+    } else {
+        info.style.display = 'block';
+        info.innerHTML = '<span style="color:var(--text-muted);">Customer not found in database</span>';
+    }
+}
+
+function wsInsertTemplate(text) {
+    const el = document.getElementById('wsMsgText');
+    if (el) el.value = text;
+}
+
+async function wsSendSingle() {
+    const phone = document.getElementById('wsToPhone').value.trim();
+    const msg = document.getElementById('wsMsgText').value.trim();
+    if (!phone) { toast('Enter phone number','⚠️'); return; }
+    if (!msg) { toast('Enter message','⚠️'); return; }
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const personalized = msg.replace(/{name}/g,'Customer').replace(/{business}/g, ud?.businessName||'us');
+    const r = WA_API ? await WA_API.sendMessage(phone, personalized) : { queued: true };
+    const result = document.getElementById('wsSendResult');
+    if (r.success) {
+        result.innerHTML = '<div style="padding:12px;background:rgba(0,201,122,0.08);border:1px solid rgba(0,201,122,0.25);border-radius:10px;font-size:13px;color:var(--secondary);">✅ Message sent via WhatsApp!</div>';
+    } else if (r.queued) {
+        result.innerHTML = '<div style="padding:12px;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:10px;font-size:13px;color:#b45309;">⏳ Message queued — ask admin to configure WhatsApp API for live sending</div>';
+    } else {
+        result.innerHTML = `<div style="padding:12px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:13px;color:#dc2626;">❌ Failed: ${r.error}</div>`;
+    }
+}
+
+async function wsSendBulk() {
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const aud = document.getElementById('wsBulkAud').value;
+    const msg = document.getElementById('wsBulkMsg').value.trim();
+    if (!msg) { toast('Write a message first','⚠️'); return; }
+    const custs = fbManager.getCustomersLocal(uid);
+    let targets = custs;
+    if (aud==='active') targets = custs.filter(c=>c.status!=='inactive');
+    if (aud==='inactive') targets = custs.filter(c=>c.status==='inactive');
+    if (aud==='vip') targets = custs.filter(c=>c.totalVisits>=5);
+    for (const c of targets) {
+        const personalized = msg.replace(/{name}/g,c.name||'Customer').replace(/{business}/g,ud?.businessName||'us');
+        if (WA_API) await WA_API.sendMessage(c.phone, personalized);
+    }
+    toast(`Sent to ${targets.length} customers!`, '💬', 4000);
+    fbManager.saveCampaign(uid, { name: 'WhatsApp Bulk', message: msg, audience: aud, recipients: targets.length, status: 'sent' });
+}
+
+async function wsSendBookingConfirm(id, phone, name, service, date, time) {
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const msg = `✅ Booking Confirmed!
+
+Hi ${name},
+
+Your appointment at ${ud?.businessName||'us'} is confirmed:
+
+📋 Service: ${service}
+📅 Date: ${date}
+⏰ Time: ${time}
+
+We look forward to seeing you! 😊
+
+Reply CANCEL to cancel.`;
+    const r = WA_API ? await WA_API.sendMessage(phone, msg) : { queued: true };
+    if (r.success || r.queued) {
+        // Mark as confirmed sent
+        const bookings = JSON.parse(localStorage.getItem('sambandh_bookings')||'[]');
+        const idx = bookings.findIndex(b=>b.id===id);
+        if (idx!==-1) { bookings[idx].confirmSent = true; localStorage.setItem('sambandh_bookings', JSON.stringify(bookings)); }
+        toast(r.success ? 'Confirmation sent!' : 'Confirmation queued!', r.success ? '✅' : '⏳');
+        // Refresh the bookings tab
+        openWhatsAppSend(); switchWSTab('Book');
+    } else {
+        toast('Failed to send: '+r.error, '❌');
+    }
+}
+
+window.openWhatsAppSend = openWhatsAppSend;
+window.switchWSTab = switchWSTab;
+window.wsLookupCustomer = wsLookupCustomer;
+window.wsInsertTemplate = wsInsertTemplate;
+window.wsSendSingle = wsSendSingle;
+window.wsSendBulk = wsSendBulk;
+window.wsSendBookingConfirm = wsSendBookingConfirm;
+
+// Final safety exports
+window.openWhatsAppSettings = openWhatsAppConfig;
+window.toggleBilling = toggleBilling;
+window.toggleMobileNav = toggleMobileNav;
+window.closeMobileNav = closeMobileNav;
+window.closeMobileNavOnBg = closeMobileNavOnBg;
+
+// Dynamic WhatsApp router: admin → config, store owner → send
+function openWhatsAppDynamic() {
+    var uid = fbManager.getCurrentUserId();
+    var ud = fbManager.getUserDataLocal(uid);
+    if (ud && ud.role === 'admin') openWhatsAppConfig();
+    else openWhatsAppSend();
+}
+window.openWhatsAppDynamic = openWhatsAppDynamic;
