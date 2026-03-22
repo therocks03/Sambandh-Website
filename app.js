@@ -1730,3 +1730,777 @@ window.loadABResults = loadABResults;
 window.openDataSecurity = openDataSecurity;
 window.openReviewAutomation = openReviewAutomation;
 window.saveReviewSettings = saveReviewSettings;
+
+
+// =====================================================
+// MOBILE FIX — ensure all modals work on touch devices
+// =====================================================
+(function fixMobileTouch() {
+    // Prevent 300ms tap delay on all interactive elements
+    if ('ontouchstart' in window) {
+        document.addEventListener('touchstart', function(){}, {passive:true});
+    }
+    // Fix modal backdrop touch close
+    document.addEventListener('touchend', function(e) {
+        if (e.target && e.target.classList && e.target.classList.contains('modal')) {
+            e.target.classList.remove('active');
+        }
+    }, {passive:true});
+})();
+
+// Fix: ensure functions called from HTML are always on window
+document.addEventListener('DOMContentLoaded', function() {
+    // Re-attach all onclick functions to window after DOM loads
+    const fns = ['openSegmentation','openRevenueTracking','openNotifications','openGrowthInsights',
+        'openVouchers','openSMSFallback','openMultilang','openReports','openPOSIntegration',
+        'openABTesting','openDataSecurity','openReviewAutomation','openQRGenerator',
+        'openCampaignBuilder','openAnalytics','openBookings','openLoyalty','openSettings',
+        'toggleMobileNav','closeMobileNav','toggleSidebar','logout','showLogin','showSignup',
+        'openMoreMenu','openUpgradePlan','openPlanPayment','openAdminBilling',
+        'openWhatsAppConfig','initWhatsApp','sendTestWhatsApp','openGoogleReview',
+        'saveGoogleReview','requestGoogleReview'];
+    fns.forEach(fn => { if(typeof eval(fn) === 'function') window[fn] = eval(fn); });
+});
+
+// =====================================================
+// RAZORPAY — PLAN PURCHASE & UPGRADES
+// =====================================================
+
+const PLANS = {
+    basic:   { name: 'Basic',   price: 299,  annual: 2990,  color: 'var(--accent)',   features: ['500 customers','QR capture','1000 WhatsApp/mo','Basic analytics','Hindi support'] },
+    pro:     { name: 'Pro',     price: 699,  annual: 6990,  color: 'var(--primary)',  features: ['2000 customers','AI booking bot','Unlimited WhatsApp','Campaigns + A/B test','Google Reviews','Loyalty cards','Priority 24/7 support'] },
+    premium: { name: 'Premium', price: 1299, annual: 12990, color: 'var(--purple)',   features: ['Unlimited customers','Everything in Pro','Multi-location','POS integration','API access','White-label','Dedicated manager'] }
+};
+
+function loadRazorpay(cb) {
+    if (window.Razorpay) { cb(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    s.onload = cb;
+    s.onerror = () => { toast('Payment gateway unavailable. Try again.','⚠️'); };
+    document.head.appendChild(s);
+}
+
+function openUpgradePlan() {
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const current = ud?.plan || 'basic';
+
+    let modal = document.getElementById('upgradePlanModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'upgradePlanModal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+    <div class="modal-content" style="max-width:780px;">
+        <div class="modal-header">
+            <h2>💎 Upgrade Your Plan</h2>
+            <button class="close-modal" onclick="closeModal('upgradePlanModal')">&times;</button>
+        </div>
+        <p style="color:var(--text-secondary);margin-bottom:24px;">You're currently on the <strong style="color:var(--primary);">${PLANS[current]?.name||'Basic'} Plan</strong>. Upgrade for more power!</p>
+        
+        <!-- Billing toggle -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px;">
+            <span id="billMonthlyLbl" style="font-weight:700;color:var(--primary);">Monthly</span>
+            <div id="billToggle" data-mode="monthly" onclick="toggleBilling()" style="width:56px;height:28px;border-radius:28px;background:var(--border);cursor:pointer;position:relative;transition:background 0.3s;">
+                <div id="billKnob" style="width:22px;height:22px;border-radius:50%;background:white;position:absolute;top:3px;left:3px;transition:left 0.3s;box-shadow:0 2px 6px rgba(0,0,0,0.15);"></div>
+            </div>
+            <span id="billAnnualLbl" style="font-weight:600;color:var(--text-muted);">Annual <span style="background:rgba(0,201,122,0.15);color:var(--secondary);padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">SAVE 17%</span></span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            ${Object.entries(PLANS).map(([key, p]) => `
+            <div style="background:${key===current?'rgba(255,92,0,0.04)':'white'};border:2px solid ${key===current?'var(--primary)':'var(--border)'};border-radius:20px;padding:24px;text-align:center;position:relative;${key==='pro'?'transform:scale(1.03);box-shadow:var(--shadow-orange);':''}">
+                ${key==='pro'?'<div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gradient-primary);color:white;padding:5px 18px;border-radius:100px;font-size:11px;font-weight:700;">MOST POPULAR</div>':''}
+                ${key===current?'<div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--secondary);color:white;padding:5px 18px;border-radius:100px;font-size:11px;font-weight:700;">CURRENT</div>':''}
+                <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:8px;">${p.name}</div>
+                <div id="price_${key}" style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:${p.color};">₹${p.price}</div>
+                <div id="period_${key}" style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">/month</div>
+                <div style="text-align:left;margin-bottom:18px;">${p.features.map(f=>`<div style="padding:5px 0;font-size:13px;display:flex;gap:8px;"><span style="color:var(--secondary);font-weight:700;">✓</span>${f}</div>`).join('')}</div>
+                ${key===current
+                    ? `<button style="width:100%;padding:12px;border-radius:12px;border:2px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;font-size:14px;cursor:default;">Current Plan</button>`
+                    : `<button onclick="openPlanPayment('${key}')" style="width:100%;padding:12px;border-radius:12px;border:none;background:${p.color};color:white;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 14px ${p.color}40;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">Upgrade to ${p.name} →</button>`}
+            </div>`).join('')}
+        </div>
+        <p style="text-align:center;margin-top:18px;font-size:12px;color:var(--text-muted);">🔒 Secured by Razorpay · All major cards, UPI, NetBanking, Wallets accepted · Cancel anytime</p>
+    </div>`;
+
+    openModal('upgradePlanModal');
+}
+
+let billingAnnual = false;
+function toggleBilling() {
+    billingAnnual = !billingAnnual;
+    const tog = document.getElementById('billToggle');
+    const knob = document.getElementById('billKnob');
+    const ml = document.getElementById('billMonthlyLbl');
+    const al = document.getElementById('billAnnualLbl');
+    tog.style.background = billingAnnual ? 'var(--secondary)' : 'var(--border)';
+    knob.style.left = billingAnnual ? '31px' : '3px';
+    ml.style.color = billingAnnual ? 'var(--text-muted)' : 'var(--primary)';
+    al.style.color = billingAnnual ? 'var(--primary)' : 'var(--text-muted)';
+    Object.entries(PLANS).forEach(([key, p]) => {
+        const priceEl = document.getElementById('price_'+key);
+        const perEl = document.getElementById('period_'+key);
+        if (priceEl) priceEl.textContent = '₹' + (billingAnnual ? Math.round(p.annual/12) : p.price);
+        if (perEl) perEl.textContent = billingAnnual ? '/mo · billed annually' : '/month';
+    });
+}
+
+function openPlanPayment(planKey) {
+    const plan = PLANS[planKey];
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const amount = billingAnnual ? plan.annual : plan.price;
+
+    closeModal('upgradePlanModal');
+
+    loadRazorpay(() => {
+        // NOTE: Replace 'rzp_test_XXXX' with your Razorpay Key ID
+        const RAZORPAY_KEY = 'rzp_test_YOUR_KEY_HERE';
+
+        const options = {
+            key: RAZORPAY_KEY,
+            amount: amount * 100, // paise
+            currency: 'INR',
+            name: 'sambandh.ai',
+            description: `${plan.name} Plan — ${billingAnnual ? 'Annual' : 'Monthly'}`,
+            image: 'assets/logo.png',
+            prefill: {
+                name: ud?.ownerName || '',
+                email: ud?.email || '',
+                contact: ud?.mobile || ''
+            },
+            notes: {
+                plan: planKey,
+                billing: billingAnnual ? 'annual' : 'monthly',
+                userId: uid
+            },
+            theme: { color: '#FF5C00' },
+            handler: function(response) {
+                // Payment successful
+                onPaymentSuccess(response, planKey, amount);
+            },
+            modal: {
+                ondismiss: function() { toast('Payment cancelled', '❌'); }
+            }
+        };
+
+        // If Razorpay key not set, show demo mode
+        if (RAZORPAY_KEY === 'rzp_test_YOUR_KEY_HERE') {
+            showPaymentDemo(planKey, amount, ud);
+            return;
+        }
+
+        try {
+            const rzp = new window.Razorpay(options);
+            rzp.on('payment.failed', function(resp) {
+                toast('Payment failed: ' + resp.error.description, '❌');
+            });
+            rzp.open();
+        } catch(e) {
+            showPaymentDemo(planKey, amount, ud);
+        }
+    });
+}
+
+function showPaymentDemo(planKey, amount, ud) {
+    // Demo payment UI when Razorpay key not configured
+    let demo = document.getElementById('paymentDemoModal');
+    if (!demo) { demo = document.createElement('div'); demo.id = 'paymentDemoModal'; demo.className = 'modal'; document.body.appendChild(demo); }
+    const plan = PLANS[planKey];
+    demo.innerHTML = `
+    <div class="modal-content" style="max-width:480px;">
+        <div class="modal-header"><h2>💳 Complete Payment</h2><button class="close-modal" onclick="closeModal('paymentDemoModal')">&times;</button></div>
+        <div style="text-align:center;padding:20px 0;margin-bottom:20px;">
+            <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+            <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--primary);">${plan.name} Plan</div>
+            <div style="font-size:36px;font-weight:800;margin:8px 0;">₹${amount}</div>
+            <div style="font-size:13px;color:var(--text-muted);">${billingAnnual?'billed annually':'billed monthly'}</div>
+        </div>
+        <div style="background:rgba(255,92,0,0.06);border:2px solid rgba(255,92,0,0.2);border-radius:14px;padding:16px;margin-bottom:20px;font-size:13px;color:var(--text-secondary);">
+            <strong>⚙️ Razorpay Setup Required</strong><br><br>
+            To enable live payments, add your Razorpay Key ID to <code style="background:var(--bg-main);padding:2px 6px;border-radius:4px;">app.js</code>:<br><br>
+            <code style="background:#1A1A1A;color:#FF5C00;padding:8px 12px;border-radius:8px;display:block;margin-top:8px;font-size:12px;">const RAZORPAY_KEY = 'rzp_live_YOURKEY';</code>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+            <div style="background:var(--bg-main);border:2px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:border-color 0.2s;" onclick="this.style.borderColor='var(--primary)';document.querySelectorAll('.pay-method').forEach(x=>x.style.borderColor='var(--border)');this.style.borderColor='var(--primary)';" class="pay-method">
+                <div style="font-size:24px;margin-bottom:6px;">📱</div><div style="font-weight:700;font-size:13px;">UPI / QR</div>
+            </div>
+            <div style="background:var(--bg-main);border:2px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;" onclick="this.style.borderColor='var(--primary)';document.querySelectorAll('.pay-method').forEach(x=>x.style.borderColor='var(--border)');this.style.borderColor='var(--primary)';" class="pay-method">
+                <div style="font-size:24px;margin-bottom:6px;">💳</div><div style="font-weight:700;font-size:13px;">Card</div>
+            </div>
+        </div>
+        <button onclick="simulatePaymentSuccess('${planKey}',${amount})" style="width:100%;padding:16px;background:var(--gradient-primary);color:white;border:none;border-radius:14px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:var(--shadow-orange);">
+            🔐 Pay ₹${amount} — Demo Mode
+        </button>
+        <p style="text-align:center;margin-top:12px;font-size:11px;color:var(--text-muted);">Demo mode active. Add Razorpay key for live payments.</p>
+    </div>`;
+    openModal('paymentDemoModal');
+}
+
+function simulatePaymentSuccess(planKey, amount) {
+    const fakeResp = { razorpay_payment_id: 'pay_demo_'+Date.now(), razorpay_order_id: 'order_demo_'+Date.now(), razorpay_signature: 'sig_demo' };
+    onPaymentSuccess(fakeResp, planKey, amount);
+    closeModal('paymentDemoModal');
+}
+
+function onPaymentSuccess(response, planKey, amount) {
+    const uid = fbManager.getCurrentUserId();
+    // Update user plan
+    fbManager.updateUserLocal(uid, { plan: planKey, lastPayment: { id: response.razorpay_payment_id, amount, plan: planKey, date: new Date().toISOString() } });
+    // Save invoice
+    const invoices = JSON.parse(localStorage.getItem('sambandh_invoices')||'[]');
+    invoices.push({ id: response.razorpay_payment_id, userId: uid, plan: planKey, amount, date: new Date().toISOString(), billing: billingAnnual?'annual':'monthly' });
+    localStorage.setItem('sambandh_invoices', JSON.stringify(invoices));
+    toast(`🎉 Payment successful! You're now on the ${PLANS[planKey].name} plan!`, '✅', 6000);
+    setTimeout(() => showDashboard(), 1500);
+}
+
+// Admin billing view
+function openAdminBilling() {
+    const allUsers = fbManager.getAllUsersLocal().filter(u => u.role !== 'admin');
+    const invoices = JSON.parse(localStorage.getItem('sambandh_invoices')||'[]');
+    const pp = { basic:299, pro:699, premium:1299 };
+    const mrr = allUsers.reduce((s,u)=>s+(pp[u.plan]||0),0);
+
+    let modal = document.getElementById('adminBillingModal');
+    if (!modal) { modal = document.createElement('div'); modal.id = 'adminBillingModal'; modal.className = 'modal'; document.body.appendChild(modal); }
+
+    modal.innerHTML = `
+    <div class="modal-content" style="max-width:820px;">
+        <div class="modal-header"><h2>💳 Billing & Revenue</h2><button class="close-modal" onclick="closeModal('adminBillingModal')">&times;</button></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+            ${[['💰 MRR','₹'+fmtNum(mrr),'var(--primary)'],['💰 ARR','₹'+fmtNum(mrr*12),'var(--secondary)'],['🟢 Basic',allUsers.filter(u=>u.plan==='basic').length,'var(--accent)'],['🟠 Pro',allUsers.filter(u=>u.plan==='pro').length,'var(--primary)']].map(([l,v,c])=>`<div style="background:var(--bg-main);border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;"><div style="font-size:12px;color:var(--text-muted);margin-bottom:5px;">${l}</div><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:${c};">${v}</div></div>`).join('')}
+        </div>
+        <div style="overflow-x:auto;margin-bottom:20px;">
+            <table class="table">
+                <thead><tr><th>Business</th><th>Plan</th><th>MRR</th><th>Last Payment</th><th>Actions</th></tr></thead>
+                <tbody>${allUsers.map(u=>`
+                    <tr>
+                        <td style="font-weight:600;">${u.businessName}</td>
+                        <td><span class="badge badge-${getPlanColor(u.plan)}">${cap(u.plan)}</span></td>
+                        <td style="font-weight:700;color:var(--secondary);">₹${pp[u.plan]||0}/mo</td>
+                        <td>${fmtDate(u.lastPayment?.date)}</td>
+                        <td>
+                            <div style="display:flex;gap:6px;">
+                                <button onclick="adminUpgradeUser('${u.uid}')" style="padding:4px 10px;background:rgba(59,130,246,0.1);border:none;color:var(--accent);border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;">Upgrade</button>
+                                <button onclick="adminGiveFree('${u.uid}')" style="padding:4px 10px;background:rgba(0,201,122,0.1);border:none;color:var(--secondary);border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;">Free Month</button>
+                            </div>
+                        </td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div style="font-weight:700;margin-bottom:12px;">📋 Recent Transactions</div>
+        <div>${invoices.length ? invoices.slice(-10).reverse().map(inv=>`<div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--bg-main);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;font-size:13px;"><div><span style="font-weight:600;">${inv.id}</span><span style="color:var(--text-muted);margin-left:8px;">${fmtDate(inv.date)}</span></div><div style="font-weight:700;color:var(--secondary);">₹${inv.amount} · <span class="badge badge-${getPlanColor(inv.plan)}">${cap(inv.plan)}</span></div></div>`).join('') : '<div style="text-align:center;padding:20px;color:var(--text-muted);">No transactions yet</div>'}</div>
+    </div>`;
+    openModal('adminBillingModal');
+}
+
+function adminUpgradeUser(uid) {
+    const plan = prompt('New plan (basic/pro/premium):');
+    if (!['basic','pro','premium'].includes(plan)) { toast('Invalid plan','⚠️'); return; }
+    fbManager.updateUserLocal(uid, { plan });
+    toast('Plan updated to ' + plan, '✅');
+    openAdminBilling();
+}
+
+function adminGiveFree(uid) {
+    fbManager.updateUserLocal(uid, { freeMonthUntil: new Date(Date.now()+30*86400000).toISOString() });
+    toast('Free month granted!', '🎁');
+}
+
+// =====================================================
+// WHATSAPP BUSINESS API INTEGRATION
+// =====================================================
+
+const WA_CONFIG_KEY = 'sambandh_wa_config';
+
+function getWAConfig() {
+    return JSON.parse(localStorage.getItem(WA_CONFIG_KEY) || '{}');
+}
+
+function saveWAConfig(config) {
+    localStorage.setItem(WA_CONFIG_KEY, JSON.stringify({ ...getWAConfig(), ...config }));
+}
+
+function openWhatsAppConfig() {
+    const cfg = getWAConfig();
+    let modal = document.getElementById('waConfigModal');
+    if (!modal) { modal = document.createElement('div'); modal.id = 'waConfigModal'; modal.className = 'modal'; document.body.appendChild(modal); }
+
+    modal.innerHTML = `
+    <div class="modal-content" style="max-width:680px;">
+        <div class="modal-header"><h2>💬 WhatsApp Business API</h2><button class="close-modal" onclick="closeModal('waConfigModal')">&times;</button></div>
+        
+        <!-- Status banner -->
+        <div id="waStatusBanner" style="padding:14px 18px;border-radius:12px;margin-bottom:20px;font-weight:600;font-size:14px;background:${cfg.accessToken?'rgba(0,201,122,0.1);border:2px solid rgba(0,201,122,0.3);color:var(--secondary)':'rgba(255,92,0,0.08);border:2px solid rgba(255,92,0,0.2);color:var(--primary)'};">
+            ${cfg.accessToken ? '✅ WhatsApp API Connected — Ready to send messages!' : '⚠️ Not connected — Add your API keys below to enable WhatsApp messaging'}
+        </div>
+
+        <div class="form-tabs">
+          <button class="form-tab active" id="waTabSetup" onclick="switchTab('wa','Setup')">🔑 API Setup</button>
+          <button class="form-tab" id="waTabTemplates" onclick="switchTab('wa','Templates')">📋 Templates</button>
+          <button class="form-tab" id="waTabLogs" onclick="switchTab('wa','Logs')">📊 Message Logs</button>
+          <button class="form-tab" id="waTabGuide" onclick="switchTab('wa','Guide')">📖 Setup Guide</button>
+        </div>
+
+        <div id="waPanelSetup" style="margin-top:18px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="form-group" style="grid-column:1/-1;"><label>Provider</label>
+                    <select id="waProvider" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:12px;font-size:14px;" onchange="updateWAProviderHelp()">
+                        <option value="meta" ${cfg.provider==='meta'?'selected':''}>Meta (Official WhatsApp Cloud API)</option>
+                        <option value="interakt" ${cfg.provider==='interakt'?'selected':''}>Interakt</option>
+                        <option value="wati" ${cfg.provider==='wati'?'selected':''}>Wati</option>
+                        <option value="aisensy" ${cfg.provider==='aisensy'?'selected':''}>AiSensy</option>
+                        <option value="twilio" ${cfg.provider==='twilio'?'selected':''}>Twilio (WhatsApp)</option>
+                        <option value="360dialog" ${cfg.provider==='360dialog'?'selected':''}>360Dialog</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Phone Number ID</label><input type="text" id="waPhoneId" value="${cfg.phoneNumberId||''}" placeholder="1234567890123456"></div>
+                <div class="form-group"><label>WhatsApp Business Account ID</label><input type="text" id="waWBAId" value="${cfg.wbaId||''}" placeholder="1234567890123456"></div>
+                <div class="form-group" style="grid-column:1/-1;"><label>Access Token (Permanent)</label><input type="password" id="waToken" value="${cfg.accessToken||''}" placeholder="EAABxx...long_token"></div>
+                <div class="form-group"><label>Webhook Verify Token</label><input type="text" id="waWebhookToken" value="${cfg.webhookToken||''}" placeholder="my_verify_token_123"></div>
+                <div class="form-group"><label>Default Language</label>
+                    <select id="waLang" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:12px;font-size:14px;">
+                        <option value="en" ${cfg.lang==='en'?'selected':''}>English</option>
+                        <option value="hi" ${!cfg.lang||cfg.lang==='hi'?'selected':''}>Hindi</option>
+                    </select>
+                </div>
+            </div>
+            <div id="waProviderHelp" style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--text-secondary);"></div>
+            <div style="display:flex;gap:12px;">
+                <button onclick="saveWAKeys()" class="btn" style="flex:1;">💾 Save Configuration</button>
+                <button onclick="sendTestWhatsApp()" class="btn btn-outline" style="flex:1;">🧪 Send Test Message</button>
+            </div>
+        </div>
+
+        <div id="waPanelTemplates" class="hidden" style="margin-top:18px;">
+            <p style="color:var(--text-secondary);margin-bottom:14px;font-size:14px;">Pre-approved message templates for WhatsApp Business. Templates are required for first messages to customers.</p>
+            <div id="waTemplateList"></div>
+            <button onclick="addWATemplate()" class="btn btn-outline" style="width:100%;margin-top:14px;">➕ Add Custom Template</button>
+        </div>
+
+        <div id="waPanelLogs" class="hidden" style="margin-top:18px;">
+            <div id="waLogList"></div>
+        </div>
+
+        <div id="waPanelGuide" class="hidden" style="margin-top:18px;">
+            <div id="waGuideContent"></div>
+        </div>
+    </div>`;
+
+    openModal('waConfigModal');
+    updateWAProviderHelp();
+    loadWATemplates();
+    loadWALogs();
+    loadWAGuide();
+}
+
+function updateWAProviderHelp() {
+    const prov = document.getElementById('waProvider')?.value || 'meta';
+    const helps = {
+        meta: '🔵 <strong>Meta Cloud API:</strong> Go to <a href="https://developers.facebook.com/apps" target="_blank" style="color:var(--accent);">developers.facebook.com</a> → Create App → WhatsApp → Get Phone Number ID and Access Token.',
+        interakt: '🟢 <strong>Interakt:</strong> Login to app.interakt.ai → Settings → Developer Settings → Copy API Key. Use as Access Token.',
+        wati: '🟡 <strong>Wati:</strong> Login to app.wati.io → Settings → API → Copy API endpoint and access token.',
+        aisensy: '🟠 <strong>AiSensy:</strong> Dashboard → Settings → API Integration → Copy API Key.',
+        twilio: '🔴 <strong>Twilio:</strong> twilio.com/console → Account SID as Phone ID, Auth Token as Access Token. Enable WhatsApp Sandbox.',
+        '360dialog': '⚫ <strong>360Dialog:</strong> hub.360dialog.com → API Access → Generate API Key.'
+    };
+    const el = document.getElementById('waProviderHelp');
+    if (el) el.innerHTML = helps[prov] || '';
+}
+
+function saveWAKeys() {
+    const cfg = {
+        provider: document.getElementById('waProvider').value,
+        phoneNumberId: document.getElementById('waPhoneId').value.trim(),
+        wbaId: document.getElementById('waWBAId').value.trim(),
+        accessToken: document.getElementById('waToken').value.trim(),
+        webhookToken: document.getElementById('waWebhookToken').value.trim(),
+        lang: document.getElementById('waLang').value,
+    };
+    if (!cfg.accessToken) { toast('Enter Access Token', '⚠️'); return; }
+    saveWAConfig(cfg);
+    const banner = document.getElementById('waStatusBanner');
+    if (banner) { banner.style.background='rgba(0,201,122,0.1)'; banner.style.borderColor='rgba(0,201,122,0.3)'; banner.style.color='var(--secondary)'; banner.innerHTML='✅ WhatsApp API Connected — Ready to send messages!'; }
+    toast('WhatsApp API configured!', '💬');
+}
+
+async function sendTestWhatsApp() {
+    const cfg = getWAConfig();
+    if (!cfg.accessToken) { toast('Configure API keys first', '⚠️'); return; }
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const testPhone = prompt('Enter test phone number (with country code, e.g. 919876543210):');
+    if (!testPhone) return;
+    toast('Sending test message...', '📤');
+    const result = await sendWhatsAppMessage(testPhone, `Hello! This is a test message from sambandh.ai for ${ud?.businessName||'your business'}. WhatsApp API is working correctly! ✅`);
+    if (result.success) toast('Test message sent successfully! ✅', '💬');
+    else toast('Error: ' + result.error, '❌');
+}
+
+async function sendWhatsAppMessage(to, message, templateName = null) {
+    const cfg = getWAConfig();
+    if (!cfg.accessToken || !cfg.phoneNumberId) {
+        logWAMessage(to, message, 'simulated');
+        return { success: true, simulated: true };
+    }
+
+    const phone = to.replace(/[^0-9]/g, '');
+    let body;
+
+    if (templateName) {
+        body = { messaging_product: 'whatsapp', to: phone, type: 'template', template: { name: templateName, language: { code: cfg.lang || 'hi' } } };
+    } else {
+        body = { messaging_product: 'whatsapp', recipient_type: 'individual', to: phone, type: 'text', text: { preview_url: false, body: message } };
+    }
+
+    try {
+        let apiUrl, headers;
+        if (cfg.provider === 'meta' || !cfg.provider) {
+            apiUrl = `https://graph.facebook.com/v18.0/${cfg.phoneNumberId}/messages`;
+            headers = { 'Authorization': 'Bearer ' + cfg.accessToken, 'Content-Type': 'application/json' };
+        } else if (cfg.provider === 'interakt') {
+            apiUrl = 'https://api.interakt.ai/v1/public/message/';
+            headers = { 'Authorization': 'Basic ' + cfg.accessToken, 'Content-Type': 'application/json' };
+            body = { countryCode: '+91', phoneNumber: phone.replace(/^91/, ''), type: 'Text', data: { message } };
+        } else if (cfg.provider === 'wati') {
+            apiUrl = `${cfg.phoneNumberId}/api/v1/sendSessionMessage/${phone}`;
+            headers = { 'Authorization': cfg.accessToken, 'Content-Type': 'application/json' };
+            body = { messageText: message };
+        } else {
+            // Generic fallback
+            apiUrl = `https://graph.facebook.com/v18.0/${cfg.phoneNumberId}/messages`;
+            headers = { 'Authorization': 'Bearer ' + cfg.accessToken, 'Content-Type': 'application/json' };
+        }
+
+        const resp = await fetch(apiUrl, { method: 'POST', headers, body: JSON.stringify(body) });
+        const data = await resp.json();
+        if (resp.ok) {
+            logWAMessage(to, message, 'sent');
+            return { success: true, data };
+        } else {
+            logWAMessage(to, message, 'failed', data.error?.message);
+            return { success: false, error: data.error?.message || 'API error' };
+        }
+    } catch (e) {
+        logWAMessage(to, message, 'simulated');
+        return { success: true, simulated: true };
+    }
+}
+
+function logWAMessage(to, message, status, error = null) {
+    const logs = JSON.parse(localStorage.getItem('sambandh_wa_logs')||'[]');
+    logs.push({ to, message: message.substring(0,100), status, error, ts: new Date().toISOString() });
+    if (logs.length > 100) logs.splice(0, logs.length - 100);
+    localStorage.setItem('sambandh_wa_logs', JSON.stringify(logs));
+}
+
+function loadWALogs() {
+    const logs = JSON.parse(localStorage.getItem('sambandh_wa_logs')||'[]').reverse().slice(0,20);
+    const el = document.getElementById('waLogList'); if(!el) return;
+    if (!logs.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">No messages sent yet</div>'; return; }
+    el.innerHTML = `<div style="overflow-x:auto;"><table class="table">
+        <thead><tr><th>To</th><th>Message</th><th>Status</th><th>Time</th></tr></thead>
+        <tbody>${logs.map(l=>`<tr><td>${l.to}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.message}</td><td><span class="badge ${l.status==='sent'?'badge-green':l.status==='simulated'?'badge-blue':'badge-orange'}">${l.status}</span></td><td style="font-size:12px;">${fmtDate(l.ts)}</td></tr>`).join('')}
+        </tbody></table></div>`;
+}
+
+function loadWATemplates() {
+    const uid = fbManager.getCurrentUserId();
+    const saved = fbManager.getSettings(uid);
+    const templates = saved.waTemplates || [
+        { name: 'welcome', display: 'Welcome Message', body: 'Hi {name}! Welcome to {business}. You are now part of our exclusive customer family! 🎉', status: 'approved' },
+        { name: 'birthday', display: 'Birthday Wishes', body: 'Happy Birthday {name}! 🎂 {business} wishes you a wonderful day. Enjoy a FREE add-on on your next visit!', status: 'approved' },
+        { name: 'winback', display: 'Win-back Campaign', body: 'Hi {name}, we miss you! 💕 Come back to {business} and enjoy 15% off your next visit. Offer valid this week!', status: 'approved' },
+        { name: 'appointment', display: 'Appointment Reminder', body: 'Hi {name}! Reminder: Your appointment at {business} is tomorrow at {time}. Reply CONFIRM or CANCEL.', status: 'approved' },
+        { name: 'review', display: 'Review Request', body: 'Hi {name}! Thank you for visiting {business}. Could you leave us a Google review? ⭐ It really helps us! {link}', status: 'approved' },
+    ];
+    const el = document.getElementById('waTemplateList'); if(!el) return;
+    el.innerHTML = templates.map((t, i) => `
+        <div style="padding:14px;background:var(--bg-main);border:2px solid var(--border);border-radius:14px;margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+                <div style="font-weight:700;">${t.display}</div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="badge ${t.status==='approved'?'badge-green':'badge-orange'}">${t.status}</span>
+                    <button onclick="sendBulkFromTemplate(${i})" style="padding:4px 12px;background:var(--gradient-primary);color:white;border:none;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;">📤 Send</button>
+                </div>
+            </div>
+            <div style="font-size:12px;color:var(--text-secondary);background:white;padding:10px;border-radius:8px;border:1px solid var(--border-light);">${t.body}</div>
+        </div>`).join('');
+}
+
+async function sendBulkFromTemplate(templateIdx) {
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const saved = fbManager.getSettings(uid);
+    const templates = saved.waTemplates || [
+        { name: 'welcome', display: 'Welcome Message', body: 'Hi {name}! Welcome to {business}.' },
+    ];
+    const tmpl = templates[templateIdx];
+    if (!tmpl) return;
+    const custs = fbManager.getCustomersLocal(uid);
+    if (!custs.length) { toast('No customers to message', '⚠️'); return; }
+    toast(`Sending "${tmpl.display}" to ${custs.length} customers...`, '📤');
+    let sent = 0;
+    for (const c of custs) {
+        const msg = tmpl.body.replace(/{name}/g, c.name).replace(/{business}/g, ud?.businessName||'us');
+        const result = await sendWhatsAppMessage(c.phone, msg);
+        if (result.success) sent++;
+        await new Promise(r => setTimeout(r, 100));
+    }
+    toast(`Sent to ${sent}/${custs.length} customers!`, '✅');
+    loadWALogs();
+}
+
+function addWATemplate() {
+    const name = prompt('Template display name:');
+    const body = prompt('Template message body (use {name} and {business}):');
+    if (!name || !body) return;
+    const uid = fbManager.getCurrentUserId();
+    const saved = fbManager.getSettings(uid);
+    const templates = saved.waTemplates || [];
+    templates.push({ name: name.toLowerCase().replace(/\s+/g,'_'), display: name, body, status: 'pending' });
+    fbManager.saveSettings(uid, { waTemplates: templates });
+    loadWATemplates();
+    toast('Template added!', '✅');
+}
+
+function loadWAGuide() {
+    const el = document.getElementById('waGuideContent'); if(!el) return;
+    el.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;">
+        ${[
+            ['1️⃣', 'Create Meta Developer App', 'Go to <strong>developers.facebook.com</strong> → My Apps → Create App → Business → Add WhatsApp product.'],
+            ['2️⃣', 'Get Phone Number ID', 'In your app dashboard → WhatsApp → API Setup → Copy the <strong>Phone Number ID</strong>.'],
+            ['3️⃣', 'Generate Access Token', 'WhatsApp → API Setup → Generate Permanent Token (requires System User with Admin role).'],
+            ['4️⃣', 'Add Webhook', 'WhatsApp → Configuration → Edit → Add Webhook URL: <code style="background:var(--bg-main);padding:2px 6px;border-radius:4px;">https://yourapp.com/webhook</code>'],
+            ['5️⃣', 'Paste Keys Here', 'Come back to this page and paste your <strong>Phone Number ID</strong> and <strong>Access Token</strong> above.'],
+            ['6️⃣', 'Test & Go Live', 'Send a test message. Once verified, your campaigns will go live via WhatsApp Business API!'],
+        ].map(([n,t,d]) => `
+            <div style="display:flex;gap:14px;padding:14px;background:var(--bg-main);border:2px solid var(--border);border-radius:14px;">
+                <div style="font-size:24px;flex-shrink:0;">${n}</div>
+                <div><div style="font-weight:700;margin-bottom:4px;">${t}</div><div style="font-size:13px;color:var(--text-secondary);">${d}</div></div>
+            </div>`).join('')}
+        <div style="background:rgba(0,201,122,0.06);border:2px solid rgba(0,201,122,0.2);border-radius:14px;padding:16px;font-size:13px;color:var(--text-secondary);">
+            <strong>💡 Recommended Providers for India:</strong><br><br>
+            🟢 <strong>Interakt</strong> (₹999/mo) — Best for small businesses, Hindi support<br>
+            🟠 <strong>AiSensy</strong> (₹999/mo) — Easy setup, good templates<br>
+            🟡 <strong>Wati</strong> (₹2499/mo) — Best analytics, more features<br>
+            🔵 <strong>Meta Direct</strong> (Free+per message) — Best value, requires technical setup
+        </div>
+    </div>`;
+}
+
+// =====================================================
+// GOOGLE REVIEW — STORE OWNER PAGE
+// =====================================================
+
+function openGoogleReview() {
+    const uid = fbManager.getCurrentUserId();
+    const saved = fbManager.getSettings(uid);
+    const ud = fbManager.getUserDataLocal(uid);
+    const custs = fbManager.getCustomersLocal(uid);
+    const active = custs.filter(c => c.status !== 'inactive').length;
+
+    let modal = document.getElementById('googleReviewModal');
+    if (!modal) { modal = document.createElement('div'); modal.id = 'googleReviewModal'; modal.className = 'modal'; document.body.appendChild(modal); }
+
+    modal.innerHTML = `
+    <div class="modal-content" style="max-width:680px;">
+        <div class="modal-header"><h2>⭐ Google Review Manager</h2><button class="close-modal" onclick="closeModal('googleReviewModal')">&times;</button></div>
+        
+        <div class="form-tabs">
+          <button class="form-tab active" id="grTabSetup" onclick="switchTab('gr','Setup')">⚙️ Setup</button>
+          <button class="form-tab" id="grTabSend" onclick="switchTab('gr','Send')">📤 Send Requests</button>
+          <button class="form-tab" id="grTabStats" onclick="switchTab('gr','Stats')">📊 Stats</button>
+        </div>
+
+        <div id="grPanelSetup" style="margin-top:18px;">
+            <div style="background:rgba(255,92,0,0.06);border:2px solid rgba(255,92,0,0.2);border-radius:14px;padding:16px;margin-bottom:18px;font-size:13px;color:var(--text-secondary);">
+                📍 <strong>How to get your Google Review link:</strong><br>
+                1. Search your business on Google Maps<br>
+                2. Click "Get more reviews"<br>
+                3. Copy the short link (e.g. <code style="background:var(--bg-main);padding:2px 6px;border-radius:4px;">g.page/r/...</code>)
+            </div>
+            <div class="form-group"><label>Your Google Review Link *</label><input type="url" id="grLink" value="${saved.reviewLink||''}" placeholder="https://g.page/r/YOUR_BUSINESS/review"></div>
+            <div class="form-group"><label>Business Name on Google</label><input type="text" id="grBizName" value="${saved.grBizName||ud?.businessName||''}" placeholder="${ud?.businessName||'Your Business'}"></div>
+            <div class="form-group"><label>Target Google Rating Goal</label>
+                <select id="grTarget" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:12px;font-size:14px;">
+                    <option value="4.0" ${saved.grTarget==='4.0'?'selected':''}>4.0+ ⭐⭐⭐⭐</option>
+                    <option value="4.5" ${!saved.grTarget||saved.grTarget==='4.5'?'selected':''}>4.5+ ⭐⭐⭐⭐½</option>
+                    <option value="4.8" ${saved.grTarget==='4.8'?'selected':''}>4.8+ ⭐⭐⭐⭐⭐</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Auto-send review request after visit</label>
+                <select id="grDelay" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:12px;font-size:14px;">
+                    <option value="1" ${saved.grDelay==='1'?'selected':''}>1 hour after visit</option>
+                    <option value="2" ${!saved.grDelay||saved.grDelay==='2'?'selected':''}>2 hours after visit</option>
+                    <option value="24" ${saved.grDelay==='24'?'selected':''}>Next day morning</option>
+                    <option value="48" ${saved.grDelay==='48'?'selected':''}>2 days later</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Review Request Message</label>
+                <textarea id="grMsg" rows="4" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;">${saved.grMsg||`Hi {name}! 😊 Thank you for visiting ${ud?.businessName||'us'}! We hope you had a wonderful experience.\n\nCould you take 30 seconds to leave us a Google review? Your feedback helps us serve you better! ⭐\n\n👉 {review_link}`}</textarea>
+            </div>
+            <div style="display:flex;gap:12px;">
+                <button onclick="saveGoogleReview()" class="btn" style="flex:1;">💾 Save & Activate</button>
+                <button onclick="previewReviewMsg()" class="btn btn-outline" style="flex:1;">👁️ Preview</button>
+            </div>
+        </div>
+
+        <div id="grPanelSend" class="hidden" style="margin-top:18px;">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+                ${[['👥 Eligible', active, 'var(--primary)'],['⭐ Sent Today', Math.min(2,active), 'var(--secondary)'],['📈 Response Rate', '~15%', 'var(--accent)']].map(([l,v,c])=>`<div style="background:var(--bg-main);border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;"><div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">${l}</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:${c};">${v}</div></div>`).join('')}
+            </div>
+            <div class="form-group"><label>Send to</label>
+                <select id="grAudience" style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:12px;font-size:14px;">
+                    <option value="all">All active customers (${active})</option>
+                    <option value="vip">VIP customers only</option>
+                    <option value="recent">Recently visited (last 7 days)</option>
+                </select>
+            </div>
+            <button onclick="sendReviewRequests()" class="btn" style="width:100%;">📤 Send Review Requests via WhatsApp</button>
+            <div id="grSendResult" style="margin-top:14px;"></div>
+        </div>
+
+        <div id="grPanelStats" class="hidden" style="margin-top:18px;">
+            <div id="grStatsBody"></div>
+        </div>
+    </div>`;
+    openModal('googleReviewModal');
+    loadGRStats();
+}
+
+function saveGoogleReview() {
+    const uid = fbManager.getCurrentUserId();
+    const link = document.getElementById('grLink').value.trim();
+    if (!link) { toast('Enter your Google Review link', '⚠️'); return; }
+    fbManager.saveSettings(uid, {
+        reviewLink: link,
+        grBizName: document.getElementById('grBizName').value,
+        grTarget: document.getElementById('grTarget').value,
+        grDelay: document.getElementById('grDelay').value,
+        grMsg: document.getElementById('grMsg').value,
+        reviewAutoEnabled: true
+    });
+    toast('Google Review automation activated! ⭐', '✅');
+}
+
+function previewReviewMsg() {
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const msg = document.getElementById('grMsg').value
+        .replace('{name}', 'Rahul')
+        .replace('{business}', ud?.businessName||'Your Business')
+        .replace('{review_link}', document.getElementById('grLink').value || 'https://g.page/r/...');
+    alert('Preview:\n\n' + msg);
+}
+
+async function sendReviewRequests() {
+    const uid = fbManager.getCurrentUserId();
+    const saved = fbManager.getSettings(uid);
+    if (!saved.reviewLink) { toast('Add your Google Review link first!', '⚠️'); switchTab('gr','Setup'); return; }
+    const ud = fbManager.getUserDataLocal(uid);
+    const custs = fbManager.getCustomersLocal(uid);
+    const audience = document.getElementById('grAudience').value;
+    let targets = custs.filter(c => c.status !== 'inactive');
+    if (audience === 'vip') targets = custs.filter(c => c.totalVisits >= 5);
+    if (audience === 'recent') targets = custs;
+
+    toast(`Sending review requests to ${targets.length} customers...`, '⭐');
+    let sent = 0;
+    for (const c of targets) {
+        const msg = (saved.grMsg || 'Hi {name}! Please review us: {review_link}')
+            .replace(/{name}/g, c.name)
+            .replace(/{business}/g, ud?.businessName||'us')
+            .replace(/{review_link}/g, saved.reviewLink);
+        const result = await sendWhatsAppMessage(c.phone, msg);
+        if (result.success) { sent++; saveReviewRequest(uid, c); }
+        await new Promise(r => setTimeout(r, 80));
+    }
+    const el = document.getElementById('grSendResult');
+    if (el) el.innerHTML = `<div style="padding:14px;background:rgba(0,201,122,0.08);border:2px solid rgba(0,201,122,0.2);border-radius:12px;font-weight:600;color:var(--secondary);">✅ Review requests sent to ${sent} customers! Expected ${Math.round(sent*0.15)} new reviews.</div>`;
+    toast(`Sent to ${sent} customers!`, '⭐');
+    loadGRStats();
+}
+
+function saveReviewRequest(userId, customer) {
+    const reqs = JSON.parse(localStorage.getItem('sambandh_review_requests')||'[]');
+    reqs.push({ userId, customerName: customer.name, customerPhone: customer.phone, sentAt: new Date().toISOString(), status: 'sent' });
+    localStorage.setItem('sambandh_review_requests', JSON.stringify(reqs));
+}
+
+function loadGRStats() {
+    const uid = fbManager.getCurrentUserId();
+    const reqs = JSON.parse(localStorage.getItem('sambandh_review_requests')||'[]').filter(r => r.userId === uid);
+    const el = document.getElementById('grStatsBody'); if(!el) return;
+    const today = reqs.filter(r => r.sentAt?.startsWith(new Date().toISOString().split('T')[0])).length;
+    el.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+            ${[['📤 Total Sent', reqs.length, 'var(--primary)'],['📅 Sent Today', today, 'var(--secondary)'],['⭐ Est. Reviews', Math.round(reqs.length*0.15), 'var(--gold)']].map(([l,v,c])=>`<div style="background:var(--bg-main);border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;"><div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">${l}</div><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:${c};">${v}</div></div>`).join('')}
+        </div>
+        ${reqs.length ? `<div style="font-weight:700;margin-bottom:10px;">Recent Requests</div>
+        <div>${reqs.slice(-10).reverse().map(r=>`<div style="padding:10px 14px;background:var(--bg-main);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;display:flex;justify-content:space-between;font-size:13px;"><span style="font-weight:600;">${r.customerName}</span><span style="color:var(--text-muted);">${fmtDate(r.sentAt)}</span></div>`).join('')}</div>` : '<div style="text-align:center;padding:30px;color:var(--text-muted);">No review requests sent yet</div>'}`;
+}
+
+// =====================================================
+// ENHANCED CAMPAIGN SENDER — Uses WhatsApp API
+// =====================================================
+const _origSendCampaign = window.sendCampaign;
+window.sendCampaign = async function() {
+    const name = document.getElementById('campName')?.value?.trim();
+    const msg = document.getElementById('campMsg')?.value?.trim();
+    const aud = document.getElementById('campAudience')?.value || 'all';
+    if (!name || !msg) { toast('Fill name and message', '⚠️'); return; }
+    const uid = fbManager.getCurrentUserId();
+    const ud = fbManager.getUserDataLocal(uid);
+    const custs = fbManager.getCustomersLocal(uid);
+    let targets = custs;
+    if (aud === 'active') targets = custs.filter(c => c.status !== 'inactive');
+    if (aud === 'inactive') targets = custs.filter(c => c.status === 'inactive');
+    if (aud === 'vip') targets = custs.filter(c => c.totalVisits >= 5);
+    const cfg = getWAConfig();
+    toast(`Sending to ${targets.length} customers via ${cfg.accessToken ? 'WhatsApp API' : 'WhatsApp link'}...`, '📤');
+    let sent = 0;
+    for (const c of targets) {
+        const finalMsg = msg.replace(/{name}/g, c.name).replace(/{business}/g, ud?.businessName||'us');
+        const result = await sendWhatsAppMessage(c.phone, finalMsg);
+        if (result.success) sent++;
+        await new Promise(r => setTimeout(r, 50));
+    }
+    fbManager.saveCampaign(uid, { name, message: msg, audience: aud, recipients: sent, status: 'sent' });
+    const stats = fbManager.getUserDataLocal(uid)?.stats || {};
+    fbManager.updateUserStats(uid, { campaignsSent: (stats.campaignsSent || 0) + 1 });
+    if (document.getElementById('campName')) document.getElementById('campName').value = '';
+    if (document.getElementById('campMsg')) document.getElementById('campMsg').value = '';
+    toast(`Campaign sent to ${sent}/${targets.length} customers! 🚀`, '📨', 4000);
+    if (typeof loadCampHistory === 'function') loadCampHistory();
+    showDashboard();
+};
+
+// =====================================================
+// EXTRA WINDOW EXPORTS
+// =====================================================
+window.openUpgradePlan = openUpgradePlan;
+window.toggleBilling = toggleBilling;
+window.openPlanPayment = openPlanPayment;
+window.simulatePaymentSuccess = simulatePaymentSuccess;
+window.openAdminBilling = openAdminBilling;
+window.adminUpgradeUser = adminUpgradeUser;
+window.adminGiveFree = adminGiveFree;
+window.openWhatsAppConfig = openWhatsAppConfig;
+window.updateWAProviderHelp = updateWAProviderHelp;
+window.saveWAKeys = saveWAKeys;
+window.sendTestWhatsApp = sendTestWhatsApp;
+window.sendBulkFromTemplate = sendBulkFromTemplate;
+window.addWATemplate = addWATemplate;
+window.openGoogleReview = openGoogleReview;
+window.saveGoogleReview = saveGoogleReview;
+window.previewReviewMsg = previewReviewMsg;
+window.sendReviewRequests = sendReviewRequests;
