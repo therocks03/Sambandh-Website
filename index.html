@@ -151,7 +151,7 @@
         }
         .dash-nav-toggle:hover { background: var(--primary); color: white; }
         .dash-nav-items { flex: 1; width: 100%; display: flex; flex-direction: column; gap: 2px; padding: 0 10px; }
-        .dash-nav-item {
+        .dash-nav-item { touch-action: manipulation; -webkit-tap-highlight-color: transparent;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -216,7 +216,7 @@
             justify-content: space-around;
             align-items: center;
         }
-        .dash-bottom-item {
+        .dash-bottom-item { touch-action: manipulation; -webkit-tap-highlight-color: transparent;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -248,7 +248,7 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
         }
-        .action-card-sm {
+        .action-card-sm { touch-action: manipulation; -webkit-tap-highlight-color: transparent;
             background: var(--bg-main);
             border: 2px solid var(--border);
             border-radius: 14px;
@@ -307,7 +307,8 @@
                 <button class="nav-link-btn" onclick="closeMobileNav();showLogin()"><span class="nav-icon">📊</span> Demo</button>
             </div>
             <div class="mobile-nav-footer">
-                <button class="btn" onclick="closeMobileNav();showSignup()" style="width:100%;">🚀 Start Free Trial</button>
+                <button class="btn" onclick="closeMobileNav();showSignup()" style="width:100%;margin-bottom:10px;">🚀 Start Free Trial</button>
+                <button class="btn btn-outline" onclick="closeMobileNav();openWhatsAppConfig()" style="width:100%;display:none;" id="mobileWABtn">💬 WhatsApp API</button>
             </div>
         </div>
     </div>
@@ -488,6 +489,10 @@
                 <button class="dash-nav-item" onclick="setActiveNav(this);openReports()"><span class="dash-nav-icon">📋</span><span class="dash-nav-label">Reports</span></button>
                 <button class="dash-nav-item" onclick="setActiveNav(this);openGrowthInsights()"><span class="dash-nav-icon">📈</span><span class="dash-nav-label">Insights</span></button>
                 <div class="dash-nav-divider"></div>
+                <button class="dash-nav-item" onclick="setActiveNav(this);openGoogleReview()"><span class="dash-nav-icon">⭐</span><span class="dash-nav-label">Google Reviews</span></button>
+                <button class="dash-nav-item" onclick="setActiveNav(this);openWhatsAppConfig()"><span class="dash-nav-icon">💬</span><span class="dash-nav-label">WhatsApp API</span></button>
+                <button class="dash-nav-item" onclick="setActiveNav(this);openUpgradePlan()"><span class="dash-nav-icon">💎</span><span class="dash-nav-label">Upgrade Plan</span></button>
+                <div class="dash-nav-divider"></div>
                 <button class="dash-nav-item" onclick="setActiveNav(this);openSettings()"><span class="dash-nav-icon">⚙️</span><span class="dash-nav-label">Settings</span></button>
             </div>
             <div class="dash-nav-logout">
@@ -502,6 +507,7 @@
                 <button class="dash-bottom-item" onclick="setBottomNav(this);openQRGenerator()"><span class="di">📱</span>QR</button>
                 <button class="dash-bottom-item" onclick="setBottomNav(this);openCampaignBuilder()"><span class="di">📨</span>Campaign</button>
                 <button class="dash-bottom-item" onclick="setBottomNav(this);openBookings()"><span class="di">📅</span>Bookings</button>
+                <button class="dash-bottom-item" onclick="setBottomNav(this);openLoyalty()"><span class="di">🎁</span>Loyalty</button>
                 <button class="dash-bottom-item" onclick="setBottomNav(this);openMoreMenu()"><span class="di">⋯</span>More</button>
             </div>
         </div>
@@ -513,9 +519,11 @@
                     <h1 id="dashboardBusinessName">Welcome Back!</h1>
                     <p id="dashboardPlan">Pro Plan · Active</p>
                 </div>
-                <div style="display:flex;gap:10px;align-items:center;">
-                    <button class="btn btn-outline" style="font-size:13px;padding:10px 18px;" onclick="openSettings()">⚙️ Settings</button>
-                    <button class="btn btn-outline" style="font-size:13px;padding:10px 18px;display:none;" id="logoutBtnHeader" onclick="logout()">Logout</button>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <button class="btn btn-secondary" style="font-size:13px;padding:10px 16px;" onclick="openUpgradePlan()">💎 Upgrade Plan</button>
+                    <button class="btn btn-accent" style="font-size:13px;padding:10px 16px;" onclick="openWhatsAppConfig()">💬 WhatsApp API</button>
+                    <button class="btn btn-outline" style="font-size:13px;padding:10px 14px;" onclick="openSettings()">⚙️</button>
+                    <button class="btn btn-outline" style="font-size:13px;padding:10px 14px;" onclick="logout()">🚪</button>
                 </div>
             </div>
 
@@ -555,7 +563,9 @@
                     <div class="action-card-sm" onclick="openPOSIntegration()"><div class="action-icon">🔗</div><h3>POS Integration</h3><p>Petpooja, Posist & more</p></div>
                     <div class="action-card-sm" onclick="openABTesting()"><div class="action-icon">🧪</div><h3>A/B Testing</h3><p>Test messages & offers</p></div>
                     <div class="action-card-sm" onclick="openDataSecurity()"><div class="action-icon">🔒</div><h3>Data Security</h3><p>Firebase encryption info</p></div>
-                    <div class="action-card-sm" onclick="openReviewAutomation()"><div class="action-icon">⭐</div><h3>Review Automation</h3><p>Auto Google review requests</p></div>
+                    <div class="action-card-sm" onclick="openGoogleReview()"><div class="action-icon">⭐</div><h3>Google Reviews</h3><p>Auto request + track reviews</p></div>
+                    <div class="action-card-sm" onclick="openWhatsAppConfig()"><div class="action-icon">💬</div><h3>WhatsApp API</h3><p>Configure API & templates</p></div>
+                    <div class="action-card-sm" onclick="openUpgradePlan()"><div class="action-icon">💎</div><h3>Upgrade Plan</h3><p>Unlock more features</p></div>
                 </div>
             </div>
 
@@ -585,6 +595,7 @@
                 <button class="dash-nav-item" onclick="setAdminNav(this);openPlatformAnalytics()"><span class="dash-nav-icon">📈</span><span class="dash-nav-label">Analytics</span></button>
                 <button class="dash-nav-item" onclick="setAdminNav(this);openModal('adminBroadcastModal')"><span class="dash-nav-icon">📢</span><span class="dash-nav-label">Broadcast</span></button>
                 <button class="dash-nav-item" onclick="setAdminNav(this);exportAllData()"><span class="dash-nav-icon">📥</span><span class="dash-nav-label">Export Data</span></button>
+                <button class="dash-nav-item" onclick="setAdminNav(this);openAdminBilling()"><span class="dash-nav-icon">💳</span><span class="dash-nav-label">Billing</span></button>
                 <button class="dash-nav-item" onclick="setAdminNav(this);toggleAdminFilter()"><span class="dash-nav-icon">🔍</span><span class="dash-nav-label">Filter Users</span></button>
             </div>
             <div class="dash-nav-logout"><button onclick="logout()"><span class="dash-nav-icon">🚪</span><span class="dash-nav-label">Logout</span></button></div>
@@ -597,16 +608,17 @@
                 <button class="dash-bottom-item" onclick="openPlatformAnalytics()"><span class="di">📈</span>Analytics</button>
                 <button class="dash-bottom-item" onclick="openModal('adminBroadcastModal')"><span class="di">📢</span>Broadcast</button>
                 <button class="dash-bottom-item" onclick="exportAllData()"><span class="di">📥</span>Export</button>
-                <button class="dash-bottom-item" onclick="logout()"><span class="di">🚪</span>Logout</button>
+                <button class="dash-bottom-item" onclick="openAdminBilling()"><span class="di">💳</span>Billing</button>
             </div>
         </div>
 
         <div class="dashboard-container">
             <div class="dashboard-header">
                 <div class="dashboard-welcome"><h1>🛠️ Admin Control Panel</h1><p>Platform Analytics & User Management</p></div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
                     <button class="btn" onclick="openPlatformAnalytics()">📈 Analytics</button>
-                    <button class="btn btn-secondary" onclick="openModal('adminBroadcastModal')">📢 Broadcast</button>
+                    <button class="btn btn-secondary" onclick="openAdminBilling()">💳 Billing</button>
+                    <button class="btn btn-accent" onclick="openModal('adminBroadcastModal')">📢 Broadcast</button>
                     <button class="btn btn-outline" onclick="logout()">Logout</button>
                 </div>
             </div>
@@ -631,6 +643,7 @@
     </div>
 
     <!-- Firebase SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
