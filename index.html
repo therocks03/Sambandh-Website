@@ -40,9 +40,10 @@
             background: rgba(0,0,0,0.5);
             z-index: 1050;
             opacity: 0;
+            pointer-events: none;
             transition: opacity 0.3s;
         }
-        .mobile-nav.open { opacity: 1; }
+        .mobile-nav.open { opacity: 1; pointer-events: all; }
         .mobile-nav-drawer {
             position: absolute;
             top: 0; right: 0;
@@ -265,7 +266,7 @@
         @media (max-width: 768px) {
             .hamburger { display: flex; }
             .nav-links { display: none !important; }
-            .mobile-nav { display: block; }
+            /* mobile-nav is controlled by JS only - never display:block here */
             .dash-nav { display: none; }
             .dash-bottom-nav { display: block; }
             .dashboard.active { padding-left: 0 !important; padding-bottom: 76px; }
@@ -294,7 +295,7 @@
     </nav>
 
     <!-- ===== MOBILE NAV DRAWER ===== -->
-    <div class="mobile-nav" id="mobileNav" onclick="closeMobileNavOnBg(event)">
+    <div class="mobile-nav" id="mobileNav" style="display:none;pointer-events:none;" onclick="closeMobileNavOnBg(event)">
         <div class="mobile-nav-drawer">
             <div class="mobile-nav-header">
                 <img src="assets/logo.png" alt="sambandh.ai">
@@ -564,7 +565,7 @@
                     <div class="action-card-sm" onclick="openABTesting()"><div class="action-icon">🧪</div><h3>A/B Testing</h3><p>Test messages & offers</p></div>
                     <div class="action-card-sm" onclick="openDataSecurity()"><div class="action-icon">🔒</div><h3>Data Security</h3><p>Firebase encryption info</p></div>
                     <div class="action-card-sm" onclick="openGoogleReview()"><div class="action-icon">⭐</div><h3>Google Reviews</h3><p>Auto request + track reviews</p></div>
-                    <div class="action-card-sm" onclick="openWhatsAppConfig()"><div class="action-icon">💬</div><h3>WhatsApp API</h3><p>Configure API & templates</p></div>
+                    <div class="action-card-sm" onclick="openWhatsAppDynamic()"><div class="action-icon">💬</div><h3>WhatsApp API</h3><p>Configure API & templates</p></div>
                     <div class="action-card-sm" onclick="openUpgradePlan()"><div class="action-icon">💎</div><h3>Upgrade Plan</h3><p>Unlock more features</p></div>
                 </div>
             </div>
