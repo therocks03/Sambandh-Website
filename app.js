@@ -633,10 +633,27 @@ function updateAdminUsersTable(users) {
 // QUICK ACTION HANDLERS
 // ====================================
 
-function openQRGenerator() {
-    alert('🎉 QR Code Generator\n\nThis feature will generate a unique QR code for your business that customers can scan to join your database.\n\nComing soon in the next update!');
-}
+//function openQRGenerator() {
+  //  alert('🎉 QR Code Generator\n\nThis feature will generate a unique QR code for your business that customers can scan to join your database.\n\nComing soon in the next update!');
+//}
+function generateQRCode() {
+    const user = auth.currentUser;
 
+    if (!user) {
+        alert("Please login first");
+        return;
+    }
+
+    const qrData = `https://therocks03.github.io/Sambadh-Website/capture.html?user=${user.uid}`;
+
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
+
+    const win = window.open("", "_blank");
+    win.document.write(`
+        <h2>Your QR Code</h2>
+        <img src="${qrUrl}" />
+    `);
+}
 function openCampaignBuilder() {
     alert('📨 Campaign Builder\n\nCreate and send WhatsApp campaigns to your customers with personalized offers and messages.\n\nComing soon in the next update!');
 }
