@@ -61,8 +61,30 @@ class FirebaseManager {
         const user=users.find(u=>u.uid===uid);
         if(user){if(user.role==='admin')showAdminDashboard();else showDashboard();}
     }
-    getUserDataLocal(uid){return(JSON.parse(localStorage.getItem('sambandh_users')||'[]')).find(u=>u.uid===uid)||null;}
-    getAllUsersLocal(){return JSON.parse(localStorage.getItem('sambandh_users')||'[]');}
+    getUserDataLocal(uid){
+        var users=JSON.parse(localStorage.getItem('sambandh_users')||'[]');
+        var user=users.find(function(u){return u.uid===uid;})||null;
+        if(user&&(!user.createdAt||isNaN(new Date(user.createdAt).getTime()))){
+            user.createdAt=new Date().toISOString();
+            var idx=users.findIndex(function(u){return u.uid===uid;});
+            if(idx!==-1){users[idx].createdAt=user.createdAt;localStorage.setItem('sambandh_users',JSON.stringify(users));}
+        }
+        return user;
+    }
+    getAllUsersLocal(){
+        var users=JSON.parse(localStorage.getItem('sambandh_users')||'[]');
+        var changed=false;
+        users.forEach(function(u){
+            if(!u.createdAt||isNaN(new Date(u.createdAt).getTime())){
+                // Try to derive signup date from uid timestamp (uid = 'user_' + Date.now())
+                var ts=u.uid&&u.uid.startsWith('user_')?parseInt(u.uid.replace('user_',''),10):NaN;
+                u.createdAt=!isNaN(ts)?new Date(ts).toISOString():new Date().toISOString();
+                changed=true;
+            }
+        });
+        if(changed)localStorage.setItem('sambandh_users',JSON.stringify(users));
+        return users;
+    }
     addCustomerLocal(userId,customerData){
         const customers=JSON.parse(localStorage.getItem('sambandh_customers')||'[]');
         const users=JSON.parse(localStorage.getItem('sambandh_users')||'[]');
@@ -817,7 +839,24 @@ function exportAllData(){
 
 // ========== UTILS ==========
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
-function fmtDate(d){if(!d)return'N/A';try{return new Date(d).toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'numeric'});}catch{return'N/A';}}
+function fmtDate(d){
+  if(!d)return'N/A';
+  try{
+    // Parse safely — handle both ISO strings and date-only strings like '2026-03-10'
+    var dt;
+    if(typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d.trim())){
+      // date-only string: parse as local midnight to avoid UTC offset issues
+      var parts=d.trim().split('-');
+      dt=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+    } else {
+      dt=new Date(d);
+    }
+    if(isNaN(dt.getTime()))return'N/A';
+    // Manual format: "15 Mar 2026" — works in ALL environments without locale dependency
+    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return dt.getDate()+' '+months[dt.getMonth()]+' '+dt.getFullYear();
+  }catch(e){return'N/A';}
+}
 function fmtNum(n){n=parseInt(n)||0;if(n>=10000000)return(n/10000000).toFixed(2)+' Cr';if(n>=100000)return(n/100000).toFixed(2)+' L';if(n>=1000)return(n/1000).toFixed(1)+'K';return n.toString();}
 function getPlanColor(plan){return{basic:'blue',pro:'orange',premium:'purple',admin:'green'}[plan]||'blue';}
 
