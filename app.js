@@ -102,7 +102,7 @@ class FirebaseManager {
     getUserDataLocal(uid){
         var users=JSON.parse(localStorage.getItem('sambandh_users')||'[]');
         var user=users.find(function(u){return u.uid===uid;})||null;
-        if(user&&(!user.createdAt||typeof user.createdAt==='object'||isNaN(new Date(user.createdAt).getTime()))){
+        if(user&&(!user.createdAt||typeof user.createdAt==='object'||isNaN(safeDate(user.createdAt).getTime()))){
             var ts=user.uid&&user.uid.startsWith('user_')?parseInt(user.uid.replace('user_',''),10):NaN;
             if(isNaN(ts)&&user.uid){var m=user.uid.match(/(\d{13})/);if(m)ts=parseInt(m[1],10);}
             user.createdAt=(!isNaN(ts)&&ts>1000000000000)?new Date(ts).toISOString():new Date().toISOString();
