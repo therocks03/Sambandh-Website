@@ -11,12 +11,50 @@ class FirebaseManager {
     fallbackToLocalStorage(){this.useLocalStorage=true;}
     async createUser(email,password,userData){
         if(this.useLocalStorage)return this.createUserLocal(email,password,userData);
-        try{const uc=await this.auth.createUserWithEmailAndPassword(email,password);await this.db.collection('users').doc(uc.user.uid).set({...userData,uid:uc.user.uid,email,createdAt:firebase.firestore.FieldValue.serverTimestamp(),isActive:true,role:email==='admin@sambandh.ai'?'admin':'user',stats:{totalCustomers:0,monthlyGrowth:0,campaignsSent:0,retention:0}});return{success:true,user:uc.user};}
+        try{
+            const uc=await this.auth.createUserWithEmailAndPassword(email,password);
+            const nowISO=new Date().toISOString();
+            const role=email==='admin@sambandh.ai'?'admin':'user';
+            const stats={totalCustomers:0,monthlyGrowth:0,campaignsSent:0,retention:0};
+            await this.db.collection('users').doc(uc.user.uid).set({...userData,uid:uc.user.uid,email,createdAt:firebase.firestore.FieldValue.serverTimestamp(),isActive:true,role,stats});
+            // Mirror to localStorage with a clean ISO date so admin panel always works
+            const localUsers=JSON.parse(localStorage.getItem('sambandh_users')||'[]');
+            if(!localUsers.some(u=>u.uid===uc.user.uid)){
+                localUsers.push({...userData,uid:uc.user.uid,email,createdAt:nowISO,isActive:true,role,stats});
+                localStorage.setItem('sambandh_users',JSON.stringify(localUsers));
+            }
+            return{success:true,user:uc.user};
+        }
         catch(e){return{success:false,error:e.message};}
     }
     async loginUser(email,password){
         if(this.useLocalStorage)return this.loginUserLocal(email,password);
-        try{const uc=await this.auth.signInWithEmailAndPassword(email,password);return{success:true,user:uc.user};}
+        try{
+            const uc=await this.auth.signInWithEmailAndPassword(email,password);
+            // On successful Firebase login, ensure localStorage has this user with clean date
+            const localUsers=JSON.parse(localStorage.getItem('sambandh_users')||'[]');
+            const exists=localUsers.find(u=>u.uid===uc.user.uid);
+            if(!exists){
+                // Fetch from Firestore and store locally
+                try{
+                    const doc=await this.db.collection('users').doc(uc.user.uid).get();
+                    if(doc.exists){
+                        const data=doc.data();
+                        // Convert Firestore Timestamp to ISO string if needed
+                        const createdAt=(data.createdAt&&data.createdAt.toDate)?data.createdAt.toDate().toISOString():new Date().toISOString();
+                        localUsers.push({...data,uid:uc.user.uid,createdAt});
+                        localStorage.setItem('sambandh_users',JSON.stringify(localUsers));
+                    }
+                }catch(fe){}
+            } else if(exists&&(!exists.createdAt||typeof exists.createdAt==='object'||isNaN(new Date(exists.createdAt).getTime()))){
+                // Fix bad createdAt in existing local record
+                const idx=localUsers.findIndex(u=>u.uid===uc.user.uid);
+                localUsers[idx].createdAt=new Date().toISOString();
+                localStorage.setItem('sambandh_users',JSON.stringify(localUsers));
+            }
+            localStorage.setItem('sambandh_current_user',uc.user.uid);
+            return{success:true,user:uc.user};
+        }
         catch(e){return{success:false,error:e.message};}
     }
     async logoutUser(){
@@ -64,10 +102,12 @@ class FirebaseManager {
     getUserDataLocal(uid){
         var users=JSON.parse(localStorage.getItem('sambandh_users')||'[]');
         var user=users.find(function(u){return u.uid===uid;})||null;
-        if(user&&(!user.createdAt||isNaN(new Date(user.createdAt).getTime()))){
-            user.createdAt=new Date().toISOString();
-            var idx=users.findIndex(function(u){return u.uid===uid;});
-            if(idx!==-1){users[idx].createdAt=user.createdAt;localStorage.setItem('sambandh_users',JSON.stringify(users));}
+        if(user&&(!user.createdAt||typeof user.createdAt==='object'||isNaN(new Date(user.createdAt).getTime()))){
+            var ts=user.uid&&user.uid.startsWith('user_')?parseInt(user.uid.replace('user_',''),10):NaN;
+            if(isNaN(ts)&&user.uid){var m=user.uid.match(/(\d{13})/);if(m)ts=parseInt(m[1],10);}
+            user.createdAt=(!isNaN(ts)&&ts>1000000000000)?new Date(ts).toISOString():new Date().toISOString();
+            var uidx=users.findIndex(function(u){return u.uid===uid;});
+            if(uidx!==-1){users[uidx].createdAt=user.createdAt;localStorage.setItem('sambandh_users',JSON.stringify(users));}
         }
         return user;
     }
@@ -75,10 +115,16 @@ class FirebaseManager {
         var users=JSON.parse(localStorage.getItem('sambandh_users')||'[]');
         var changed=false;
         users.forEach(function(u){
-            if(!u.createdAt||isNaN(new Date(u.createdAt).getTime())){
+            // Fix: Firebase FieldValue objects, null, undefined, or unparseable strings
+            var needsFix=!u.createdAt
+                ||typeof u.createdAt==='object'  // Firebase FieldValue or Timestamp object
+                ||isNaN(new Date(u.createdAt).getTime());
+            if(needsFix){
                 // Try to derive signup date from uid timestamp (uid = 'user_' + Date.now())
                 var ts=u.uid&&u.uid.startsWith('user_')?parseInt(u.uid.replace('user_',''),10):NaN;
-                u.createdAt=!isNaN(ts)?new Date(ts).toISOString():new Date().toISOString();
+                // Also try to extract from uid format 'user_1234567890123'
+                if(isNaN(ts)&&u.uid){var m=u.uid.match(/(\d{13})/);if(m)ts=parseInt(m[1],10);}
+                u.createdAt=(!isNaN(ts)&&ts>1000000000000)?new Date(ts).toISOString():new Date().toISOString();
                 changed=true;
             }
         });
@@ -878,6 +924,56 @@ window.deleteAdmUser=deleteAdmUser; window.changePlan=changePlan; window.sendBro
 window.openPlatformAnalytics=openPlatformAnalytics; window.toggleAdminFilter=toggleAdminFilter;
 window.applyAdmFilter=applyAdmFilter; window.clearAdmFilter=clearAdmFilter;
 window.loadAdminData=loadAdminData; window.updateAdminTable=updateAdminTable;
+
+
+// ============================================================
+// ONE-TIME BOOT PATCH — fixes all existing users' dates in localStorage
+// Runs immediately when app.js loads, before any UI renders
+// ============================================================
+(function fixExistingUserDates(){
+    try {
+        var users = JSON.parse(localStorage.getItem('sambandh_users') || '[]');
+        var changed = false;
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+        users.forEach(function(u) {
+            // Check if createdAt is missing, a Firebase object, or unparseable
+            var bad = !u.createdAt
+                || typeof u.createdAt === 'object'
+                || (typeof u.createdAt === 'string' && isNaN(new Date(u.createdAt).getTime()));
+
+            if (bad) {
+                // Derive from uid timestamp: uid = 'user_1748392847362'
+                var ts = NaN;
+                if (u.uid) {
+                    var match = u.uid.match(/(\d{13})/);
+                    if (match) ts = parseInt(match[1], 10);
+                }
+                u.createdAt = (!isNaN(ts) && ts > 1000000000000)
+                    ? new Date(ts).toISOString()
+                    : new Date().toISOString();
+                changed = true;
+            }
+
+            // Also fix if it's a Firestore Timestamp object with toDate method
+            if (u.createdAt && typeof u.createdAt === 'object' && typeof u.createdAt.toDate === 'function') {
+                try { u.createdAt = u.createdAt.toDate().toISOString(); changed = true; } catch(e) {}
+            }
+            // Fix seconds-based Firestore timestamp: {seconds: 1234567890, nanoseconds: 0}
+            if (u.createdAt && typeof u.createdAt === 'object' && u.createdAt.seconds) {
+                u.createdAt = new Date(u.createdAt.seconds * 1000).toISOString();
+                changed = true;
+            }
+        });
+
+        if (changed) {
+            localStorage.setItem('sambandh_users', JSON.stringify(users));
+            console.log('✅ sambandh.ai: Fixed dates for', users.filter(function(u){ return u.createdAt; }).length, 'users');
+        }
+    } catch(e) {
+        console.warn('Date fix boot patch error:', e);
+    }
+})();
 
 document.addEventListener('DOMContentLoaded',init);
 console.log('🚀 sambandh.ai v2.0 loaded!');
