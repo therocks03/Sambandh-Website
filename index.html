@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sambandh.ai — Clinic CRM · Retain More Patients</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ============================================================
+           CLINIC THEME — DESIGN SYSTEM OVERRIDE
+        ============================================================ */
+        :root {
+            --primary:    #0E6FFF;
+            --primary-dk: #0251CC;
+            --teal:       #0ABFBC;
+            --emerald:    #10B981;
+            --amber:      #F59E0B;
+            --rose:       #F43F5E;
+            --purple:     #7C3AED;
+
+            --bg-page:    #F0F4FF;
+            --bg-card:    #FFFFFF;
+            --bg-dark:    #060D1F;
+
+            --text-head:  #060D1F;
+            --text-body:  #3D4966;
+            --text-muted: #8993AE;
+            --border:     #DDE3F5;
+
+            --grad-blue:  linear-gradient(135deg,#0E6FFF 0%,#0ABFBC 100%);
+            --grad-dark:  linear-gradient(135deg,#060D1F 0%,#0E2150 100%);
+            --shadow-blue: 0 18px 50px rgba(14,111,255,0.22);
+            --shadow-card: 0 4px 24px rgba(6,13,31,0.08);
+
+            --font-display: 'Instrument Serif', Georgia, serif;
+            --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-page);
+            color: var(--text-body);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============================================================
+           NAVIGATION
+        ============================================================ */
+        nav#mainNav {
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 48px;
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 1000;
+            height: 72px;
+            display: flex; align-items: center;
+        }
+        nav#mainNav .nav-container {
+            max-width: 1380px; margin: 0 auto; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo img { height: 38px; }
+        .logo-text {
+            font-family: var(--font-display);
+            font-size: 22px; color: var(--text-head); font-style: italic;
+        }
+        .nav-links { display: flex; gap: 36px; align-items: center; }
+        .nav-links a {
+            color: var(--text-body); text-decoration: none;
+            font-size: 14px; font-weight: 600;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+        .btn-nav {
+            background: var(--grad-blue); color: white;
+            padding: 10px 24px; border-radius: 10px; border: none;
+            font-weight: 700; font-size: 14px; cursor: pointer;
+            font-family: var(--font-body);
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(14,111,255,0.3);
+        }
+        .btn-nav:hover { transform: translateY(-2px); box-shadow: var(--shadow-blue); }
+
+        /* ============================================================
+           LANDING PAGE
+        ============================================================ */
+        #landingPage { padding-top: 72px; }
+
+        /* ---- HERO ---- */
+        .hero-clinic {
+            background: #F0F4FF;
+            position: relative; overflow: hidden;
+            padding: 80px 48px 0;
+            min-height: calc(100vh - 72px);
+            display: flex; align-items: center;
+        }
+        .hero-clinic::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 700px 600px at 110% 40%, rgba(14,111,255,0.1) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 400px at -10% 80%, rgba(10,191,188,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        /* Decorative grid lines */
+        .hero-clinic::after {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(14,111,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14,111,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+        .hero-inner {
+            position: relative; z-index: 1;
+            max-width: 1380px; margin: 0 auto; width: 100%;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 60px; align-items: center;
+            padding-bottom: 80px;
+        }
+        .hero-left {}
+        .hero-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(14,111,255,0.08); border: 1.5px solid rgba(14,111,255,0.25);
+            border-radius: 100px; padding: 7px 16px;
+            font-size: 12px; font-weight: 700; color: var(--primary);
+            letter-spacing: 0.06em; text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+        .hero-pill span { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: pulse-dot 2s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+        .hero-h1 {
+            font-family: var(--font-display);
+            font-size: clamp(44px, 4.5vw, 72px);
+            font-weight: 400; line-height: 1.06;
+            color: var(--text-head);
+            margin-bottom: 24px;
+        }
+        .hero-h1 em {
+            font-style: italic; color: var(--primary);
+            background: var(--grad-blue);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: 17px; line-height: 1.7; color: var(--text-body);
+            max-width: 500px; margin-bottom: 40px;
+        }
+        .hero-cta-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 48px; }
+        .btn-primary {
+            background: var(--grad-blue); color: white;
+            padding: 15px 34px; border-radius: 12px; border: none;
+            font-weight: 800; font-size: 15px; cursor: pointer;
+            font-family: var(--font-body);
+            box-shadow: var(--shadow-blue);
+            transition: all 0.25s;
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 24px 60px rgba(14,111,255,0.3); }
+        .btn-ghost {
+            background: transparent; color: var(--text-head);
+            padding: 14px 28px; border-radius: 12px;
+            border: 2px solid var(--border);
+            font-weight: 700; font-size: 15px; cursor: pointer;
+            font-family: var(--font-body);
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+        .hero-trust {
+            display: flex; gap: 24px; flex-wrap: wrap;
+        }
+        .hero-trust-item {
+            display: flex; align-items: center; gap: 7px;
+            font-size: 13px; font-weight: 600; color: var(--text-muted);
+        }
+        .hero-trust-item svg { color: var(--emerald); }
+
+        /* ---- Hero Right: Photo Stack ---- */
+        .hero-right { position: relative; height: 580px; }
+        .hero-main-photo {
+            position: absolute; right: 0; top: 0;
+            width: 86%; height: 460px;
+            border-radius: 28px; overflow: hidden;
+            box-shadow: 0 40px 100px rgba(6,13,31,0.2);
+        }
+        .hero-main-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-main-photo::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(6,13,31,0.35) 100%);
+        }
+
+        /* Floating cards */
+        .float-card {
+            position: absolute; background: white;
+            border-radius: 18px; box-shadow: 0 20px 60px rgba(6,13,31,0.14);
+            animation: float-bob 4s ease-in-out infinite;
+        }
+        .float-card:nth-child(3) { animation-delay: 1.5s; }
+        .float-card:nth-child(4) { animation-delay: 0.7s; }
+        @keyframes float-bob {
+            0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}
+        }
+        .float-stat {
+            left: 0; top: 60px; padding: 18px 22px; min-width: 180px;
+        }
+        .float-stat .label { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 4px; }
+        .float-stat .value { font-family: var(--font-display); font-size: 38px; color: var(--primary); line-height: 1; }
+        .float-stat .trend { font-size: 12px; color: var(--emerald); font-weight: 700; margin-top: 4px; }
+
+        .float-appt {
+            left: 8px; bottom: 30px; padding: 16px 20px; min-width: 230px;
+        }
+        .float-appt .title { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 12px; }
+        .appt-row { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+        .appt-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .appt-name { font-size: 13px; font-weight: 600; color: var(--text-head); }
+        .appt-time { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+        .float-wa {
+            right: 16px; bottom: 90px; padding: 12px 18px;
+            background: linear-gradient(135deg,#25D366,#128C7E);
+            color: white; font-size: 13px; font-weight: 700;
+            border-radius: 14px; box-shadow: 0 10px 30px rgba(37,211,102,0.35);
+        }
+
+        /* ---- Stats Strip ---- */
+        .stats-strip {
+            background: white;
+            border-radius: 0;
+            padding: 0 48px;
+        }
+        .stats-strip-inner {
+            max-width: 1380px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(4,1fr);
+            border-top: 2px solid var(--border);
+        }
+        .stat-strip-item {
+            padding: 36px 20px; text-align: center;
+            border-right: 1px solid var(--border);
+            position: relative;
+        }
+        .stat-strip-item:last-child { border-right: none; }
+        .stat-strip-item::after {
+            content: ''; position: absolute;
+            bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 0; height: 3px; background: var(--grad-blue);
+            transition: width 0.4s;
+            border-radius: 2px;
+        }
+        .stat-strip-item:hover::after { width: 60%; }
+        .stat-strip-num {
+            font-family: var(--font-display);
+            font-size: 48px; line-height: 1;
+            color: var(--primary); margin-bottom: 6px;
+        }
+        .stat-strip-label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+
+        /* ---- Trusted By ---- */
+        .trusted-bar {
+            background: #F8FAFF; border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 28px 48px;
+        }
+        .trusted-bar-inner {
+            max-width: 1380px; margin: 0 auto;
+            display: flex; align-items: center; gap: 48px; flex-wrap: wrap;
+        }
+        .trusted-label { font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+        .trusted-cities { display: flex; gap: 32px; flex-wrap: wrap; }
+        .trusted-city {
+            font-family: var(--font-display);
+            font-size: 17px; color: #C8D0E7; font-style: italic;
+            font-weight: 400;
+        }
+
+        /* ---- Section Wrapper ---- */
+        .section-wrap { max-width: 1380px; margin: 0 auto; padding: 0 48px; }
+        .section-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--primary); background: rgba(14,111,255,0.08);
+            border: 1.5px solid rgba(14,111,255,0.18); border-radius: 100px;
+            padding: 5px 14px; margin-bottom: 18px;
+        }
+        .section-h2 {
+            font-family: var(--font-display);
+            font-size: clamp(32px, 3.5vw, 54px);
+            color: var(--text-head); line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        .section-h2 em { font-style: italic; color: var(--primary); }
+        .section-p {
+            font-size: 17px; color: var(--text-body); max-width: 600px; line-height: 1.7;
+        }
+
+        /* ---- FEATURES ---- */
+        .features-section {
+            padding: 110px 0;
+            background: white;
+        }
+        .features-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 64px; gap: 40px; flex-wrap: wrap; }
+        .features-grid-clinic {
+            display: grid; grid-template-columns: repeat(3,1fr);
+            gap: 24px;
+        }
+        .feat-card {
+            background: #F8FAFF; border: 1.5px solid var(--border);
+            border-radius: 22px; padding: 36px;
+            transition: all 0.3s; cursor: default;
+            position: relative; overflow: hidden;
+        }
+        .feat-card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--grad-blue);
+            transform: scaleX(0); transform-origin: left;
+            transition: transform 0.35s;
+        }
+        .feat-card:hover { border-color: rgba(14,111,255,0.3); transform: translateY(-5px); box-shadow: var(--shadow-card); background: white; }
+        .feat-card:hover::before { transform: scaleX(1); }
+        .feat-icon-wrap {
+            width: 60px; height: 60px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; margin-bottom: 22px;
+        }
+        .feat-card h3 { font-size: 18px; font-weight: 700; color: var(--text-head); margin-bottom: 10px; }
+        .feat-card p { font-size: 14px; color: var(--text-body); line-height: 1.65; }
+
+        /* ---- HOW IT WORKS ---- */
+        .hiw-section {
+            padding: 110px 0;
+            background: var(--bg-dark);
+            position: relative; overflow: hidden;
+        }
+        .hiw-section::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 800px 600px at 0% 100%, rgba(14,111,255,0.15) 0%,transparent 60%),
+                radial-gradient(ellipse 600px 500px at 100% 0%, rgba(10,191,188,0.1) 0%,transparent 60%);
+        }
+        .hiw-section .section-tag { background: rgba(14,111,255,0.15); border-color: rgba(14,111,255,0.3); }
+        .hiw-section .section-h2 { color: white; }
+        .hiw-section .section-p { color: #8993AE; }
+
+        .hiw-steps {
+            display: grid; grid-template-columns: repeat(4,1fr);
+            gap: 0; margin-top: 64px; position: relative;
+        }
+        .hiw-steps::before {
+            content: ''; position: absolute;
+            top: 44px; left: calc(12.5% + 44px); right: calc(12.5% + 44px);
+            height: 1px; background: linear-gradient(90deg,#0E6FFF,#0ABFBC);
+            opacity: 0.4;
+        }
+        .hiw-step { text-align: center; padding: 0 20px; position: relative; }
+        .hiw-num {
+            width: 88px; height: 88px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; margin: 0 auto 24px;
+            position: relative; z-index: 1;
+        }
+        .hiw-num::after {
+            content: attr(data-num);
+            position: absolute; bottom: -2px; right: -2px;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--grad-blue);
+            font-size: 11px; font-weight: 800; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-body);
+        }
+        .hiw-step h4 { font-size: 16px; font-weight: 700; color: white; margin-bottom: 10px; }
+        .hiw-step p { font-size: 13px; color: #8993AE; line-height: 1.65; }
+
+        /* ---- PHOTO MOSAIC ---- */
+        .mosaic-section { padding: 110px 0; background: var(--bg-page); }
+        .mosaic-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr;
+            grid-template-rows: 220px 220px;
+            gap: 16px;
+        }
+        .mosaic-cell {
+            border-radius: 22px; overflow: hidden;
+            position: relative;
+        }
+        .mosaic-cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s; }
+        .mosaic-cell:hover img { transform: scale(1.05); }
+        .mosaic-cell:first-child { grid-row: 1 / span 2; }
+        .mosaic-text {
+            background: var(--grad-blue);
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 32px; color: white;
+        }
+        .mosaic-text h3 { font-family: var(--font-display); font-size: 26px; font-weight: 400; line-height: 1.25; }
+        .mosaic-text p { font-size: 13px; line-height: 1.65; opacity: 0.85; }
+        .mosaic-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.35);
+            border-radius: 10px; padding: 10px 18px;
+            font-size: 13px; font-weight: 700; color: white;
+            cursor: pointer; transition: background 0.2s; border: none;
+            font-family: var(--font-body);
+        }
+        .mosaic-cta:hover { background: rgba(255,255,255,0.3); }
+
+        /* ---- TESTIMONIALS ---- */
+        .testi-section { padding: 110px 0; background: white; }
+        .testi-grid {
+            display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 60px;
+        }
+        .testi-card {
+            background: #F8FAFF; border: 1.5px solid var(--border);
+            border-radius: 22px; padding: 32px;
+            position: relative; transition: all 0.3s;
+        }
+        .testi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); }
+        .testi-card.featured-t {
+            background: var(--grad-blue); border-color: transparent;
+            box-shadow: var(--shadow-blue);
+        }
+        .testi-stars { color: #FBBF24; font-size: 14px; letter-spacing: 2px; margin-bottom: 16px; }
+        .testi-card.featured-t .testi-stars { color: rgba(255,255,255,0.7); }
+        .testi-quote {
+            font-family: var(--font-display); font-size: 17px;
+            line-height: 1.7; color: var(--text-head); margin-bottom: 24px;
+            font-style: italic;
+        }
+        .testi-card.featured-t .testi-quote { color: white; }
+        .testi-author { display: flex; align-items: center; gap: 12px; }
+        .testi-avatar {
+            width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+        }
+        .testi-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .testi-name { font-size: 14px; font-weight: 700; color: var(--text-head); }
+        .testi-card.featured-t .testi-name { color: white; }
+        .testi-role { font-size: 12px; color: var(--text-muted); }
+        .testi-card.featured-t .testi-role { color: rgba(255,255,255,0.65); }
+
+        /* ---- CRM FULL FEATURES ---- */
+        .crm-section { padding: 110px 0; background: var(--bg-page); }
+        .crm-grid-clinic {
+            display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 56px;
+        }
+        .crm-tile {
+            background: white; border: 1.5px solid var(--border);
+            border-radius: 18px; padding: 24px;
+            transition: all 0.25s;
+        }
+        .crm-tile:hover { border-color: rgba(14,111,255,0.3); box-shadow: var(--shadow-card); transform: translateY(-3px); }
+        .crm-tile .ti { font-size: 32px; margin-bottom: 12px; }
+        .crm-tile h4 { font-size: 15px; font-weight: 700; color: var(--text-head); margin-bottom: 6px; }
+        .crm-tile p { font-size: 13px; color: var(--text-body); line-height: 1.6; }
+
+        /* ---- PRICING ---- */
+        .pricing-section { padding: 110px 0; background: white; }
+        .pricing-toggle-wrap { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 48px 0 56px; }
+        .pricing-toggle-wrap span { font-size: 14px; font-weight: 600; }
+        .toggle-pill {
+            width: 52px; height: 28px; border-radius: 100px;
+            background: var(--border); cursor: pointer;
+            position: relative; transition: background 0.3s; border: none;
+        }
+        .toggle-pill.on { background: var(--grad-blue); }
+        .toggle-knob {
+            width: 22px; height: 22px; border-radius: 50%; background: white;
+            position: absolute; top: 3px; left: 3px;
+            transition: left 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .toggle-pill.on .toggle-knob { left: 27px; }
+
+        .pricing-grid-clinic {
+            display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+            max-width: 1100px; margin: 0 auto;
+        }
+        .price-card {
+            border: 2px solid var(--border); border-radius: 24px;
+            padding: 40px 36px;
+            position: relative; transition: all 0.3s;
+        }
+        .price-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-card); }
+        .price-card.pop {
+            background: var(--grad-blue); border-color: transparent;
+            box-shadow: var(--shadow-blue);
+            transform: scale(1.03);
+        }
+        .price-card.pop:hover { transform: scale(1.03) translateY(-6px); }
+        .pop-badge {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            background: #060D1F; color: white;
+            font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+            text-transform: uppercase; padding: 5px 18px; border-radius: 100px;
+        }
+        .price-name { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+        .price-card.pop .price-name { color: rgba(255,255,255,0.65); }
+        .price-amount {
+            font-family: var(--font-display); font-size: 56px; line-height: 1;
+            color: var(--text-head); margin-bottom: 6px;
+        }
+        .price-card.pop .price-amount { color: white; }
+        .price-period { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
+        .price-card.pop .price-period { color: rgba(255,255,255,0.65); }
+        .price-feats { list-style: none; margin-bottom: 36px; }
+        .price-feats li {
+            padding: 10px 0; border-bottom: 1px solid var(--border);
+            font-size: 14px; display: flex; gap: 10px; align-items: flex-start;
+            color: var(--text-body);
+        }
+        .price-card.pop .price-feats li { border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); }
+        .price-feats li:last-child { border-bottom: none; }
+        .price-feats li::before {
+            content: '✓'; font-weight: 800; color: var(--primary); flex-shrink: 0; font-size: 13px;
+            width: 20px; height: 20px; background: rgba(14,111,255,0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+        }
+        .price-card.pop .price-feats li::before { background: rgba(255,255,255,0.2); color: white; }
+        .btn-price {
+            width: 100%; padding: 14px;
+            border-radius: 12px; border: 2px solid var(--primary);
+            background: transparent; color: var(--primary);
+            font-weight: 700; font-size: 15px; cursor: pointer;
+            font-family: var(--font-body); transition: all 0.2s;
+        }
+        .btn-price:hover { background: var(--primary); color: white; }
+        .btn-price-pop {
+            width: 100%; padding: 14px;
+            border-radius: 12px; border: none;
+            background: white; color: var(--primary);
+            font-weight: 800; font-size: 15px; cursor: pointer;
+            font-family: var(--font-body);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+        }
+        .btn-price-pop:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(0,0,0,0.2); }
+
+        /* ---- CTA BANNER ---- */
+        .cta-banner {
+            padding: 110px 48px;
+            background: var(--grad-dark);
+            position: relative; overflow: hidden;
+        }
+        .cta-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 700px 500px at 20% 100%, rgba(14,111,255,0.18) 0%,transparent 60%),
+                radial-gradient(ellipse 500px 400px at 80% 0%, rgba(10,191,188,0.12) 0%,transparent 60%);
+        }
+        .cta-inner {
+            position: relative; z-index: 1;
+            max-width: 1380px; margin: 0 auto;
+            display: grid; grid-template-columns: 1fr auto;
+            gap: 60px; align-items: center;
+        }
+        .cta-text h2 {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 4vw, 60px);
+            color: white; line-height: 1.1; margin-bottom: 16px;
+        }
+        .cta-text h2 em { font-style: italic; color: var(--teal); }
+        .cta-text p { font-size: 17px; color: #8993AE; max-width: 520px; line-height: 1.7; }
+        .cta-actions { display: flex; flex-direction: column; gap: 12px; align-items: center; min-width: 240px; }
+        .btn-cta-main {
+            width: 100%; padding: 16px 36px;
+            background: var(--grad-blue); color: white;
+            border-radius: 14px; border: none;
+            font-weight: 800; font-size: 16px; cursor: pointer;
+            font-family: var(--font-body);
+            box-shadow: var(--shadow-blue);
+            transition: all 0.25s;
+        }
+        .btn-cta-main:hover { transform: translateY(-3px); box-shadow: 0 28px 70px rgba(14,111,255,0.35); }
+        .btn-cta-ghost {
+            width: 100%; padding: 15px 36px;
+            background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8);
+            border-radius: 14px; border: 1.5px solid rgba(255,255,255,0.15);
+            font-weight: 700; font-size: 16px; cursor: pointer;
+            font-family: var(--font-body); transition: all 0.2s;
+        }
+        .btn-cta-ghost:hover { background: rgba(255,255,255,0.12); color: white; }
+        .cta-note { font-size: 12px; color: #8993AE; }
+
+        /* ---- FOOTER ---- */
+        .site-footer {
+            background: #060D1F; padding: 72px 48px 36px;
+        }
+        .footer-inner {
+            max-width: 1380px; margin: 0 auto;
+        }
+        .footer-top {
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px; padding-bottom: 56px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            margin-bottom: 32px;
+        }
+        .footer-brand .logo-text-f {
+            font-family: var(--font-display); font-size: 24px;
+            color: white; font-style: italic; margin-bottom: 14px; display: block;
+        }
+        .footer-brand p { font-size: 14px; color: #64748B; line-height: 1.7; max-width: 280px; margin-bottom: 24px; }
+        .footer-socials { display: flex; gap: 10px; }
+        .footer-social-btn {
+            width: 38px; height: 38px; border-radius: 10px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; cursor: pointer; transition: background 0.2s;
+        }
+        .footer-social-btn:hover { background: rgba(255,255,255,0.12); }
+        .footer-col h5 { font-size: 13px; font-weight: 700; color: #E2E8F0; margin-bottom: 18px; letter-spacing: 0.04em; }
+        .footer-col a {
+            display: block; font-size: 14px; color: #64748B;
+            text-decoration: none; margin-bottom: 11px; transition: color 0.2s;
+        }
+        .footer-col a:hover { color: #94A3B8; }
+        .footer-bottom {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+        }
+        .footer-bottom p { font-size: 13px; color: #3D4966; }
+        .footer-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+        .footer-badge {
+            font-size: 11px; font-weight: 700; color: #3D4966;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            padding: 5px 12px; border-radius: 8px; letter-spacing: 0.04em;
+        }
+
+        /* ---- HAMBURGER (mobile) ---- */
+        .hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            cursor: pointer; padding: 8px; border: none; background: transparent; z-index: 1100;
+        }
+        .hamburger span { display: block; width: 24px; height: 2.5px; background: var(--text-head); border-radius: 4px; transition: all 0.35s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+        .mobile-nav {
+            display: none; position: fixed; inset: 0;
+            background: rgba(6,13,31,0.6); z-index: 1050;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .mobile-nav.open { opacity: 1; pointer-events: all; }
+        .mobile-nav-drawer {
+            position: absolute; top: 0; right: 0; width: 280px; height: 100%;
+            background: white; transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+            display: flex; flex-direction: column; padding: 24px 20px;
+        }
+        .mobile-nav.open .mobile-nav-drawer { transform: translateX(0); }
+        .mobile-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .mobile-nav-header img { height: 36px; }
+        .mobile-nav-close { background: #F0F4FF; border: none; width: 36px; height: 36px; border-radius: 10px; font-size: 18px; cursor: pointer; }
+        .mobile-nav-links { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .mobile-nav-links a, .mobile-nav-links button {
+            display: block; padding: 13px 16px; border-radius: 12px;
+            font-size: 15px; font-weight: 600; color: var(--text-head);
+            text-decoration: none; border: none; background: transparent;
+            cursor: pointer; text-align: left; font-family: var(--font-body);
+            transition: background 0.2s;
+        }
+        .mobile-nav-links a:hover, .mobile-nav-links button:hover { background: #F0F4FF; color: var(--primary); }
+        .mobile-nav-footer { padding-top: 20px; border-top: 1px solid var(--border); }
+        .mobile-nav-footer button { width: 100%; }
+
+        /* ---- DASHBOARD / AUTH inherit from styles.css ---- */
+        .dashboard { display: none; padding-top: 80px; min-height: 100vh; background: #F0F4FF; }
+        .dashboard.active { display: block; }
+        .dash-nav { position:fixed;top:0;left:0;height:100vh;width:72px;background:white;border-right:2px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:16px 0;z-index:900;transition:width 0.3s;overflow:hidden; }
+        .dash-nav.expanded { width:240px; }
+        .dash-nav-logo { width:44px;height:44px;border-radius:14px;overflow:hidden;margin-bottom:8px;flex-shrink:0; }
+        .dash-nav-logo img { width:100%;height:100%;object-fit:contain; }
+        .dash-nav-toggle { width:44px;height:36px;background:#F0F4FF;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;margin:8px 0 16px;flex-shrink:0;color:var(--text-muted);transition:background 0.2s; }
+        .dash-nav-toggle:hover { background:var(--primary);color:white; }
+        .dash-nav-items { flex:1;width:100%;display:flex;flex-direction:column;gap:2px;padding:0 10px; }
+        .dash-nav-item { touch-action:manipulation;display:flex;align-items:center;gap:12px;width:100%;padding:11px 10px;border:none;background:transparent;border-radius:12px;cursor:pointer;color:var(--text-muted);font-size:14px;font-weight:600;font-family:var(--font-body);transition:all 0.2s;white-space:nowrap;text-decoration:none; }
+        .dash-nav-item:hover { background:rgba(14,111,255,0.08);color:var(--primary); }
+        .dash-nav-item.active { background:var(--grad-blue);color:white;box-shadow:var(--shadow-blue); }
+        .dash-nav-icon { font-size:20px;flex-shrink:0;width:24px;text-align:center; }
+        .dash-nav-label { opacity:0;transition:opacity 0.2s;white-space:nowrap;overflow:hidden; }
+        .dash-nav.expanded .dash-nav-label { opacity:1; }
+        .dash-nav-divider { height:1px;background:var(--border);margin:8px 10px; }
+        .dash-nav-logout { padding:0 10px;margin-bottom:16px;width:100%; }
+        .dash-nav-logout button { width:100%;display:flex;align-items:center;gap:12px;padding:11px 10px;border:none;background:rgba(244,63,94,0.08);border-radius:12px;cursor:pointer;color:#F43F5E;font-size:14px;font-weight:600;font-family:var(--font-body);transition:all 0.2s;white-space:nowrap; }
+        .dash-nav-logout button:hover { background:#F43F5E;color:white; }
+        .dashboard.active { padding-left:72px; }
+        .dashboard-sidebar-open { padding-left:240px !important; }
+
+        .dash-bottom-nav { display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:2px solid var(--border);z-index:900;padding:8px 0 env(safe-area-inset-bottom,8px); }
+        .dash-bottom-items { display:flex;justify-content:space-around;align-items:center; }
+        .dash-bottom-item { touch-action:manipulation;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;border:none;background:transparent;cursor:pointer;color:var(--text-muted);font-size:10px;font-weight:600;font-family:var(--font-body);transition:color 0.2s; }
+        .dash-bottom-item .di { font-size:20px; }
+        .dash-bottom-item.active, .dash-bottom-item:hover { color:var(--primary); }
+
+        .action-grid-2 { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px; }
+        .action-card-sm { touch-action:manipulation;background:#F0F4FF;border:2px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all 0.3s;text-align:center; }
+        .action-card-sm:hover { border-color:var(--primary);transform:translateY(-3px);box-shadow:var(--shadow-card); }
+        .action-card-sm .action-icon { font-size:32px;margin-bottom:10px; }
+        .action-card-sm h3 { font-family:var(--font-body);font-size:14px;font-weight:700;margin-bottom:4px; }
+        .action-card-sm p { color:var(--text-muted);font-size:12px; }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 1024px) {
+            .features-grid-clinic { grid-template-columns: repeat(2,1fr); }
+            .crm-grid-clinic { grid-template-columns: repeat(2,1fr); }
+            .footer-top { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            nav#mainNav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .hero-clinic { padding: 60px 24px 0; }
+            .hero-inner { grid-template-columns: 1fr; gap: 40px; padding-bottom: 60px; }
+            .hero-right { height: 360px; }
+            .hero-main-photo { width: 100%; height: 300px; }
+            .stats-strip { padding: 0 24px; }
+            .stats-strip-inner { grid-template-columns: repeat(2,1fr); }
+            .section-wrap { padding: 0 24px; }
+            .features-grid-clinic, .crm-grid-clinic, .pricing-grid-clinic, .testi-grid { grid-template-columns: 1fr; }
+            .hiw-steps { grid-template-columns: 1fr 1fr; }
+            .hiw-steps::before { display: none; }
+            .mosaic-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+            .mosaic-cell:first-child { grid-row: auto; grid-column: 1 / span 2; height: 220px; }
+            .cta-inner { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr; gap: 32px; }
+            .price-card.pop { transform: none; }
+            .dash-nav { display:none; }
+            .dash-bottom-nav { display:block; }
+            .dashboard.active { padding-left:0 !important; padding-bottom:76px; }
+            .dashboard-container { padding:16px; }
+            .trusted-bar-inner { gap:24px; }
+        }
+        .hidden { display: none !important; }
+        .loading { display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav id="mainNav">
+    <div class="nav-container">
+        <a href="#" class="logo" onclick="showHome()">
+            <img src="assets/logo.png" alt="sambandh.ai">
+            <span class="logo-text">sambandh.ai</span>
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How it Works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#" onclick="showLogin()">Login</a>
+            <button class="btn-nav" onclick="showSignup()">Start Free Trial</button>
+        </div>
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileNav()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ===== MOBILE DRAWER ===== -->
+<div class="mobile-nav" id="mobileNav" style="display:none;pointer-events:none;" onclick="closeMobileNavOnBg(event)">
+    <div class="mobile-nav-drawer">
+        <div class="mobile-nav-header">
+            <img src="assets/logo.png" alt="sambandh.ai">
+            <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="#features" onclick="closeMobileNav()">✨ Features</a>
+            <a href="#how-it-works" onclick="closeMobileNav()">🔄 How it Works</a>
+            <a href="#pricing" onclick="closeMobileNav()">💎 Pricing</a>
+            <button onclick="closeMobileNav();showLogin()">🔑 Login</button>
+        </div>
+        <div class="mobile-nav-footer">
+            <button class="btn-nav" onclick="closeMobileNav();showSignup()" style="width:100%;padding:14px;">🚀 Start Free Trial</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== LANDING PAGE ===== -->
+<div id="landingPage">
+
+    <!-- HERO -->
+    <section class="hero-clinic">
+        <div class="hero-inner">
+            <div class="hero-left">
+                <div class="hero-pill">
+                    <span></span>
+                    🏥 500+ Clinics Trust sambandh.ai
+                </div>
+                <h1 class="hero-h1">
+                    The Smarter CRM<br>
+                    for <em>Modern Clinics</em>
+                </h1>
+                <p class="hero-sub">
+                    Retain more patients, automate WhatsApp follow-ups, and grow your practice with India's #1 clinic CRM. Works for GPs, dental, skin, eye, and specialty clinics.
+                </p>
+                <div class="hero-cta-row">
+                    <button class="btn-primary" onclick="showSignup()">Start Free — ₹0</button>
+                    <button class="btn-ghost" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">See Features ↓</button>
+                </div>
+                <div class="hero-trust">
+                    <div class="hero-trust-item">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#10B981" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        No credit card needed
+                    </div>
+                    <div class="hero-trust-item">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#10B981" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        14-day free trial
+                    </div>
+                    <div class="hero-trust-item">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#10B981" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        India-hosted, encrypted
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo stack -->
+            <div class="hero-right">
+                <div class="hero-main-photo">
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=900&q=85&auto=format&fit=crop" alt="Doctor consulting patient">
+                </div>
+                <!-- Floating stat -->
+                <div class="float-card float-stat">
+                    <div class="label">Patients this month</div>
+                    <div class="value">1,247</div>
+                    <div class="trend">↑ 18% from last month</div>
+                </div>
+                <!-- Floating appointments -->
+                <div class="float-card float-appt">
+                    <div class="title">Today's Appointments</div>
+                    <div class="appt-row">
+                        <div class="appt-dot" style="background:#10B981;"></div>
+                        <span class="appt-name">Rahul Sharma</span>
+                        <span class="appt-time">10:30</span>
+                    </div>
+                    <div class="appt-row">
+                        <div class="appt-dot" style="background:#0E6FFF;"></div>
+                        <span class="appt-name">Priya Patel</span>
+                        <span class="appt-time">11:00</span>
+                    </div>
+                    <div class="appt-row" style="margin-bottom:0;">
+                        <div class="appt-dot" style="background:#F59E0B;"></div>
+                        <span class="appt-name">Amit Verma</span>
+                        <span class="appt-time">11:30</span>
+                    </div>
+                </div>
+                <!-- WhatsApp badge -->
+                <div class="float-card float-wa">
+                    💬 3 reminders sent automatically
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+        <div class="stats-strip-inner">
+            <div class="stat-strip-item">
+                <div class="stat-strip-num">500+</div>
+                <div class="stat-strip-label">Clinics Active</div>
+            </div>
+            <div class="stat-strip-item">
+                <div class="stat-strip-num">92%</div>
+                <div class="stat-strip-label">Patient Retention</div>
+            </div>
+            <div class="stat-strip-item">
+                <div class="stat-strip-num">4.8★</div>
+                <div class="stat-strip-label">Avg Google Rating</div>
+            </div>
+            <div class="stat-strip-item">
+                <div class="stat-strip-num">3×</div>
+                <div class="stat-strip-label">More Repeat Visits</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRUSTED BY -->
+    <div class="trusted-bar">
+        <div class="trusted-bar-inner">
+            <span class="trusted-label">Clinics from</span>
+            <div class="trusted-cities">
+                <span class="trusted-city">Jaipur</span>
+                <span class="trusted-city">Delhi</span>
+                <span class="trusted-city">Mumbai</span>
+                <span class="trusted-city">Bengaluru</span>
+                <span class="trusted-city">Hyderabad</span>
+                <span class="trusted-city">Pune</span>
+                <span class="trusted-city">Chennai</span>
+                <span class="trusted-city">Ahmedabad</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section class="features-section" id="features">
+        <div class="section-wrap">
+            <div class="features-head">
+                <div>
+                    <div class="section-tag">✨ Core Features</div>
+                    <h2 class="section-h2">Built for Every<br><em>Type of Clinic</em></h2>
+                </div>
+                <p class="section-p">Whether you're a solo GP or a multi-specialty chain, sambandh.ai handles the entire patient journey — from first visit to loyal advocate.</p>
+            </div>
+            <div class="features-grid-clinic">
+                <div class="feat-card">
+                    <div class="feat-icon-wrap" style="background:rgba(14,111,255,0.1);">📱</div>
+                    <h3>QR Patient Capture</h3>
+                    <p>One QR at reception. Every new patient scans, opens WhatsApp, and joins your database instantly — name, phone, and visit reason saved automatically.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon-wrap" style="background:rgba(16,185,129,0.1);">💬</div>
+                    <h3>WhatsApp Follow-ups</h3>
+                    <p>Auto-send appointment reminders, test result alerts, medication schedules, and post-visit care tips. Reduce no-shows by up to 40%.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon-wrap" style="background:rgba(124,58,237,0.1);">📅</div>
+                    <h3>Smart Scheduling</h3>
+                    <p>Let patients book via WhatsApp. Auto-confirm, send 24-hour reminders, and intelligently manage your daily appointment load.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon-wrap" style="background:rgba(245,158,11,0.1);">⭐</div>
+                    <h3>Google Review Engine</h3>
+                    <p>After every visit, auto-send review requests. Happy patients leave stars; unhappy ones message you privately — protecting your online reputation.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon-wrap" style="background:rgba(244,63,94,0.1);">🎯</div>
+                    <h3>Patient Segmentation</h3>
+                    <p>Auto-group patients into Chronic (3+ visits), New, Lapsed, and VIP. Target each group with hyper-relevant health tips and recall campaigns.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon-wrap" style="background:rgba(10,191,188,0.1);">📊</div>
+                    <h3>Revenue Analytics</h3>
+                    <p>Track per-doctor, per-treatment, and per-branch revenue. Understand peak hours and predict next month's income with confidence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="hiw-section" id="how-it-works">
+        <div class="section-wrap">
+            <div class="section-tag" style="background:rgba(14,111,255,0.15);border-color:rgba(14,111,255,0.3);">🔄 Simple Process</div>
+            <h2 class="section-h2" style="color:white;">Up and Running in<br><em style="color:#0ABFBC;">15 Minutes</em></h2>
+            <p class="section-p">No tech skills needed. If you can use WhatsApp, you can use sambandh.ai.</p>
+            <div class="hiw-steps">
+                <div class="hiw-step">
+                    <div class="hiw-num" data-num="1" style="background:rgba(14,111,255,0.15);">🏥</div>
+                    <h4>Add Your Clinic</h4>
+                    <p>Create your account and set up your clinic profile — specialty, doctors, and timings — in under 5 minutes.</p>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num" data-num="2" style="background:rgba(16,185,129,0.15);">📱</div>
+                    <h4>Print QR Standee</h4>
+                    <p>Download and print your branded QR standee. Place it at reception. Patients scan to register instantly via WhatsApp.</p>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num" data-num="3" style="background:rgba(124,58,237,0.15);">🤖</div>
+                    <h4>AI Automates</h4>
+                    <p>Reminders, follow-ups, review requests, and birthday messages go out automatically — you focus on care.</p>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num" data-num="4" style="background:rgba(245,158,11,0.15);">📈</div>
+                    <h4>Practice Grows</h4>
+                    <p>Track retention, revenue, and patient satisfaction on a clean dashboard. Watch your clinic's reputation improve week by week.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PHOTO MOSAIC -->
+    <section class="mosaic-section">
+        <div class="section-wrap">
+            <div style="text-align:center;margin-bottom:48px;">
+                <div class="section-tag" style="display:inline-flex;">📸 Real Clinics, Real Results</div>
+                <h2 class="section-h2" style="text-align:center;">Designed for the<br><em>Indian Healthcare Context</em></h2>
+            </div>
+            <div class="mosaic-grid">
+                <!-- Large left -->
+                <div class="mosaic-cell">
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=85&auto=format&fit=crop" alt="Modern clinic interior">
+                </div>
+                <!-- Top right -->
+                <div class="mosaic-cell">
+                    <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=500&q=85&auto=format&fit=crop" alt="Doctor on phone">
+                </div>
+                <!-- Text tile -->
+                <div class="mosaic-cell mosaic-text">
+                    <div>
+                        <div style="font-size:40px;margin-bottom:14px;">🩺</div>
+                        <h3>Multilingual & India-ready</h3>
+                        <p style="margin-top:10px;font-size:14px;">Send messages in Hindi, Marathi, Tamil, Telugu, Gujarati, and 8 more languages. Your patients feel at home.</p>
+                    </div>
+                    <button class="mosaic-cta" onclick="showSignup()">Start Free Trial →</button>
+                </div>
+                <!-- Bottom mid -->
+                <div class="mosaic-cell">
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=500&q=85&auto=format&fit=crop" alt="Patient registration">
+                </div>
+                <!-- Bottom right -->
+                <div class="mosaic-cell">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500&q=85&auto=format&fit=crop" alt="Doctor smiling">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testi-section">
+        <div class="section-wrap">
+            <div style="text-align:center;margin-bottom:16px;">
+                <div class="section-tag" style="display:inline-flex;">💬 Testimonials</div>
+                <h2 class="section-h2" style="text-align:center;">Doctors Love<br><em>sambandh.ai</em></h2>
+            </div>
+            <div class="testi-grid">
+                <div class="testi-card">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-quote">"No-shows dropped by 35% in just one month. The WhatsApp reminder system is brilliant. My receptionist now handles 2× more patients."</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar">
+                            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&q=80&auto=format&fit=crop&face" alt="Dr. Rajesh Mehta">
+                        </div>
+                        <div>
+                            <div class="testi-name">Dr. Rajesh Mehta</div>
+                            <div class="testi-role">General Physician, Jaipur</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testi-card featured-t">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-quote">"Our Google rating went from 3.9 to 4.7 in 60 days. The review automation is a game-changer — patients love that it's just a WhatsApp message."</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar">
+                            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&q=80&auto=format&fit=crop" alt="Dr. Priya Sharma">
+                        </div>
+                        <div>
+                            <div class="testi-name">Dr. Priya Sharma</div>
+                            <div class="testi-role">Dental Surgeon, Delhi</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testi-card">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-quote">"Managing 3 branches was a nightmare before this. Now I see all patients, appointments, and revenue in one dashboard. Setup took 20 minutes."</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar">
+                            <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&q=80&auto=format&fit=crop" alt="Dr. Anil Kapoor">
+                        </div>
+                        <div>
+                            <div class="testi-name">Dr. Anil Kapoor</div>
+                            <div class="testi-role">Dermatologist, Mumbai</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CRM FULL FEATURES -->
+    <section class="crm-section">
+        <div class="section-wrap">
+            <div style="text-align:center;margin-bottom:16px;">
+                <div class="section-tag" style="display:inline-flex;">🔥 Complete Platform</div>
+                <h2 class="section-h2" style="text-align:center;">Everything Your<br><em>Clinic Needs</em></h2>
+                <p class="section-p" style="margin:12px auto 0;text-align:center;">12+ tools purpose-built for clinic operations — all in one platform</p>
+            </div>
+            <div class="crm-grid-clinic">
+                <div class="crm-tile"><div class="ti">👥</div><h4>Patient Segmentation</h4><p>Auto-group by visits, condition, or spend</p></div>
+                <div class="crm-tile"><div class="ti">📅</div><h4>Appointment Booking</h4><p>WhatsApp scheduling with auto-confirmations</p></div>
+                <div class="crm-tile"><div class="ti">💰</div><h4>Revenue Analytics</h4><p>Per-doctor, per-treatment, per-branch tracking</p></div>
+                <div class="crm-tile"><div class="ti">🔔</div><h4>Smart Alerts</h4><p>Remind for follow-ups, vaccinations, tests</p></div>
+                <div class="crm-tile"><div class="ti">📈</div><h4>Growth Insights</h4><p>AI recommendations to boost retention</p></div>
+                <div class="crm-tile"><div class="ti">🎫</div><h4>Health Packages</h4><p>Sell wellness packages with digital vouchers</p></div>
+                <div class="crm-tile"><div class="ti">📱</div><h4>SMS Fallback</h4><p>Auto SMS if WhatsApp fails — 100% delivery</p></div>
+                <div class="crm-tile"><div class="ti">🌐</div><h4>Hindi + 10 Languages</h4><p>Message in the patient's preferred language</p></div>
+                <div class="crm-tile"><div class="ti">🔒</div><h4>Patient Data Security</h4><p>Encrypted, India-hosted, privacy-compliant</p></div>
+                <div class="crm-tile"><div class="ti">📊</div><h4>MIS Reports</h4><p>Export to Excel / PDF for your accountant</p></div>
+                <div class="crm-tile"><div class="ti">🔗</div><h4>Billing Integration</h4><p>Connect with Petpooja, Mediware & more</p></div>
+                <div class="crm-tile"><div class="ti">🧪</div><h4>Campaign A/B Testing</h4><p>Test messages to see what drives most visits</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="pricing-section" id="pricing">
+        <div class="section-wrap">
+            <div style="text-align:center;">
+                <div class="section-tag" style="display:inline-flex;">💎 Transparent Pricing</div>
+                <h2 class="section-h2" style="text-align:center;">Simple Plans,<br><em>Zero Surprises</em></h2>
+                <p class="section-p" style="margin:12px auto 0;text-align:center;">No setup fees. No per-message charges. Cancel anytime.</p>
+            </div>
+            <!-- Toggle -->
+            <div class="pricing-toggle-wrap">
+                <span style="color:var(--text-head);">Monthly</span>
+                <button class="toggle-pill" id="billToggle" onclick="toggleBilling()">
+                    <div class="toggle-knob" id="billKnob"></div>
+                </button>
+                <span style="color:var(--text-muted);">Annual <span style="background:rgba(16,185,129,0.15);color:#10B981;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">SAVE 17%</span></span>
+            </div>
+            <div class="pricing-grid-clinic">
+                <!-- Starter -->
+                <div class="price-card">
+                    <div class="price-name">Starter</div>
+                    <div class="price-amount">₹<span id="price_basic">299</span></div>
+                    <div class="price-period" id="period_basic">/month · up to 500 patients</div>
+                    <ul class="price-feats">
+                        <li>QR patient capture</li>
+                        <li>WhatsApp messaging (1,000/mo)</li>
+                        <li>Appointment scheduling</li>
+                        <li>Basic analytics dashboard</li>
+                        <li>Hindi + English support</li>
+                        <li>Email support</li>
+                    </ul>
+                    <button class="btn-price" onclick="signupWithPlan('basic')">Start Free Trial</button>
+                </div>
+                <!-- Growth — featured -->
+                <div class="price-card pop">
+                    <div class="pop-badge">MOST POPULAR</div>
+                    <div class="price-name">Growth</div>
+                    <div class="price-amount">₹<span id="price_pro">699</span></div>
+                    <div class="price-period" id="period_pro">/month · up to 2,000 patients</div>
+                    <ul class="price-feats">
+                        <li>Everything in Starter</li>
+                        <li>AI WhatsApp booking bot</li>
+                        <li>Unlimited WhatsApp messages</li>
+                        <li>Campaigns + A/B testing</li>
+                        <li>Google Review automation</li>
+                        <li>Revenue tracking & MIS reports</li>
+                        <li>Health packages & vouchers</li>
+                        <li>Priority 24/7 support</li>
+                    </ul>
+                    <button class="btn-price-pop" onclick="signupWithPlan('pro')">Start Free Trial</button>
+                </div>
+                <!-- Enterprise -->
+                <div class="price-card">
+                    <div class="price-name">Enterprise</div>
+                    <div class="price-amount">₹<span id="price_premium">1,299</span></div>
+                    <div class="price-period" id="period_premium">/month · unlimited patients</div>
+                    <ul class="price-feats">
+                        <li>Everything in Growth</li>
+                        <li>Multi-branch / multi-doctor</li>
+                        <li>POS & billing integration</li>
+                        <li>SMS fallback (auto)</li>
+                        <li>Full API access</li>
+                        <li>White-label options</li>
+                        <li>Dedicated account manager</li>
+                    </ul>
+                    <button class="btn-price" onclick="signupWithPlan('premium')">Start Free Trial</button>
+                </div>
+            </div>
+            <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--text-muted);">🔒 Secured by Razorpay · All major cards, UPI, NetBanking accepted · Cancel anytime</p>
+        </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner">
+        <div class="cta-inner">
+            <div class="cta-text">
+                <h2>Ready to Transform<br>Your <em>Clinic?</em></h2>
+                <p>Join 500+ clinics already using sambandh.ai. Setup takes 15 minutes. Results start within 30 days.</p>
+            </div>
+            <div class="cta-actions">
+                <button class="btn-cta-main" onclick="showSignup()">Start Free Trial →</button>
+                <button class="btn-cta-ghost" onclick="showLogin()">Demo Login</button>
+                <span class="cta-note">No credit card · 14-day trial · Cancel anytime</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <span class="logo-text-f">sambandh.ai</span>
+                    <p>India's most trusted WhatsApp CRM for clinics, hospitals, and healthcare practices. Built in Jaipur, for every Indian city.</p>
+                    <div class="footer-socials">
+                        <div class="footer-social-btn">📘</div>
+                        <div class="footer-social-btn">📸</div>
+                        <div class="footer-social-btn">💬</div>
+                        <div class="footer-social-btn">🐦</div>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h5>Product</h5>
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#" onclick="showLogin()">Demo</a>
+                    <a href="#">API Docs</a>
+                    <a href="#">Changelog</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Clinic Types</h5>
+                    <a href="#">General Physician</a>
+                    <a href="#">Dental Clinic</a>
+                    <a href="#">Skin & Hair Clinic</a>
+                    <a href="#">Eye Clinic</a>
+                    <a href="#">Orthopedic</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Company</h5>
+                    <a href="#">About Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Help Centre</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 sambandh.ai · Built with ❤️ in Jaipur, India</p>
+                <div class="footer-badges">
+                    <span class="footer-badge">🔒 ENCRYPTED</span>
+                    <span class="footer-badge">🇮🇳 INDIA-HOSTED</span>
+                    <span class="footer-badge">✅ PRIVACY-COMPLIANT</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div><!-- end #landingPage -->
+
+<!-- ===== AUTH MODAL ===== -->
+<div id="authModal" class="modal" style="display:none;position:fixed;inset:0;background:rgba(6,13,31,0.6);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+    <div style="background:white;border-radius:28px;padding:48px;max-width:520px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 40px 100px rgba(6,13,31,0.25);animation:modalSlideIn 0.3s ease-out;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+            <h2 id="authTitle" style="font-family:var(--font-display);font-size:30px;color:var(--text-head);">Welcome Back</h2>
+            <button onclick="closeAuthModal()" style="background:#F0F4FF;border:none;width:36px;height:36px;border-radius:10px;font-size:20px;cursor:pointer;color:var(--text-muted);">✕</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:28px;background:#F0F4FF;padding:5px;border-radius:12px;">
+            <button class="form-tab active" id="loginTab" onclick="switchToLogin()" style="flex:1;padding:12px;background:white;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-family:var(--font-body);font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">Login</button>
+            <button class="form-tab" id="signupTab" onclick="switchToSignup()" style="flex:1;padding:12px;background:transparent;border:none;border-radius:9px;font-weight:600;cursor:pointer;font-family:var(--font-body);font-size:14px;color:var(--text-muted);">Sign Up</button>
+        </div>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" placeholder="doctor@clinic.com" required></div>
+            <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" required></div>
+            <button type="submit" class="btn-primary" style="width:100%;padding:14px;font-size:15px;">
+                <span id="loginBtnText">Login to Dashboard</span>
+                <span id="loginBtnLoading" class="hidden"><span class="loading"></span></span>
+            </button>
+        </form>
+        <form id="signupForm" class="hidden" onsubmit="handleSignup(event)">
+            <div class="form-group"><label>Clinic / Business Name *</label><input type="text" id="signupBusinessName" placeholder="Dr. Sharma's Dental Clinic" required></div>
+            <div class="form-group"><label>Business Type *</label>
+                <select id="signupBusinessType" required>
+                    <option value="">Select type</option>
+                    <option value="clinic">General / Family Clinic</option>
+                    <option value="dental">Dental Clinic</option>
+                    <option value="skin">Skin / Dermatology Clinic</option>
+                    <option value="eye">Eye Clinic</option>
+                    <option value="salon">Salon / Beauty Parlor</option>
+                    <option value="gym">Gym / Fitness Center</option>
+                    <option value="restaurant">Restaurant / Cafe</option>
+                    <option value="retail">Retail Shop</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Doctor / Owner Name *</label><input type="text" id="signupOwnerName" placeholder="Dr. Priya Sharma" required></div>
+            <div class="form-group"><label>Mobile Number *</label><input type="tel" id="signupMobile" placeholder="9876543210" required pattern="[0-9]{10}"></div>
+            <div class="form-group"><label>Email Address *</label><input type="email" id="signupEmail" placeholder="doctor@clinic.com" required></div>
+            <div class="form-group"><label>Password *</label><input type="password" id="signupPassword" placeholder="Minimum 6 characters" required minlength="6"></div>
+            <div class="form-group"><label>City *</label><input type="text" id="signupCity" placeholder="Jaipur" required></div>
+            <div class="form-group"><label>Choose Your Plan *</label>
+                <select id="signupPlan" required>
+                    <option value="basic">Starter — ₹299/month</option>
+                    <option value="pro" selected>Growth — ₹699/month (Recommended)</option>
+                    <option value="premium">Enterprise — ₹1,299/month</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%;padding:14px;font-size:15px;">
+                <span id="signupBtnText">Start Free Trial (14 Days)</span>
+                <span id="signupBtnLoading" class="hidden"><span class="loading"></span></span>
+            </button>
+            <p style="margin-top:14px;font-size:13px;color:var(--text-muted);text-align:center;">No credit card required · Cancel anytime</p>
+        </form>
+    </div>
+</div>
+
+<!-- ===== USER DASHBOARD ===== -->
+<div id="dashboard" class="dashboard">
+    <div class="dash-nav" id="dashNav">
+        <div class="dash-nav-logo"><img src="assets/logo.png" alt="sambandh"></div>
+        <button class="dash-nav-toggle" onclick="toggleSidebar()" id="sidebarToggle" title="Toggle sidebar">☰</button>
+        <div class="dash-nav-items">
+            <button class="dash-nav-item active" onclick="setActiveNav(this);scrollDash('dash-top')"><span class="dash-nav-icon">🏠</span><span class="dash-nav-label">Home</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openQRGenerator()"><span class="dash-nav-icon">📱</span><span class="dash-nav-label">QR Code</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openCampaignBuilder()"><span class="dash-nav-icon">📨</span><span class="dash-nav-label">Campaigns</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openAnalytics()"><span class="dash-nav-icon">📊</span><span class="dash-nav-label">Analytics</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openBookings()"><span class="dash-nav-icon">📅</span><span class="dash-nav-label">Bookings</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openLoyalty()"><span class="dash-nav-icon">🎁</span><span class="dash-nav-label">Loyalty</span></button>
+            <div class="dash-nav-divider"></div>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openSegmentation()"><span class="dash-nav-icon">👥</span><span class="dash-nav-label">Segmentation</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openRevenueTracking()"><span class="dash-nav-icon">💰</span><span class="dash-nav-label">Revenue</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openVouchers()"><span class="dash-nav-icon">🎫</span><span class="dash-nav-label">Vouchers</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openABTesting()"><span class="dash-nav-icon">🧪</span><span class="dash-nav-label">A/B Testing</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openReports()"><span class="dash-nav-icon">📋</span><span class="dash-nav-label">Reports</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openGrowthInsights()"><span class="dash-nav-icon">📈</span><span class="dash-nav-label">Insights</span></button>
+            <div class="dash-nav-divider"></div>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openGoogleReview()"><span class="dash-nav-icon">⭐</span><span class="dash-nav-label">Google Reviews</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openWhatsAppConfig()"><span class="dash-nav-icon">💬</span><span class="dash-nav-label">WhatsApp API</span></button>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openUpgradePlan()"><span class="dash-nav-icon">💎</span><span class="dash-nav-label">Upgrade Plan</span></button>
+            <div class="dash-nav-divider"></div>
+            <button class="dash-nav-item" onclick="setActiveNav(this);openSettings()"><span class="dash-nav-icon">⚙️</span><span class="dash-nav-label">Settings</span></button>
+        </div>
+        <div class="dash-nav-logout"><button onclick="logout()"><span class="dash-nav-icon">🚪</span><span class="dash-nav-label">Logout</span></button></div>
+    </div>
+    <div class="dash-bottom-nav">
+        <div class="dash-bottom-items">
+            <button class="dash-bottom-item active" onclick="setBottomNav(this)"><span class="di">🏠</span>Home</button>
+            <button class="dash-bottom-item" onclick="setBottomNav(this);openQRGenerator()"><span class="di">📱</span>QR</button>
+            <button class="dash-bottom-item" onclick="setBottomNav(this);openCampaignBuilder()"><span class="di">📨</span>Campaign</button>
+            <button class="dash-bottom-item" onclick="setBottomNav(this);openBookings()"><span class="di">📅</span>Bookings</button>
+            <button class="dash-bottom-item" onclick="setBottomNav(this);openLoyalty()"><span class="di">🎁</span>Loyalty</button>
+            <button class="dash-bottom-item" onclick="setBottomNav(this);openMoreMenu()"><span class="di">⋯</span>More</button>
+        </div>
+    </div>
+    <div class="dashboard-container" id="dash-top">
+        <div class="dashboard-header">
+            <div class="dashboard-welcome">
+                <h1 id="dashboardBusinessName">Welcome Back!</h1>
+                <p id="dashboardPlan">Growth Plan · Active</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <button class="btn btn-secondary" style="font-size:13px;padding:10px 16px;" onclick="openUpgradePlan()">💎 Upgrade</button>
+                <button class="btn btn-accent" style="font-size:13px;padding:10px 16px;" onclick="openWhatsAppConfig()">💬 WhatsApp</button>
+                <button class="btn btn-outline" style="font-size:13px;padding:10px 14px;" onclick="openSettings()">⚙️</button>
+                <button class="btn btn-outline" style="font-size:13px;padding:10px 14px;" onclick="logout()">🚪</button>
+            </div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="totalCustomers">0</div><div class="stat-label">Total Patients</div><div class="stat-trend up">↑ 12% this month</div></div>
+            <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-value" id="monthlyGrowth">0%</div><div class="stat-label">Monthly Growth</div><div class="stat-trend up">↑ On track</div></div>
+            <div class="stat-card"><div class="stat-icon">📨</div><div class="stat-value" id="campaignsSent">0</div><div class="stat-label">Campaigns Sent</div><div class="stat-trend up">↑ 8 this week</div></div>
+            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value" id="retention">0%</div><div class="stat-label">Retention Rate</div><div class="stat-trend up">↑ Excellent</div></div>
+        </div>
+        <div class="dashboard-section">
+            <h2>⚡ Quick Actions</h2>
+            <div class="action-grid">
+                <div class="action-card" onclick="openQRGenerator()"><div class="action-icon">📱</div><h3>Generate QR Code</h3><p>Create patient capture QR standee</p></div>
+                <div class="action-card" onclick="openCampaignBuilder()"><div class="action-icon">📨</div><h3>Send Campaign</h3><p>WhatsApp blast to patients</p></div>
+                <div class="action-card" onclick="openAnalytics()"><div class="action-icon">📊</div><h3>View Analytics</h3><p>Detailed reports & insights</p></div>
+                <div class="action-card" onclick="openBookings()"><div class="action-icon">📅</div><h3>Appointments</h3><p>View & manage schedule</p></div>
+                <div class="action-card" onclick="openLoyalty()"><div class="action-icon">🎁</div><h3>Loyalty Program</h3><p>Manage rewards & offers</p></div>
+                <div class="action-card" onclick="openSettings()"><div class="action-icon">⚙️</div><h3>Settings</h3><p>Clinic profile & preferences</p></div>
+            </div>
+        </div>
+        <div class="dashboard-section">
+            <h2>🛠️ More Tools</h2>
+            <div class="action-grid-2">
+                <div class="action-card-sm" onclick="openSegmentation()"><div class="action-icon">👥</div><h3>Patient Segmentation</h3><p>VIP, Regular, Inactive groups</p></div>
+                <div class="action-card-sm" onclick="openRevenueTracking()"><div class="action-icon">💰</div><h3>Revenue Tracking</h3><p>Lifetime value & predictions</p></div>
+                <div class="action-card-sm" onclick="openNotifications()"><div class="action-icon">🔔</div><h3>Smart Notifications</h3><p>VIP & dormant alerts</p></div>
+                <div class="action-card-sm" onclick="openGrowthInsights()"><div class="action-icon">📈</div><h3>Growth Insights</h3><p>AI-powered recommendations</p></div>
+                <div class="action-card-sm" onclick="openVouchers()"><div class="action-icon">🎫</div><h3>Digital Vouchers</h3><p>Create & track discount coupons</p></div>
+                <div class="action-card-sm" onclick="openSMSFallback()"><div class="action-icon">📱</div><h3>SMS Fallback</h3><p>Auto SMS if WhatsApp fails</p></div>
+                <div class="action-card-sm" onclick="openMultilang()"><div class="action-icon">🌐</div><h3>Multi-language</h3><p>Hindi + 10 regional languages</p></div>
+                <div class="action-card-sm" onclick="openReports()"><div class="action-icon">📋</div><h3>Custom Reports</h3><p>Export to Excel / PDF</p></div>
+                <div class="action-card-sm" onclick="openPOSIntegration()"><div class="action-icon">🔗</div><h3>POS Integration</h3><p>Petpooja, Posist & more</p></div>
+                <div class="action-card-sm" onclick="openABTesting()"><div class="action-icon">🧪</div><h3>A/B Testing</h3><p>Test messages & offers</p></div>
+                <div class="action-card-sm" onclick="openDataSecurity()"><div class="action-icon">🔒</div><h3>Data Security</h3><p>Firebase encryption info</p></div>
+                <div class="action-card-sm" onclick="openGoogleReview()"><div class="action-icon">⭐</div><h3>Google Reviews</h3><p>Auto request + track reviews</p></div>
+                <div class="action-card-sm" onclick="openWhatsAppDynamic()"><div class="action-icon">💬</div><h3>WhatsApp API</h3><p>Configure API & templates</p></div>
+                <div class="action-card-sm" onclick="openUpgradePlan()"><div class="action-icon">💎</div><h3>Upgrade Plan</h3><p>Unlock more features</p></div>
+            </div>
+        </div>
+        <div class="dashboard-section">
+            <h2>📋 Recent Patients</h2>
+            <div class="table-container">
+                <table class="table" id="customersTable">
+                    <thead><tr><th>Patient Name</th><th>Phone</th><th>Last Visit</th><th>Total Visits</th><th>Revenue</th><th>Status</th></tr></thead>
+                    <tbody id="customersTableBody">
+                        <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;">📱</div><div style="font-size:16px;font-weight:600;">No patients yet</div><div style="font-size:14px;">Share your QR code to start!</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ADMIN DASHBOARD ===== -->
+<div id="adminDashboard" class="dashboard">
+    <div class="dash-nav" id="adminDashNav">
+        <div class="dash-nav-logo"><img src="assets/logo.png" alt="sambandh"></div>
+        <button class="dash-nav-toggle" onclick="toggleAdminSidebar()" title="Toggle">☰</button>
+        <div class="dash-nav-items">
+            <button class="dash-nav-item active"><span class="dash-nav-icon">🛠️</span><span class="dash-nav-label">Dashboard</span></button>
+            <button class="dash-nav-item" onclick="setAdminNav(this);openPlatformAnalytics()"><span class="dash-nav-icon">📈</span><span class="dash-nav-label">Analytics</span></button>
+            <button class="dash-nav-item" onclick="setAdminNav(this);openModal('adminBroadcastModal')"><span class="dash-nav-icon">📢</span><span class="dash-nav-label">Broadcast</span></button>
+            <button class="dash-nav-item" onclick="setAdminNav(this);exportAllData()"><span class="dash-nav-icon">📥</span><span class="dash-nav-label">Export Data</span></button>
+            <button class="dash-nav-item" onclick="setAdminNav(this);openAdminBilling()"><span class="dash-nav-icon">💳</span><span class="dash-nav-label">Billing</span></button>
+        </div>
+        <div class="dash-nav-logout"><button onclick="logout()"><span class="dash-nav-icon">🚪</span><span class="dash-nav-label">Logout</span></button></div>
+    </div>
+    <div class="dash-bottom-nav">
+        <div class="dash-bottom-items">
+            <button class="dash-bottom-item active"><span class="di">🛠️</span>Admin</button>
+            <button class="dash-bottom-item" onclick="openPlatformAnalytics()"><span class="di">📈</span>Analytics</button>
+            <button class="dash-bottom-item" onclick="openModal('adminBroadcastModal')"><span class="di">📢</span>Broadcast</button>
+            <button class="dash-bottom-item" onclick="exportAllData()"><span class="di">📥</span>Export</button>
+            <button class="dash-bottom-item" onclick="openAdminBilling()"><span class="di">💳</span>Billing</button>
+        </div>
+    </div>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="dashboard-welcome"><h1>🛠️ Admin Control Panel</h1><p>Platform Analytics & User Management</p></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn" onclick="openPlatformAnalytics()">📈 Analytics</button>
+                <button class="btn btn-secondary" onclick="openAdminBilling()">💳 Billing</button>
+                <button class="btn btn-accent" onclick="openModal('adminBroadcastModal')">📢 Broadcast</button>
+                <button class="btn btn-outline" onclick="logout()">Logout</button>
+            </div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="adminTotalUsers">0</div><div class="stat-label">Total Businesses</div><div class="stat-trend up">↑ Growing fast</div></div>
+            <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="adminActiveUsers">0</div><div class="stat-label">Active Users</div><div class="stat-trend up">↑ High engagement</div></div>
+            <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="adminMRR">₹0</div><div class="stat-label">Monthly Revenue (MRR)</div><div class="stat-trend up">↑ Scaling</div></div>
+            <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-value" id="adminARR">₹0</div><div class="stat-label">Annual Revenue (ARR)</div><div class="stat-trend up">↑ On target</div></div>
+        </div>
+        <div class="dashboard-section">
+            <h2>📊 All Registered Businesses</h2>
+            <div class="table-container">
+                <table class="table" id="adminUsersTable">
+                    <thead><tr><th>Business Name</th><th>Owner</th><th>Email</th><th>Plan</th><th>City</th><th>Patients</th><th>Joined Date</th></tr></thead>
+                    <tbody id="adminUsersTableBody">
+                        <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;">👥</div><div style="font-size:16px;font-weight:600;">No users yet</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+
+<style>
+@keyframes modalSlideIn {
+    from { opacity:0; transform:translateY(-20px); }
+    to { opacity:1; transform:translateY(0); }
+}
+/* Fix auth modal active state */
+#authModal.active { display: flex !important; }
+/* Match styles.css form-group inputs to new theme */
+.form-group input, .form-group select, .form-group textarea {
+    font-family: var(--font-body) !important;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(14,111,255,0.1) !important;
+}
+/* Dashboard action-card / stat-card blue theme accent */
+.stat-card::before { background: var(--grad-blue); }
+.stat-card:nth-child(2)::before { background: linear-gradient(135deg,#10B981,#34D399); }
+.stat-card:nth-child(3)::before { background: linear-gradient(135deg,#7C3AED,#A78BFA); }
+.stat-card:nth-child(4)::before { background: linear-gradient(135deg,#F59E0B,#FBBF24); }
+.btn { background: var(--grad-blue) !important; }
+.btn-secondary { background: linear-gradient(135deg,#10B981,#34D399) !important; }
+.btn-accent { background: linear-gradient(135deg,#7C3AED,#A78BFA) !important; }
+.btn-outline { background: white !important; border: 2px solid var(--primary) !important; color: var(--primary) !important; }
+.btn-outline:hover { background: var(--primary) !important; color: white !important; }
+.action-card:hover { border-color: var(--primary); }
+.badge-green { background: rgba(16,185,129,0.15); color: #10B981; }
+.badge-orange { background: rgba(14,111,255,0.12); color: var(--primary); }
+.badge-blue { background: rgba(124,58,237,0.12); color: #7C3AED; }
+.dashboard-welcome h1 { background: var(--grad-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+</style>
+</body>
+</html>
