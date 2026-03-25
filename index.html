@@ -1,657 +1,986 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sambandh.ai - Connecting Retailers & Customers</title>
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        /* ===== HAMBURGER MENU ===== */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 8px;
-            border: none;
-            background: transparent;
-            z-index: 1100;
-        }
-        .hamburger span {
-            display: block;
-            width: 24px;
-            height: 2.5px;
-            background: var(--text-primary);
-            border-radius: 4px;
-            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-            transform-origin: center;
-        }
-        .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-        .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-        .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sambandh.ai — WhatsApp CRM for Every Business</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Raleway:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ===================================================== GLOBAL ===================================================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 
-        /* Mobile nav drawer */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1050;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .mobile-nav.open { opacity: 1; pointer-events: all; }
-        .mobile-nav-drawer {
-            position: absolute;
-            top: 0; right: 0;
-            width: 280px; height: 100%;
-            background: white;
-            box-shadow: -8px 0 40px rgba(0,0,0,0.15);
-            transform: translateX(100%);
-            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-        }
-        .mobile-nav.open .mobile-nav-drawer { transform: translateX(0); }
-        .mobile-nav-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .mobile-nav-header img { height: 36px; }
-        .mobile-nav-close {
-            background: var(--bg-hover);
-            border: none;
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-secondary);
-        }
-        .mobile-nav-links {
-            flex: 1;
-            padding: 24px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .mobile-nav-links a,
-        .mobile-nav-links button.nav-link-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-primary);
-            text-decoration: none;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-            transition: background 0.2s;
-        }
-        .mobile-nav-links a:hover,
-        .mobile-nav-links button.nav-link-btn:hover {
-            background: var(--bg-hover);
-            color: var(--primary);
-        }
-        .mobile-nav-links .nav-icon { font-size: 20px; width: 28px; }
-        .mobile-nav-footer {
-            padding: 20px 16px;
-            border-top: 1px solid var(--border);
-        }
-        .mobile-nav-footer .btn { width: 100%; text-align: center; }
+/* ===================================================== NAVIGATION ===================================================== */
+.main-nav{position:fixed;top:0;left:0;right:0;z-index:9000;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);height:68px;display:flex;align-items:center;padding:0 48px;}
+.nav-wrap{max-width:1400px;margin:0 auto;width:100%;display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;}
+.nav-logo img{height:36px;}
+.nav-logo-text{font-family:'Instrument Serif',serif;font-size:20px;color:#0A0A0A;font-style:italic;}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-item{position:relative;}
+.nav-link{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;font-size:14px;font-weight:600;color:#444;text-decoration:none;border:none;background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:color 0.2s,background 0.2s;white-space:nowrap;}
+.nav-link:hover{color:#000;background:rgba(0,0,0,0.05);}
+.nav-link svg{transition:transform 0.2s;}
+.nav-item:hover .nav-link svg{transform:rotate(180deg);}
+.mega-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);background:white;border:1px solid rgba(0,0,0,0.1);border-radius:20px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,0.12);display:none;grid-template-columns:repeat(3,1fr);gap:10px;min-width:680px;animation:menuDrop 0.2s ease-out;}
+@keyframes menuDrop{from{opacity:0;transform:translateX(-50%) translateY(-8px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.nav-item:hover .mega-menu,.mega-menu:hover{display:grid;}
+.mega-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;text-decoration:none;transition:all 0.2s;cursor:pointer;border:2px solid transparent;}
+.mega-card:hover{border-color:currentColor;transform:translateY(-2px);}
+.mega-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.mega-title{font-size:14px;font-weight:700;color:#0A0A0A;margin-bottom:2px;}
+.mega-sub{font-size:12px;color:#888;}
+.nav-cta-group{display:flex;gap:8px;align-items:center;}
+.btn-nav-login{padding:9px 20px;border-radius:9px;border:2px solid #E5E5E5;background:transparent;font-size:13px;font-weight:700;color:#444;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn-nav-login:hover{border-color:#000;color:#000;}
+.btn-nav-cta{padding:9px 20px;border-radius:9px;border:none;background:#0A0A0A;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn-nav-cta:hover{background:#333;transform:translateY(-1px);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:transparent;}
+.hamburger span{display:block;width:22px;height:2px;background:#0A0A0A;border-radius:2px;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-drawer{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:8999;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.mobile-drawer.open{opacity:1;pointer-events:all;}
+.mobile-drawer-inner{position:absolute;top:0;right:0;width:300px;height:100%;background:white;padding:24px 20px;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;}
+.mobile-drawer.open .mobile-drawer-inner{transform:translateX(0);}
+.mobile-drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
+.mobile-close{border:none;background:#F5F5F5;width:34px;height:34px;border-radius:8px;font-size:16px;cursor:pointer;}
+.mobile-section-label{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#999;margin:16px 0 8px;}
+.mobile-ind-btn{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border-radius:12px;border:none;background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;color:#333;transition:background 0.2s;text-align:left;}
+.mobile-ind-btn:hover{background:#F5F5F5;}
+.mobile-ind-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.mobile-cta-section{margin-top:20px;padding-top:20px;border-top:1px solid #F0F0F0;display:flex;flex-direction:column;gap:10px;}
 
-        /* Dashboard sidebar nav */
-        .dash-nav {
-            position: fixed;
-            top: 0; left: 0;
-            height: 100vh;
-            width: 72px;
-            background: white;
-            border-right: 2px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 16px 0;
-            z-index: 900;
-            transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
-            overflow: hidden;
-        }
-        .dash-nav.expanded { width: 240px; }
-        .dash-nav-logo {
-            width: 44px; height: 44px;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 8px;
-            flex-shrink: 0;
-        }
-        .dash-nav-logo img { width: 100%; height: 100%; object-fit: contain; }
-        .dash-nav-toggle {
-            width: 44px; height: 36px;
-            background: var(--bg-hover);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            margin: 8px 0 16px;
-            flex-shrink: 0;
-            color: var(--text-secondary);
-            transition: background 0.2s;
-        }
-        .dash-nav-toggle:hover { background: var(--primary); color: white; }
-        .dash-nav-items { flex: 1; width: 100%; display: flex; flex-direction: column; gap: 2px; padding: 0 10px; }
-        .dash-nav-item { touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 11px 10px;
-            border: none;
-            background: transparent;
-            border-radius: 12px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 14px;
-            font-weight: 600;
-            font-family: "DM Sans", sans-serif;
-            transition: all 0.2s;
-            white-space: nowrap;
-            text-decoration: none;
-        }
-        .dash-nav-item:hover { background: rgba(255,92,0,0.08); color: var(--primary); }
-        .dash-nav-item.active { background: var(--gradient-primary); color: white; box-shadow: var(--shadow-orange); }
-        .dash-nav-icon { font-size: 20px; flex-shrink: 0; width: 24px; text-align: center; }
-        .dash-nav-label { opacity: 0; transition: opacity 0.2s; white-space: nowrap; overflow: hidden; }
-        .dash-nav.expanded .dash-nav-label { opacity: 1; }
-        .dash-nav-divider { height: 1px; background: var(--border); margin: 8px 10px; }
-        .dash-nav-logout {
-            padding: 0 10px;
-            margin-bottom: 16px;
-            width: 100%;
-        }
-        .dash-nav-logout button {
-            width: 100%;
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 10px;
-            border: none;
-            background: rgba(239,68,68,0.08);
-            border-radius: 12px;
-            cursor: pointer;
-            color: #EF4444;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: "DM Sans", sans-serif;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .dash-nav-logout button:hover { background: #EF4444; color: white; }
+/* ===================================================== PAGES ===================================================== */
+.page{display:none;padding-top:68px;min-height:100vh;}
+.page.active{display:block;}
 
-        /* Dashboard layout with sidebar */
-        .dashboard.active { padding-left: 72px; }
-        .dashboard-sidebar-open { padding-left: 240px !important; }
+/* ===================================================== HOME ===================================================== */
+.home-hero{min-height:calc(100vh - 68px);background:#FAFAFA;display:flex;align-items:center;padding:80px 48px;position:relative;overflow:hidden;}
+.home-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 900px 700px at 80% 40%,rgba(14,111,255,0.06) 0%,transparent 70%),radial-gradient(ellipse 600px 500px at 0% 80%,rgba(255,92,0,0.04) 0%,transparent 70%);}
+.home-hero-inner{max-width:1400px;margin:0 auto;width:100%;position:relative;z-index:1;}
+.home-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.1);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:700;color:#333;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:24px;}
+.home-h1{font-family:'Instrument Serif',serif;font-size:clamp(52px,6.5vw,96px);font-weight:400;line-height:1.0;color:#0A0A0A;margin-bottom:24px;max-width:900px;}
+.home-h1 em{font-style:italic;color:#0E6FFF;}
+.home-sub{font-size:19px;color:#666;max-width:560px;line-height:1.7;margin-bottom:44px;}
+.home-cta-row{display:flex;gap:14px;margin-bottom:64px;flex-wrap:wrap;}
+.btn-home-primary{padding:16px 36px;background:#0A0A0A;color:white;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.25s;box-shadow:0 8px 24px rgba(0,0,0,0.2);}
+.btn-home-primary:hover{background:#333;transform:translateY(-2px);}
+.btn-home-ghost{padding:15px 28px;background:transparent;color:#333;border-radius:12px;border:2px solid #D5D5D5;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn-home-ghost:hover{border-color:#000;color:#000;}
+.industry-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;max-width:1400px;margin:0 auto;padding:0 48px 80px;}
+.ind-card{border-radius:20px;overflow:hidden;cursor:pointer;position:relative;height:260px;transition:all 0.35s;}
+.ind-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,0.18);}
+.ind-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s;}
+.ind-card:hover img{transform:scale(1.08);}
+.ind-card-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 60%);}
+.ind-card-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:4px;}
+.ind-card-title{font-family:'Instrument Serif',serif;font-size:20px;color:white;font-style:italic;}
+.ind-card-arrow{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;transition:all 0.2s;}
+.ind-card:hover .ind-card-arrow{background:white;color:#000;}
+.home-stats-row{background:#0A0A0A;padding:60px 48px;}
+.home-stats-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+.home-stat{text-align:center;}
+.home-stat-num{font-family:'Instrument Serif',serif;font-size:56px;color:white;line-height:1;}
+.home-stat-label{font-size:14px;color:#888;margin-top:8px;}
 
-        /* Mobile dashboard nav (bottom bar) */
-        .dash-bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: white;
-            border-top: 2px solid var(--border);
-            z-index: 900;
-            padding: 8px 0 env(safe-area-inset-bottom, 8px);
-        }
-        .dash-bottom-items {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        .dash-bottom-item { touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            padding: 6px 0;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-size: 10px;
-            font-weight: 600;
-            font-family: "DM Sans", sans-serif;
-            transition: color 0.2s;
-        }
-        .dash-bottom-item .di { font-size: 20px; }
-        .dash-bottom-item.active { color: var(--primary); }
-        .dash-bottom-item:hover { color: var(--primary); }
+/* ===================================================== INDUSTRY TEMPLATE ===================================================== */
+.ind-page{--pc:#000;--pc-light:#333;--pc-bg:#F8F8F8;--grad:linear-gradient(135deg,#000,#333);}
+.ind-hero{min-height:calc(100vh - 68px);display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;}
+.ind-hero-left{display:flex;flex-direction:column;justify-content:center;padding:80px 60px 80px 80px;background:var(--pc-bg);position:relative;z-index:1;}
+.ind-hero-right{position:relative;overflow:hidden;}
+.ind-hero-right img{width:100%;height:100%;object-fit:cover;}
+.ind-hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,var(--pc-bg) 0%,transparent 20%);}
+.ind-pill{display:inline-flex;align-items:center;gap:7px;border-radius:100px;padding:6px 16px;font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:24px;}
+.ind-h1{font-size:clamp(40px,4.5vw,68px);font-weight:400;line-height:1.05;color:#0A0A0A;margin-bottom:20px;}
+.ind-h1 em{font-style:italic;}
+.ind-sub{font-size:17px;color:#555;line-height:1.7;max-width:480px;margin-bottom:40px;}
+.ind-cta-row{display:flex;gap:12px;margin-bottom:52px;flex-wrap:wrap;}
+.btn-ind{padding:14px 32px;color:white;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;background:var(--grad);transition:all 0.25s;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.btn-ind:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.22);}
+.btn-ind-ghost{padding:13px 28px;background:transparent;color:#333;border-radius:11px;border:2px solid #D5D5D5;font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn-ind-ghost:hover{border-color:#000;color:#000;}
+.ind-float{position:absolute;bottom:40px;left:40px;z-index:10;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-radius:18px;padding:18px 22px;min-width:220px;box-shadow:0 20px 60px rgba(0,0,0,0.15);animation:floatY 3.5s ease-in-out infinite;}
+@keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.ind-float-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#999;margin-bottom:4px;}
+.ind-float-value{font-family:'Instrument Serif',serif;font-size:36px;color:#0A0A0A;line-height:1;}
+.ind-float-trend{font-size:12px;font-weight:700;margin-top:3px;}
+.ind-stats-strip{background:white;border-bottom:1px solid #F0F0F0;padding:0 80px;}
+.ind-stats-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-top:3px solid var(--pc);}
+.ind-stat-item{padding:32px 20px;text-align:center;border-right:1px solid #F0F0F0;}
+.ind-stat-item:last-child{border-right:none;}
+.ind-stat-num{font-family:'Instrument Serif',serif;font-size:44px;color:var(--pc);line-height:1;}
+.ind-stat-lbl{font-size:13px;color:#888;font-weight:600;margin-top:6px;}
+.ind-features-section{padding:100px 80px;background:var(--pc-bg);}
+.ind-feat-head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:60px;}
+.ind-feat-tag{font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--pc);margin-bottom:12px;}
+.ind-feat-h2{font-size:clamp(30px,3.5vw,48px);color:#0A0A0A;line-height:1.1;}
+.ind-feat-h2 em{font-style:italic;color:var(--pc);}
+.ind-feat-p{font-size:16px;color:#666;line-height:1.7;}
+.ind-feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.ind-feat-card{background:white;border:1.5px solid #EBEBEB;border-radius:20px;padding:32px;transition:all 0.3s;}
+.ind-feat-card:hover{border-color:var(--pc);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.08);}
+.ind-feat-icon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:18px;}
+.ind-feat-card h3{font-size:17px;font-weight:700;color:#0A0A0A;margin-bottom:8px;}
+.ind-feat-card p{font-size:14px;color:#666;line-height:1.65;}
+.ind-hiw{padding:100px 80px;background:var(--pc);position:relative;overflow:hidden;}
+.ind-hiw::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 500px at 0% 100%,rgba(255,255,255,0.06) 0%,transparent 60%),radial-gradient(ellipse 400px 400px at 100% 0%,rgba(255,255,255,0.04) 0%,transparent 60%);}
+.ind-hiw-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+.ind-hiw-head{text-align:center;margin-bottom:64px;}
+.ind-hiw-tag{font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;}
+.ind-hiw-h2{font-size:clamp(30px,3.5vw,48px);color:white;line-height:1.1;}
+.ind-hiw-h2 em{font-style:italic;opacity:0.7;}
+.ind-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+.ind-step{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;text-align:center;}
+.ind-step-num{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 18px;}
+.ind-step h4{font-size:16px;font-weight:700;color:white;margin-bottom:8px;}
+.ind-step p{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6;}
+.ind-photo-strip{padding:80px;background:white;}
+.ind-photo-strip-inner{max-width:1200px;margin:0 auto;}
+.ind-photo-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;grid-template-rows:210px 210px;gap:14px;}
+.ind-photo-cell{border-radius:18px;overflow:hidden;position:relative;}
+.ind-photo-cell img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block;}
+.ind-photo-cell:hover img{transform:scale(1.06);}
+.ind-photo-cell:first-child{grid-row:1/span 2;}
+.ind-color-block{display:flex;flex-direction:column;justify-content:space-between;padding:28px;color:white;background:var(--grad);}
+.ind-color-block h3{font-size:22px;line-height:1.25;}
+.ind-color-block p{font-size:13px;opacity:0.8;line-height:1.6;}
+.ind-color-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;color:white;font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.2s;}
+.ind-color-btn:hover{background:rgba(255,255,255,0.3);}
+.ind-testi{padding:100px 80px;background:var(--pc-bg);}
+.ind-testi-inner{max-width:1200px;margin:0 auto;}
+.ind-testi-head{text-align:center;margin-bottom:56px;}
+.ind-testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.ind-testi-card{background:white;border:1.5px solid #EBEBEB;border-radius:20px;padding:28px;transition:all 0.3s;}
+.ind-testi-card.feat-t{background:var(--pc);border-color:transparent;color:white;}
+.ind-testi-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.08);}
+.ind-stars{font-size:14px;margin-bottom:14px;letter-spacing:2px;}
+.ind-quote{font-family:'Instrument Serif',serif;font-size:16px;line-height:1.7;color:#333;margin-bottom:20px;font-style:italic;}
+.ind-testi-card.feat-t .ind-quote{color:rgba(255,255,255,0.9);}
+.ind-author{display:flex;align-items:center;gap:10px;}
+.ind-avatar{width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;}
+.ind-avatar img{width:100%;height:100%;object-fit:cover;}
+.ind-auth-name{font-size:14px;font-weight:700;color:#0A0A0A;}
+.ind-testi-card.feat-t .ind-auth-name{color:white;}
+.ind-auth-role{font-size:12px;color:#999;}
+.ind-testi-card.feat-t .ind-auth-role{color:rgba(255,255,255,0.6);}
+.ind-pricing{padding:100px 80px;background:white;}
+.ind-pricing-inner{max-width:1100px;margin:0 auto;}
+.ind-pricing-head{text-align:center;margin-bottom:56px;}
+.ind-price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.ind-price-card{border:2px solid #EBEBEB;border-radius:22px;padding:36px;transition:all 0.3s;}
+.ind-price-card:hover{transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,0,0,0.08);}
+.ind-price-card.pop-p{background:var(--grad);border-color:transparent;transform:scale(1.03);box-shadow:0 16px 50px rgba(0,0,0,0.15);}
+.ind-price-card.pop-p:hover{transform:scale(1.03) translateY(-5px);}
+.ind-pop-badge{font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;}
+.ind-plan-name{font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#888;margin-bottom:14px;}
+.ind-price-card.pop-p .ind-plan-name{color:rgba(255,255,255,0.6);}
+.ind-price-amt{font-family:'Instrument Serif',serif;font-size:52px;color:#0A0A0A;line-height:1;margin-bottom:6px;}
+.ind-price-card.pop-p .ind-price-amt{color:white;}
+.ind-price-period{font-size:13px;color:#999;margin-bottom:28px;}
+.ind-price-card.pop-p .ind-price-period{color:rgba(255,255,255,0.6);}
+.ind-price-feats{list-style:none;margin-bottom:32px;}
+.ind-price-feats li{padding:9px 0;border-bottom:1px solid #F5F5F5;font-size:13px;color:#555;display:flex;gap:8px;}
+.ind-price-card.pop-p .ind-price-feats li{border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.85);}
+.ind-price-feats li:last-child{border-bottom:none;}
+.ind-price-feats li::before{content:'\2713';font-weight:800;width:18px;height:18px;background:rgba(0,0,0,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;color:#555;}
+.ind-price-card.pop-p .ind-price-feats li::before{background:rgba(255,255,255,0.2);color:white;}
+.btn-price-outline{width:100%;padding:13px;border-radius:11px;border:2px solid var(--pc);background:transparent;color:var(--pc);font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn-price-outline:hover{background:var(--pc);color:white;}
+.btn-price-white{width:100%;padding:13px;border-radius:11px;border:none;background:white;color:#0A0A0A;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn-price-white:hover{background:#F5F5F5;}
+.ind-cta-banner{padding:100px 80px;background:var(--pc);position:relative;overflow:hidden;}
+.ind-cta-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 600px at 0% 100%,rgba(255,255,255,0.07) 0%,transparent 60%);}
+.ind-cta-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:60px;align-items:center;}
+.ind-cta-h2{font-size:clamp(32px,3.5vw,52px);color:white;line-height:1.1;margin-bottom:14px;}
+.ind-cta-h2 em{font-style:italic;opacity:0.7;}
+.ind-cta-p{font-size:16px;color:rgba(255,255,255,0.6);max-width:500px;line-height:1.7;}
+.ind-cta-btns{display:flex;flex-direction:column;gap:10px;min-width:220px;align-items:center;}
+.btn-cta-w{width:100%;padding:15px 32px;background:white;color:#0A0A0A;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.btn-cta-w:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(0,0,0,0.2);}
+.btn-cta-g{width:100%;padding:14px 32px;background:rgba(255,255,255,0.08);color:white;border:1.5px solid rgba(255,255,255,0.2);border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn-cta-g:hover{background:rgba(255,255,255,0.15);}
+.ind-cta-note{font-size:11px;color:rgba(255,255,255,0.4);}
+.ind-footer{background:#0A0A0A;padding:60px 80px 32px;}
+.ind-footer-inner{max-width:1400px;margin:0 auto;}
+.ind-footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:28px;}
+.ind-footer-brand span{font-family:'Instrument Serif',serif;font-size:22px;color:white;font-style:italic;display:block;margin-bottom:12px;}
+.ind-footer-brand p{font-size:13px;color:#555;line-height:1.7;max-width:260px;}
+.ind-footer-col h5{font-size:12px;font-weight:700;letter-spacing:0.06em;color:#E0E0E0;margin-bottom:16px;}
+.ind-footer-col a{display:block;font-size:13px;color:#555;text-decoration:none;margin-bottom:10px;transition:color 0.2s;}
+.ind-footer-col a:hover{color:#999;}
+.ind-footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.ind-footer-bottom p{font-size:12px;color:#444;}
+.ind-footer-badges{display:flex;gap:8px;}
+.ind-footer-badge{font-size:10px;font-weight:700;color:#444;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:6px;}
 
-        /* Feature badge colors */
-        .crm-feature:nth-child(4n+1) .crm-feature-icon { color: var(--purple); }
-        .crm-feature:nth-child(4n+2) .crm-feature-icon { color: var(--accent); }
-        .crm-feature:nth-child(4n+3) .crm-feature-icon { color: var(--secondary); }
-        .crm-feature:nth-child(4n+4) .crm-feature-icon { color: var(--gold); }
+/* ===================================================== AUTH MODAL ===================================================== */
+.auth-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.auth-modal.active{display:flex!important;}
+.auth-box{background:white;border-radius:24px;padding:44px;max-width:480px;width:90%;max-height:88vh;overflow-y:auto;box-shadow:0 40px 100px rgba(0,0,0,0.2);animation:authIn 0.3s ease;}
+@keyframes authIn{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+.auth-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.auth-head h2{font-family:'Instrument Serif',serif;font-size:28px;color:#0A0A0A;}
+.auth-close{background:#F5F5F5;border:none;width:34px;height:34px;border-radius:8px;font-size:18px;cursor:pointer;color:#666;}
+.auth-tabs{display:flex;gap:6px;background:#F5F5F5;padding:4px;border-radius:10px;margin-bottom:24px;}
+.auth-tab{flex:1;padding:10px;background:transparent;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#888;transition:all 0.2s;}
+.auth-tab.on{background:white;color:#0A0A0A;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+.auth-field{margin-bottom:18px;}
+.auth-field label{display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;letter-spacing:0.04em;}
+.auth-field input,.auth-field select{width:100%;padding:12px 14px;border:2px solid #EBEBEB;border-radius:10px;font-size:14px;color:#0A0A0A;font-family:'Plus Jakarta Sans',sans-serif;transition:border-color 0.2s;background:white;}
+.auth-field input:focus,.auth-field select:focus{outline:none;border-color:#0A0A0A;}
+.btn-auth{width:100%;padding:14px;background:#0A0A0A;color:white;border:none;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn-auth:hover{background:#333;}
+.auth-note{text-align:center;font-size:12px;color:#999;margin-top:12px;}
+.hidden{display:none!important;}
+.loading-spin{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-        /* Extra action cards row */
-        .action-grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-        .action-card-sm { touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        .action-card-sm:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .action-card-sm .action-icon { font-size: 32px; margin-bottom: 10px; }
-        .action-card-sm h3 { font-family: "Syne",sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-        .action-card-sm p { color: var(--text-muted); font-size: 12px; }
+/* ===================================================== DASHBOARD ===================================================== */
+.dashboard{display:none;padding-top:68px;min-height:100vh;background:#F5F7FF;}
+.dashboard.active{display:block!important;}
+.badge{display:inline-block;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;}
+.badge-green{background:rgba(21,128,61,0.1);color:#15803D;}
+.badge-orange{background:rgba(194,65,12,0.1);color:#C2410C;}
+.badge-blue{background:rgba(14,86,217,0.1);color:#0E56D9;}
+.badge-purple{background:rgba(91,33,182,0.1);color:#5B21B6;}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9500;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal.active{display:flex!important;}
+.modal-content{background:white;border-radius:24px;padding:40px;max-width:700px;width:90%;max-height:88vh;overflow-y:auto;box-shadow:0 40px 100px rgba(0,0,0,0.2);}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.modal-header h2{font-family:'Instrument Serif',serif;font-size:26px;color:#0A0A0A;}
+.close-modal{background:#F5F5F5;border:none;width:34px;height:34px;border-radius:8px;font-size:20px;cursor:pointer;color:#666;}
+.close-modal:hover{background:#0A0A0A;color:white;}
+.form-tabs{display:flex;gap:6px;background:#F5F5F5;padding:4px;border-radius:10px;margin-bottom:24px;}
+.form-tab{flex:1;padding:10px;background:transparent;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#888;transition:all 0.2s;}
+.form-tab.active{background:white;color:#0A0A0A;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;letter-spacing:0.04em;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;border:2px solid #EBEBEB;border-radius:10px;font-size:14px;color:#0A0A0A;font-family:'Plus Jakarta Sans',sans-serif;transition:border-color 0.2s;background:white;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#0A0A0A;}
+.btn{padding:12px 24px;background:#0A0A0A;color:white;border-radius:10px;border:none;font-weight:700;font-size:14px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.btn:hover{background:#333;}
+.btn-outline{background:white!important;border:2px solid #0A0A0A!important;color:#0A0A0A!important;}
+.btn-secondary{background:#15803D!important;}
+.btn-accent{background:#0E56D9!important;}
+.table{width:100%;border-collapse:collapse;}
+.table th,.table td{padding:14px 16px;text-align:left;border-bottom:1px solid #F5F5F5;}
+.table th{font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.05em;background:#FAFAFA;}
+.table tr:hover{background:#FAFAFA;}
+.loading{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin 0.8s linear infinite;}
+.stat-card{background:white;border:1px solid #F0F0F0;border-radius:16px;padding:24px;}
+.stat-value{font-family:'Instrument Serif',serif;font-size:40px;color:#0A0A0A;}
+.stat-label{font-size:13px;color:#888;font-weight:600;}
+.stat-trend{font-size:12px;font-weight:700;margin-top:4px;}
+.stat-trend.up{color:#15803D;}
+.action-card{background:#F5F7FF;border:2px solid #E5E5E5;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.action-card:hover{border-color:#5B21B6;}
+.action-icon{font-size:40px;margin-bottom:12px;}
+.action-card h3{font-size:16px;font-weight:700;color:#0A0A0A;}
+.action-card p{font-size:13px;color:#888;}
+.dashboard-section{background:white;border-radius:20px;padding:32px;margin-bottom:24px;}
+.dashboard-section h2{font-family:'Instrument Serif',serif;font-size:26px;margin-bottom:24px;color:#0A0A0A;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;}
+.action-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;}
+.action-grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+.action-card-sm{background:#F5F7FF;border:2px solid #E5E5E5;border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.action-card-sm:hover{border-color:#5B21B6;}
+.action-card-sm .action-icon{font-size:32px;margin-bottom:8px;}
+.action-card-sm h3{font-size:13px;font-weight:700;color:#0A0A0A;}
+.action-card-sm p{font-size:12px;color:#888;}
+.dashboard-header{display:flex;justify-content:space-between;align-items:center;background:white;padding:28px 32px;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.06);margin-bottom:28px;flex-wrap:wrap;gap:16px;}
+.dashboard-welcome h1{font-family:'Instrument Serif',serif;font-size:32px;color:#0A0A0A;}
+.dashboard-welcome p{color:#888;font-weight:600;margin-top:4px;}
+.dashboard-container{max-width:1400px;margin:0 auto;padding:40px;}
+.table-container{overflow-x:auto;}
+.stat-card::before{display:none;}
+.dash-nav{position:fixed;top:0;left:0;height:100vh;width:72px;background:white;border-right:2px solid #E5E5E5;display:flex;flex-direction:column;align-items:center;padding:16px 0;z-index:900;transition:width 0.3s;overflow:hidden;}
+.dash-nav.expanded{width:240px;}
+.dash-nav-logo{width:44px;height:44px;border-radius:14px;overflow:hidden;margin-bottom:8px;flex-shrink:0;}
+.dash-nav-logo img{width:100%;height:100%;object-fit:contain;}
+.dash-nav-toggle{width:44px;height:36px;background:#F0F0F0;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;margin:8px 0 16px;flex-shrink:0;color:#888;transition:background 0.2s;}
+.dash-nav-toggle:hover{background:#0A0A0A;color:white;}
+.dash-nav-items{flex:1;width:100%;display:flex;flex-direction:column;gap:2px;padding:0 10px;}
+.dash-nav-item{touch-action:manipulation;display:flex;align-items:center;gap:12px;width:100%;padding:11px 10px;border:none;background:transparent;border-radius:12px;cursor:pointer;color:#888;font-size:14px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;white-space:nowrap;text-decoration:none;}
+.dash-nav-item:hover{background:rgba(91,33,182,0.08);color:#5B21B6;}
+.dash-nav-item.active{background:#0A0A0A;color:white;}
+.dash-nav-icon{font-size:20px;flex-shrink:0;width:24px;text-align:center;}
+.dash-nav-label{opacity:0;transition:opacity 0.2s;white-space:nowrap;overflow:hidden;}
+.dash-nav.expanded .dash-nav-label{opacity:1;}
+.dash-nav-divider{height:1px;background:#F0F0F0;margin:8px 10px;}
+.dash-nav-logout{padding:0 10px;margin-bottom:16px;width:100%;}
+.dash-nav-logout button{width:100%;display:flex;align-items:center;gap:12px;padding:11px 10px;border:none;background:rgba(244,63,94,0.08);border-radius:12px;cursor:pointer;color:#F43F5E;font-size:14px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;white-space:nowrap;}
+.dash-nav-logout button:hover{background:#F43F5E;color:white;}
+#dashboard.active{padding-left:72px;}
+.dashboard-sidebar-open{padding-left:240px!important;}
+.dash-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:2px solid #E5E5E5;z-index:900;padding:8px 0;}
+.dash-bottom-items{display:flex;justify-content:space-around;align-items:center;}
+.dash-bottom-item{touch-action:manipulation;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;border:none;background:transparent;cursor:pointer;color:#888;font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;transition:color 0.2s;}
+.dash-bottom-item .di{font-size:20px;}
+.dash-bottom-item.active,.dash-bottom-item:hover{color:#5B21B6;}
 
-        @media (max-width: 768px) {
-            .hamburger { display: flex; }
-            .nav-links { display: none !important; }
-            /* mobile-nav is controlled by JS only - never display:block here */
-            .dash-nav { display: none; }
-            .dash-bottom-nav { display: block; }
-            .dashboard.active { padding-left: 0 !important; padding-bottom: 76px; }
-            .dashboard-container { padding: 16px; }
+/* ===================================================== RESPONSIVE ===================================================== */
+@media(max-width:1024px){
+  .ind-feat-grid{grid-template-columns:repeat(2,1fr);}
+  .ind-photo-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto;}
+  .ind-photo-cell:first-child{grid-row:auto;grid-column:1/span 2;height:220px;}
+  .ind-testi-grid{grid-template-columns:1fr 1fr;}
+  .ind-price-grid{grid-template-columns:1fr;}
+  .ind-price-card.pop-p{transform:none;}
+  .ind-cta-inner{grid-template-columns:1fr;}
+  .ind-hero{grid-template-columns:1fr;}
+  .ind-hero-right{height:400px;}
+  .industry-grid{grid-template-columns:repeat(3,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .action-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:768px){
+  .main-nav{padding:0 20px;}
+  .nav-links,.nav-cta-group{display:none;}
+  .hamburger{display:flex;}
+  .ind-hero-left{padding:60px 28px;}
+  .ind-features-section,.ind-hiw,.ind-photo-strip,.ind-testi,.ind-pricing,.ind-cta-banner,.ind-footer{padding:60px 28px;}
+  .ind-stats-strip{padding:0 28px;}
+  .ind-feat-grid,.ind-steps,.ind-testi-grid{grid-template-columns:1fr;}
+  .ind-footer-top{grid-template-columns:1fr 1fr;}
+  .industry-grid{grid-template-columns:1fr 1fr;padding:0 24px 60px;}
+  .home-hero{padding:60px 24px;}
+  .home-stats-row{padding:40px 24px;}
+  .home-stats-inner{grid-template-columns:1fr 1fr;}
+  .ind-feat-head{grid-template-columns:1fr;}
+  .dash-nav{display:none;}
+  .dash-bottom-nav{display:block;}
+  #dashboard.active{padding-left:0!important;padding-bottom:76px;}
+  .dashboard-container{padding:16px!important;}
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .action-grid{grid-template-columns:repeat(2,1fr)!important;}
+}
+</style>
+
+<!-- CRITICAL: Page navigation must be defined before app.js loads -->
+<script>
+// Define showPage globally and immediately so onclick handlers work
+// even if app.js hasn't loaded yet or throws an error
+(function() {
+    window.showPage = function(id) {
+        // Hide all pages
+        var pages = document.querySelectorAll('.page');
+        for (var i = 0; i < pages.length; i++) {
+            pages[i].classList.remove('active');
         }
-    </style>
+        // Show target
+        var target = document.getElementById('page-' + id);
+        if (target) {
+            target.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+    };
+
+    window.showHome = function() {
+        window.showPage('home');
+    };
+
+    // Mobile nav - defined early so hamburger onclick works immediately
+    window.toggleMobile = function() {
+        var d = document.getElementById('mobileDrawer');
+        var h = document.getElementById('hamburger');
+        if (!d) return;
+        if (d.classList.contains('open')) {
+            d.classList.remove('open');
+            if (h) h.classList.remove('open');
+            setTimeout(function() { if(d) d.style.display = 'none'; }, 350);
+            document.body.style.overflow = '';
+        } else {
+            d.style.display = 'block';
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    d.classList.add('open');
+                    if (h) h.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+        }
+    };
+
+    window.closeMobileOnBg = function(e) {
+        if (e.target === document.getElementById('mobileDrawer')) window.toggleMobile();
+    };
+
+    // Auth modal - defined early so Login button works immediately
+    window.openAuth = function() {
+        var m = document.getElementById('authModal');
+        if (m) m.classList.add('active');
+    };
+    window.closeAuth = function() {
+        var m = document.getElementById('authModal');
+        if (m) m.classList.remove('active');
+    };
+    window.closeAuthModal = window.closeAuth;
+
+    window.switchAuthTab = function(tab) {
+        var loginTab = document.getElementById('loginTab');
+        var signupTab = document.getElementById('signupTab');
+        var loginForm = document.getElementById('loginForm');
+        var signupForm = document.getElementById('signupForm');
+        var authTitle = document.getElementById('authTitle');
+        if (!loginTab) return;
+        if (tab === 'login') {
+            loginTab.classList.add('on');
+            signupTab.classList.remove('on');
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+            if (authTitle) authTitle.textContent = 'Welcome Back';
+        } else {
+            signupTab.classList.add('on');
+            loginTab.classList.remove('on');
+            signupForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            if (authTitle) authTitle.textContent = 'Create Account';
+        }
+    };
+
+    window.showLogin = function() { window.openAuth(); window.switchAuthTab('login'); };
+    window.showSignup = function() { window.openAuth(); window.switchAuthTab('signup'); };
+    window.signupWithPlan = function(plan) {
+        var el = document.getElementById('signupPlan');
+        if (el) el.value = plan;
+        window.openAuth();
+        window.switchAuthTab('signup');
+    };
+    window.switchToLogin = function() { window.switchAuthTab('login'); };
+    window.switchToSignup = function() { window.switchAuthTab('signup'); };
+
+    // Sidebar toggles
+    var sidebarOpen = false;
+    window.toggleSidebar = function() {
+        var nav = document.getElementById('dashNav');
+        var dash = document.getElementById('dashboard');
+        sidebarOpen = !sidebarOpen;
+        if (nav) nav.classList.toggle('expanded', sidebarOpen);
+        if (dash) dash.classList.toggle('dashboard-sidebar-open', sidebarOpen);
+        var btn = document.getElementById('sidebarToggle');
+        if (btn) btn.textContent = sidebarOpen ? '\u2715' : '\u2630';
+    };
+    window.toggleAdminSidebar = function() {
+        var nav = document.getElementById('adminDashNav');
+        sidebarOpen = !sidebarOpen;
+        if (nav) nav.classList.toggle('expanded', sidebarOpen);
+    };
+    window.setActiveNav = function(el) {
+        document.querySelectorAll('#dashNav .dash-nav-item').forEach(function(i) { i.classList.remove('active'); });
+        el.classList.add('active');
+    };
+    window.setAdminNav = function(el) {
+        document.querySelectorAll('#adminDashNav .dash-nav-item').forEach(function(i) { i.classList.remove('active'); });
+        el.classList.add('active');
+    };
+    window.setBottomNav = function(el) {
+        document.querySelectorAll('.dash-bottom-item').forEach(function(i) { i.classList.remove('active'); });
+        el.classList.add('active');
+    };
+
+    console.log('\u2705 sambandh.ai navigation loaded');
+})();
+</script>
+
+
 </head>
 <body>
-    <!-- ===== NAVIGATION ===== -->
-    <nav id="mainNav">
-        <div class="nav-container">
-            <a href="#" class="logo" onclick="showHome()">
-                <img src="assets/logo.png" alt="sambandh.ai">
-            </a>
-            <div class="nav-links">
-                <a href="#features" id="navFeaturesLink">Features</a>
-                <a href="#pricing" id="navPricingLink">Pricing</a>
-                <a href="#" id="navLoginBtn" onclick="showLogin()">Login</a>
-                <button class="btn" id="navSignupBtn" onclick="showSignup()">Start Free Trial</button>
-                <button class="btn btn-outline" id="navLogoutBtn" onclick="logout()" style="display:none;">🚪 Logout</button>
-                <button class="btn" id="navDashBtn" onclick="goToDashboard()" style="display:none;">📊 My Dashboard</button>
-            </div>
-            <!-- Hamburger for mobile -->
-            <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
 
-    <!-- ===== MOBILE NAV DRAWER ===== -->
-    <div class="mobile-nav" id="mobileNav" style="display:none;pointer-events:none;" onclick="closeMobileNavOnBg(event)">
-        <div class="mobile-nav-drawer">
-            <div class="mobile-nav-header">
-                <img src="assets/logo.png" alt="sambandh.ai">
-                <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
-            </div>
-            <div class="mobile-nav-links">
-                <a href="#features" onclick="closeMobileNav()" id="mobileNavFeaturesLink"><span class="nav-icon">✨</span> Features</a>
-                <a href="#pricing" onclick="closeMobileNav()" id="mobileNavPricingLink"><span class="nav-icon">💎</span> Pricing</a>
-                <button class="nav-link-btn" id="mobileNavLoginBtn" onclick="closeMobileNav();showLogin()"><span class="nav-icon">🔑</span> Login</button>
-                <button class="nav-link-btn" id="mobileNavDashBtn" onclick="closeMobileNav();goToDashboard()" style="display:none;"><span class="nav-icon">📊</span> My Dashboard</button>
-            </div>
-            <div class="mobile-nav-footer">
-                <button class="btn" id="mobileNavSignupBtn" onclick="closeMobileNav();showSignup()" style="width:100%;margin-bottom:10px;">🚀 Start Free Trial</button>
-                <button class="btn btn-outline" id="mobileNavLogoutBtn" onclick="closeMobileNav();logout()" style="width:100%;display:none;margin-bottom:10px;">🚪 Logout</button>
-                <button class="btn btn-outline" onclick="closeMobileNav();openWhatsAppConfig()" style="width:100%;display:none;" id="mobileWABtn">💬 WhatsApp API</button>
-            </div>
-        </div>
+<!-- NAV -->
+<nav class="main-nav">
+  <div class="nav-wrap">
+    <div class="nav-logo" onclick="showPage('home')">
+      <img src="assets/logo.png" alt="sambandh.ai" onerror="this.style.display='none'">
+      <span class="nav-logo-text">sambandh.ai</span>
     </div>
-
-    <!-- ===== LANDING PAGE ===== -->
-    <div id="landingPage">
-        <!-- HERO -->
-        <section class="hero">
-            <div class="hero-content">
-                <div class="hero-badge">🚀 Created by IITians · Built for India</div>
-                <h1>Transform Every Customer<br>Into a Loyal Fan</h1>
-                <p class="hero-sub">India's most powerful WhatsApp CRM for salons, restaurants & local businesses. Capture, engage, and grow your customer base effortlessly.</p>
-                <div class="hero-cta">
-                    <button class="btn" onclick="showSignup()">Start Free Trial - ₹0</button>
-                    <button class="btn btn-outline" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Explore Features</button>
-                </div>
-                <div class="hero-stats">
-                    <div class="hero-stat"><div class="hero-stat-value">10,000+</div><div class="hero-stat-label">Active Businesses</div></div>
-                    <div class="hero-stat"><div class="hero-stat-value">95%</div><div class="hero-stat-label">Customer Retention</div></div>
-                    <div class="hero-stat"><div class="hero-stat-value">₹2Cr+</div><div class="hero-stat-label">Revenue Generated</div></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- MAIN FEATURES -->
-        <section class="features" id="features">
-            <div class="section-header">
-                <div class="section-badge">✨ Core Features</div>
-                <h2 class="section-title">Everything You Need to Succeed</h2>
-                <p class="section-subtitle">Powerful tools designed specifically for Indian small businesses</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card"><div class="feature-icon">📱</div><h3>Smart QR Capture</h3><p>Print one QR code at your counter. Every customer scan automatically joins your database with name, phone, and visit history.</p></div>
-                <div class="feature-card"><div class="feature-icon">💬</div><h3>WhatsApp Automation</h3><p>Send birthday wishes, special offers, and appointment reminders directly on WhatsApp. AI-powered booking bot included.</p></div>
-                <div class="feature-card"><div class="feature-icon">🎯</div><h3>Smart Campaigns</h3><p>Create laser-focused campaigns for dormant customers. Bring them back with personalized offers that convert.</p></div>
-                <div class="feature-card"><div class="feature-icon">⭐</div><h3>Review Automation</h3><p>Auto-send Google Review requests to happy customers. Build a 5-star reputation while you sleep.</p></div>
-                <div class="feature-card"><div class="feature-icon">📊</div><h3>Real-time Analytics</h3><p>Track customer retention, revenue trends, and campaign ROI. All insights in simple Hindi or English.</p></div>
-                <div class="feature-card"><div class="feature-icon">🎁</div><h3>Loyalty Programs</h3><p>Digital stamp cards, referral rewards, and exclusive member perks. Turn visitors into regulars.</p></div>
-            </div>
-        </section>
-
-        <!-- CRM FEATURES — ALL 12 FROM SCREENSHOT -->
-        <section class="crm-showcase">
-            <div class="crm-features">
-                <div class="section-header">
-                    <div class="section-badge">🔥 Advanced CRM</div>
-                    <h2 class="section-title">Complete Customer Management</h2>
-                    <p class="section-subtitle">Every tool you need to manage and grow your customer relationships</p>
-                </div>
-                <div class="crm-grid">
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">👥</div><h4>Customer Segmentation</h4><p>Automatically segment customers by visit frequency, spending, and preferences</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">📅</div><h4>Appointment Booking</h4><p>Let customers book appointments via WhatsApp. Auto-confirmations and reminders included</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">💰</div><h4>Revenue Tracking</h4><p>Track per-customer revenue, lifetime value, and predict future earnings</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">🔔</div><h4>Smart Notifications</h4><p>Get alerts for VIP customers, dormant accounts, and milestone celebrations</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">📈</div><h4>Growth Insights</h4><p>AI-powered recommendations to increase retention and boost revenue</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">🎫</div><h4>Digital Vouchers</h4><p>Create and send discount coupons via WhatsApp. Track redemption rates in real-time</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">📱</div><h4>SMS Fallback</h4><p>Auto-switch to SMS if WhatsApp isn't available. Never miss a customer message</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">🌐</div><h4>Multi-language</h4><p>Full support for Hindi, English, and 10+ regional languages across all messages</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">🔒</div><h4>Data Security</h4><p>Enterprise-grade security with Firebase. Your data is always encrypted and safe</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">📊</div><h4>Custom Reports</h4><p>Generate detailed reports for any time period. Export to Excel or PDF instantly</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">🔗</div><h4>POS Integration</h4><p>Connect with Petpooja, Posist, and other popular billing software seamlessly</p></div>
-                    <div class="crm-feature"><div class="crm-feature-icon" style="font-size:40px;margin-bottom:14px;">🎯</div><h4>A/B Testing</h4><p>Test different messages and offers. See what converts best for your audience</p></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- PRICING -->
-        <section class="pricing" id="pricing">
-            <div class="section-header">
-                <div class="section-badge">💎 Pricing</div>
-                <h2 class="section-title">Choose Your Growth Plan</h2>
-                <p class="section-subtitle">Start free, upgrade as you grow. No hidden fees, cancel anytime.</p>
-            </div>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3>Basic</h3><div class="pricing-price">₹299</div><div class="pricing-period">per month</div>
-                    <ul class="pricing-features"><li>Up to 500 customers</li><li>QR code capture</li><li>WhatsApp messaging (1000/mo)</li><li>Basic analytics</li><li>Customer segmentation</li><li>Hindi & English support</li><li>Email support</li></ul>
-                    <button class="btn" style="width:100%" onclick="signupWithPlan('basic')">Start Free Trial</button>
-                </div>
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">Most Popular</div>
-                    <h3>Pro</h3><div class="pricing-price">₹699</div><div class="pricing-period">per month</div>
-                    <ul class="pricing-features"><li>Up to 2,000 customers</li><li>AI WhatsApp booking bot</li><li>Unlimited WhatsApp messages</li><li>Automated campaigns + A/B testing</li><li>Google Review automation</li><li>Revenue tracking & reports</li><li>Digital vouchers & loyalty</li><li>Smart notifications & alerts</li><li>Priority support (24/7)</li></ul>
-                    <button class="btn" style="width:100%" onclick="signupWithPlan('pro')">Start Free Trial</button>
-                </div>
-                <div class="pricing-card">
-                    <h3>Premium</h3><div class="pricing-price">₹1,299</div><div class="pricing-period">per month</div>
-                    <ul class="pricing-features"><li>Unlimited customers</li><li>Everything in Pro, plus:</li><li>Multi-location support</li><li>POS system integration</li><li>SMS fallback (auto)</li><li>API access + custom integrations</li><li>White-label options</li><li>Dedicated account manager</li></ul>
-                    <button class="btn" style="width:100%" onclick="signupWithPlan('premium')">Start Free Trial</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- FOOTER -->
-        <footer>
-            <div class="footer-content">
-                <div class="footer-logo"><img src="assets/logo.png" alt="sambandh.ai"></div>
-                <p style="font-size:16px;color:var(--text-secondary);font-weight:600;">Connecting Retailers & Customers</p>
-                <p>&copy; 2026 sambandh.ai · Built with ❤️ in Jaipur</p>
-                <div class="footer-links">
-                    <a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Contact Us</a><a href="#">Help Center</a>
-                </div>
-            </div>
-        </footer>
+    <div class="nav-links">
+      <div class="nav-item">
+        <button class="nav-link">
+          Industries
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="mega-menu">
+          <div class="mega-card" style="color:#0E56D9;" onclick="showPage('clinic')"><div class="mega-icon" style="background:rgba(14,86,217,0.1);">&#127973;</div><div><div class="mega-title">Clinic &amp; Healthcare</div><div class="mega-sub">Patient management &amp; follow-ups</div></div></div>
+          <div class="mega-card" style="color:#BE185D;" onclick="showPage('salon')"><div class="mega-icon" style="background:rgba(190,24,93,0.1);">&#128135;</div><div><div class="mega-title">Salon &amp; Beauty</div><div class="mega-sub">Bookings, loyalty &amp; reviews</div></div></div>
+          <div class="mega-card" style="color:#C2410C;" onclick="showPage('restaurant')"><div class="mega-icon" style="background:rgba(194,65,12,0.1);">&#127869;</div><div><div class="mega-title">Restaurants &amp; Cafes</div><div class="mega-sub">Table bookings &amp; repeat customers</div></div></div>
+          <div class="mega-card" style="color:#15803D;" onclick="showPage('gym')"><div class="mega-icon" style="background:rgba(21,128,61,0.1);">&#128170;</div><div><div class="mega-title">Gym &amp; Fitness</div><div class="mega-sub">Member retention &amp; renewals</div></div></div>
+          <div class="mega-card" style="color:#92400E;" onclick="showPage('realestate')"><div class="mega-icon" style="background:rgba(146,64,14,0.1);">&#127968;</div><div><div class="mega-title">Real Estate</div><div class="mega-sub">Lead nurturing &amp; site visits</div></div></div>
+          <div class="mega-card" style="color:#5B21B6;" onclick="showPage('retail')"><div class="mega-icon" style="background:rgba(91,33,182,0.1);">&#128717;</div><div><div class="mega-title">Retail &amp; Stores</div><div class="mega-sub">Loyalty programs &amp; campaigns</div></div></div>
+        </div>
+      </div>
+      <a href="#" class="nav-link" onclick="event.preventDefault()">Features</a>
+      <a href="#" class="nav-link" onclick="event.preventDefault()">Pricing</a>
+      <a href="#" class="nav-link" onclick="event.preventDefault()">Blog</a>
     </div>
-
-    <!-- ===== AUTH MODAL ===== -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="authTitle">Welcome Back</h2>
-                <button class="close-modal" onclick="closeAuthModal()">&times;</button>
-            </div>
-            <div class="form-tabs">
-                <button class="form-tab active" id="loginTab" onclick="switchToLogin()">Login</button>
-                <button class="form-tab" id="signupTab" onclick="switchToSignup()">Sign Up</button>
-            </div>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" placeholder="you@example.com" required></div>
-                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" required></div>
-                <button type="submit" class="btn" style="width:100%">
-                    <span id="loginBtnText">Login to Dashboard</span>
-                    <span id="loginBtnLoading" class="hidden"><span class="loading"></span></span>
-                </button>
-            </form>
-            <form id="signupForm" class="hidden" onsubmit="handleSignup(event)">
-                <div class="form-group"><label>Business Name *</label><input type="text" id="signupBusinessName" placeholder="Style Studio Salon" required></div>
-                <div class="form-group"><label>Business Type *</label>
-                    <select id="signupBusinessType" required>
-                        <option value="">Select type</option>
-                        <option value="salon">Salon / Beauty Parlor</option>
-                        <option value="restaurant">Restaurant / Cafe</option>
-                        <option value="gym">Gym / Fitness Center</option>
-                        <option value="clinic">Clinic / Spa</option>
-                        <option value="retail">Retail Shop</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group"><label>Owner Name *</label><input type="text" id="signupOwnerName" placeholder="Your full name" required></div>
-                <div class="form-group"><label>Mobile Number *</label><input type="tel" id="signupMobile" placeholder="9876543210" required pattern="[0-9]{10}"></div>
-                <div class="form-group"><label>Email Address *</label><input type="email" id="signupEmail" placeholder="you@example.com" required></div>
-                <div class="form-group"><label>Password *</label><input type="password" id="signupPassword" placeholder="Minimum 6 characters" required minlength="6"></div>
-                <div class="form-group"><label>City *</label><input type="text" id="signupCity" placeholder="Jaipur" required></div>
-                <div class="form-group"><label>Choose Your Plan *</label>
-                    <select id="signupPlan" required>
-                        <option value="basic">Basic - ₹299/month</option>
-                        <option value="pro" selected>Pro - ₹699/month (Recommended)</option>
-                        <option value="premium">Premium - ₹1,299/month</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn" style="width:100%">
-                    <span id="signupBtnText">Start Free Trial (14 Days)</span>
-                    <span id="signupBtnLoading" class="hidden"><span class="loading"></span></span>
-                </button>
-                <p style="margin-top:16px;font-size:13px;color:var(--text-muted);text-align:center;">No credit card required · Cancel anytime</p>
-            </form>
-        </div>
+    <div class="nav-cta-group">
+      <button class="btn-nav-login" onclick="openAuth()">Login</button>
+      <button class="btn-nav-cta" onclick="openAuth()">Start Free Trial &#8594;</button>
     </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
 
-    <!-- ===== USER DASHBOARD ===== -->
-    <div id="dashboard" class="dashboard">
-        <!-- SIDEBAR NAV (Desktop) -->
-        <div class="dash-nav" id="dashNav">
-            <div class="dash-nav-logo"><img src="assets/logo.png" alt="sambandh"></div>
-            <button class="dash-nav-toggle" onclick="toggleSidebar()" id="sidebarToggle" title="Toggle sidebar">☰</button>
-            <div class="dash-nav-items">
-                <button class="dash-nav-item active" onclick="setActiveNav(this);scrollDash('dash-top')"><span class="dash-nav-icon">🏠</span><span class="dash-nav-label">Home</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openQRGenerator()"><span class="dash-nav-icon">📱</span><span class="dash-nav-label">QR Code</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openCampaignBuilder()"><span class="dash-nav-icon">📨</span><span class="dash-nav-label">Campaigns</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openAnalytics()"><span class="dash-nav-icon">📊</span><span class="dash-nav-label">Analytics</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openBookings()"><span class="dash-nav-icon">📅</span><span class="dash-nav-label">Bookings</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openLoyalty()"><span class="dash-nav-icon">🎁</span><span class="dash-nav-label">Loyalty</span></button>
-                <div class="dash-nav-divider"></div>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openSegmentation()"><span class="dash-nav-icon">👥</span><span class="dash-nav-label">Segmentation</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openRevenueTracking()"><span class="dash-nav-icon">💰</span><span class="dash-nav-label">Revenue</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openVouchers()"><span class="dash-nav-icon">🎫</span><span class="dash-nav-label">Vouchers</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openABTesting()"><span class="dash-nav-icon">🧪</span><span class="dash-nav-label">A/B Testing</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openReports()"><span class="dash-nav-icon">📋</span><span class="dash-nav-label">Reports</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openGrowthInsights()"><span class="dash-nav-icon">📈</span><span class="dash-nav-label">Insights</span></button>
-                <div class="dash-nav-divider"></div>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openGoogleReview()"><span class="dash-nav-icon">⭐</span><span class="dash-nav-label">Google Reviews</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openWhatsAppConfig()"><span class="dash-nav-icon">💬</span><span class="dash-nav-label">WhatsApp API</span></button>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openUpgradePlan()"><span class="dash-nav-icon">💎</span><span class="dash-nav-label">Upgrade Plan</span></button>
-                <div class="dash-nav-divider"></div>
-                <button class="dash-nav-item" onclick="setActiveNav(this);openSettings()"><span class="dash-nav-icon">⚙️</span><span class="dash-nav-label">Settings</span></button>
-            </div>
-            <div class="dash-nav-logout">
-                <button onclick="logout()"><span class="dash-nav-icon">🚪</span><span class="dash-nav-label">Logout</span></button>
-            </div>
-        </div>
-
-        <!-- BOTTOM NAV (Mobile) -->
-        <div class="dash-bottom-nav">
-            <div class="dash-bottom-items">
-                <button class="dash-bottom-item active" onclick="setBottomNav(this)"><span class="di">🏠</span>Home</button>
-                <button class="dash-bottom-item" onclick="setBottomNav(this);openQRGenerator()"><span class="di">📱</span>QR</button>
-                <button class="dash-bottom-item" onclick="setBottomNav(this);openCampaignBuilder()"><span class="di">📨</span>Campaign</button>
-                <button class="dash-bottom-item" onclick="setBottomNav(this);openBookings()"><span class="di">📅</span>Bookings</button>
-                <button class="dash-bottom-item" onclick="setBottomNav(this);openLoyalty()"><span class="di">🎁</span>Loyalty</button>
-                <button class="dash-bottom-item" onclick="setBottomNav(this);openMoreMenu()"><span class="di">⋯</span>More</button>
-            </div>
-        </div>
-
-        <div class="dashboard-container" id="dash-top">
-            <!-- HEADER -->
-            <div class="dashboard-header">
-                <div class="dashboard-welcome">
-                    <h1 id="dashboardBusinessName">Welcome Back!</h1>
-                    <p id="dashboardPlan">Pro Plan · Active</p>
-                </div>
-                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                    <button class="btn btn-secondary" style="font-size:13px;padding:10px 16px;" onclick="openUpgradePlan()">💎 Upgrade Plan</button>
-                    <button class="btn btn-accent" style="font-size:13px;padding:10px 16px;" onclick="openWhatsAppConfig()">💬 WhatsApp API</button>
-                    <button class="btn btn-outline" style="font-size:13px;padding:10px 14px;" onclick="openSettings()">⚙️</button>
-                    <button class="btn btn-outline" style="font-size:13px;padding:10px 14px;" onclick="logout()">🚪</button>
-                </div>
-            </div>
-
-            <!-- STATS -->
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="totalCustomers">0</div><div class="stat-label">Total Customers</div><div class="stat-trend up">↑ 12% this month</div></div>
-                <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-value" id="monthlyGrowth">0%</div><div class="stat-label">Monthly Growth</div><div class="stat-trend up">↑ On track</div></div>
-                <div class="stat-card"><div class="stat-icon">📨</div><div class="stat-value" id="campaignsSent">0</div><div class="stat-label">Campaigns Sent</div><div class="stat-trend up">↑ 8 this week</div></div>
-                <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value" id="retention">0%</div><div class="stat-label">Retention Rate</div><div class="stat-trend up">↑ Excellent</div></div>
-            </div>
-
-            <!-- QUICK ACTIONS — PRIMARY 6 -->
-            <div class="dashboard-section">
-                <h2>⚡ Quick Actions</h2>
-                <div class="action-grid">
-                    <div class="action-card" onclick="openQRGenerator()"><div class="action-icon">📱</div><h3>Generate QR Code</h3><p>Create scannable customer capture QR</p></div>
-                    <div class="action-card" onclick="openCampaignBuilder()"><div class="action-icon">📨</div><h3>Send Campaign</h3><p>WhatsApp blast to customers</p></div>
-                    <div class="action-card" onclick="openAnalytics()"><div class="action-icon">📊</div><h3>View Analytics</h3><p>Detailed reports & insights</p></div>
-                    <div class="action-card" onclick="openBookings()"><div class="action-icon">📅</div><h3>Manage Bookings</h3><p>View appointment schedule</p></div>
-                    <div class="action-card" onclick="openLoyalty()"><div class="action-icon">🎁</div><h3>Loyalty Program</h3><p>Manage rewards & offers</p></div>
-                    <div class="action-card" onclick="openSettings()"><div class="action-icon">⚙️</div><h3>Settings</h3><p>Business profile & preferences</p></div>
-                </div>
-            </div>
-
-            <!-- MORE TOOLS — THE 12 NEW FEATURES -->
-            <div class="dashboard-section">
-                <h2>🛠️ More Tools</h2>
-                <div class="action-grid-2">
-                    <div class="action-card-sm" onclick="openSegmentation()"><div class="action-icon">👥</div><h3>Customer Segmentation</h3><p>VIP, Regular, Inactive groups</p></div>
-                    <div class="action-card-sm" onclick="openRevenueTracking()"><div class="action-icon">💰</div><h3>Revenue Tracking</h3><p>Lifetime value & predictions</p></div>
-                    <div class="action-card-sm" onclick="openNotifications()"><div class="action-icon">🔔</div><h3>Smart Notifications</h3><p>VIP & dormant alerts</p></div>
-                    <div class="action-card-sm" onclick="openGrowthInsights()"><div class="action-icon">📈</div><h3>Growth Insights</h3><p>AI-powered recommendations</p></div>
-                    <div class="action-card-sm" onclick="openVouchers()"><div class="action-icon">🎫</div><h3>Digital Vouchers</h3><p>Create & track discount coupons</p></div>
-                    <div class="action-card-sm" onclick="openSMSFallback()"><div class="action-icon">📱</div><h3>SMS Fallback</h3><p>Auto SMS if WhatsApp fails</p></div>
-                    <div class="action-card-sm" onclick="openMultilang()"><div class="action-icon">🌐</div><h3>Multi-language</h3><p>Hindi + 10 regional languages</p></div>
-                    <div class="action-card-sm" onclick="openReports()"><div class="action-icon">📋</div><h3>Custom Reports</h3><p>Export to Excel / PDF</p></div>
-                    <div class="action-card-sm" onclick="openPOSIntegration()"><div class="action-icon">🔗</div><h3>POS Integration</h3><p>Petpooja, Posist & more</p></div>
-                    <div class="action-card-sm" onclick="openABTesting()"><div class="action-icon">🧪</div><h3>A/B Testing</h3><p>Test messages & offers</p></div>
-                    <div class="action-card-sm" onclick="openDataSecurity()"><div class="action-icon">🔒</div><h3>Data Security</h3><p>Firebase encryption info</p></div>
-                    <div class="action-card-sm" onclick="openGoogleReview()"><div class="action-icon">⭐</div><h3>Google Reviews</h3><p>Auto request + track reviews</p></div>
-                    <div class="action-card-sm" onclick="openWhatsAppDynamic()"><div class="action-icon">💬</div><h3>WhatsApp API</h3><p>Configure API & templates</p></div>
-                    <div class="action-card-sm" onclick="openUpgradePlan()"><div class="action-icon">💎</div><h3>Upgrade Plan</h3><p>Unlock more features</p></div>
-                </div>
-            </div>
-
-            <!-- RECENT CUSTOMERS -->
-            <div class="dashboard-section">
-                <h2>📋 Recent Customers</h2>
-                <div class="table-container">
-                    <table class="table" id="customersTable">
-                        <thead><tr><th>Customer Name</th><th>Phone Number</th><th>Last Visit</th><th>Total Visits</th><th>Revenue</th><th>Status</th></tr></thead>
-                        <tbody id="customersTableBody">
-                            <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;">📱</div><div style="font-size:16px;font-weight:600;">No customers yet</div><div style="font-size:14px;">Share your QR code to start!</div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer" onclick="closeMobileOnBg(event)" style="display:none;">
+  <div class="mobile-drawer-inner">
+    <div class="mobile-drawer-head">
+      <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;">sambandh.ai</span>
+      <button class="mobile-close" onclick="toggleMobile()">&#x2715;</button>
     </div>
-
-    <!-- ===== ADMIN DASHBOARD ===== -->
-    <div id="adminDashboard" class="dashboard">
-        <!-- SIDEBAR for admin -->
-        <div class="dash-nav" id="adminDashNav">
-            <div class="dash-nav-logo"><img src="assets/logo.png" alt="sambandh"></div>
-            <button class="dash-nav-toggle" onclick="toggleAdminSidebar()" title="Toggle">☰</button>
-            <div class="dash-nav-items">
-                <button class="dash-nav-item active"><span class="dash-nav-icon">🛠️</span><span class="dash-nav-label">Dashboard</span></button>
-                <button class="dash-nav-item" onclick="setAdminNav(this);openPlatformAnalytics()"><span class="dash-nav-icon">📈</span><span class="dash-nav-label">Analytics</span></button>
-                <button class="dash-nav-item" onclick="setAdminNav(this);openModal('adminBroadcastModal')"><span class="dash-nav-icon">📢</span><span class="dash-nav-label">Broadcast</span></button>
-                <button class="dash-nav-item" onclick="setAdminNav(this);exportAllData()"><span class="dash-nav-icon">📥</span><span class="dash-nav-label">Export Data</span></button>
-                <button class="dash-nav-item" onclick="setAdminNav(this);openAdminBilling()"><span class="dash-nav-icon">💳</span><span class="dash-nav-label">Billing</span></button>
-                <button class="dash-nav-item" onclick="setAdminNav(this);toggleAdminFilter()"><span class="dash-nav-icon">🔍</span><span class="dash-nav-label">Filter Users</span></button>
-            </div>
-            <div class="dash-nav-logout"><button onclick="logout()"><span class="dash-nav-icon">🚪</span><span class="dash-nav-label">Logout</span></button></div>
-        </div>
-
-        <!-- BOTTOM NAV admin mobile -->
-        <div class="dash-bottom-nav">
-            <div class="dash-bottom-items">
-                <button class="dash-bottom-item active"><span class="di">🛠️</span>Admin</button>
-                <button class="dash-bottom-item" onclick="openPlatformAnalytics()"><span class="di">📈</span>Analytics</button>
-                <button class="dash-bottom-item" onclick="openModal('adminBroadcastModal')"><span class="di">📢</span>Broadcast</button>
-                <button class="dash-bottom-item" onclick="exportAllData()"><span class="di">📥</span>Export</button>
-                <button class="dash-bottom-item" onclick="openAdminBilling()"><span class="di">💳</span>Billing</button>
-            </div>
-        </div>
-
-        <div class="dashboard-container">
-            <div class="dashboard-header">
-                <div class="dashboard-welcome"><h1>🛠️ Admin Control Panel</h1><p>Platform Analytics & User Management</p></div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                    <button class="btn" onclick="openPlatformAnalytics()">📈 Analytics</button>
-                    <button class="btn btn-secondary" onclick="openAdminBilling()">💳 Billing</button>
-                    <button class="btn btn-accent" onclick="openModal('adminBroadcastModal')">📢 Broadcast</button>
-                    <button class="btn btn-outline" onclick="logout()">Logout</button>
-                </div>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="adminTotalUsers">0</div><div class="stat-label">Total Businesses</div><div class="stat-trend up">↑ Growing fast</div></div>
-                <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="adminActiveUsers">0</div><div class="stat-label">Active Users</div><div class="stat-trend up">↑ High engagement</div></div>
-                <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="adminMRR">₹0</div><div class="stat-label">Monthly Revenue (MRR)</div><div class="stat-trend up">↑ Scaling</div></div>
-                <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-value" id="adminARR">₹0</div><div class="stat-label">Annual Revenue (ARR)</div><div class="stat-trend up">↑ On target</div></div>
-            </div>
-            <div class="dashboard-section">
-                <h2>📊 All Registered Users</h2>
-                <div class="table-container">
-                    <table class="table" id="adminUsersTable">
-                        <thead><tr><th>Business Name</th><th>Owner</th><th>Email</th><th>Plan</th><th>City</th><th>Customers</th><th>Joined Date</th></tr></thead>
-                        <tbody id="adminUsersTableBody">
-                            <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;">👥</div><div style="font-size:16px;font-weight:600;margin-bottom:8px;">No users yet</div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="mobile-section-label">Industries</div>
+    <button class="mobile-ind-btn" onclick="showPage('clinic');toggleMobile()"><div class="mobile-ind-icon" style="background:rgba(14,86,217,0.1);">&#127973;</div>Clinic &amp; Healthcare</button>
+    <button class="mobile-ind-btn" onclick="showPage('salon');toggleMobile()"><div class="mobile-ind-icon" style="background:rgba(190,24,93,0.1);">&#128135;</div>Salon &amp; Beauty</button>
+    <button class="mobile-ind-btn" onclick="showPage('restaurant');toggleMobile()"><div class="mobile-ind-icon" style="background:rgba(194,65,12,0.1);">&#127869;</div>Restaurants &amp; Cafes</button>
+    <button class="mobile-ind-btn" onclick="showPage('gym');toggleMobile()"><div class="mobile-ind-icon" style="background:rgba(21,128,61,0.1);">&#128170;</div>Gym &amp; Fitness</button>
+    <button class="mobile-ind-btn" onclick="showPage('realestate');toggleMobile()"><div class="mobile-ind-icon" style="background:rgba(146,64,14,0.1);">&#127968;</div>Real Estate</button>
+    <button class="mobile-ind-btn" onclick="showPage('retail');toggleMobile()"><div class="mobile-ind-icon" style="background:rgba(91,33,182,0.1);">&#128717;</div>Retail &amp; Stores</button>
+    <div class="mobile-cta-section">
+      <button class="btn-nav-login" style="width:100%;padding:13px;" onclick="openAuth();toggleMobile()">Login</button>
+      <button class="btn-nav-cta" style="width:100%;padding:13px;" onclick="openAuth();toggleMobile()">Start Free Trial &#8594;</button>
     </div>
+  </div>
+</div>
 
-    <!-- Firebase SDK -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="app.js"></script>
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <section class="home-hero">
+    <div class="home-hero-inner">
+      <div class="home-eyebrow">&#128640; Built for Indian Businesses &#183; WhatsApp-Native</div>
+      <h1 class="home-h1">Grow your business<br>with <em>smarter</em> customer<br>relationships</h1>
+      <p class="home-sub">India's most powerful WhatsApp CRM &#8212; purpose-built for every type of local business. Capture, engage, and retain customers effortlessly.</p>
+      <div class="home-cta-row">
+        <button class="btn-home-primary" onclick="openAuth()">Start Free &#8212; &#8377;0</button>
+        <button class="btn-home-ghost" onclick="document.querySelector('.industry-grid').scrollIntoView({behavior:'smooth'})">Explore Industries &#8595;</button>
+      </div>
+    </div>
+  </section>
+  <div class="industry-grid">
+    <div class="ind-card" onclick="showPage('clinic')"><img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400&q=80&auto=format&fit=crop" alt="Clinic"><div class="ind-card-overlay"><div class="ind-card-label">Healthcare</div><div class="ind-card-title">Clinic &amp; Doctors</div></div><div class="ind-card-arrow">&#8594;</div></div>
+    <div class="ind-card" onclick="showPage('salon')"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80&auto=format&fit=crop" alt="Salon"><div class="ind-card-overlay"><div class="ind-card-label">Beauty</div><div class="ind-card-title">Salons &amp; Spas</div></div><div class="ind-card-arrow">&#8594;</div></div>
+    <div class="ind-card" onclick="showPage('restaurant')"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80&auto=format&fit=crop" alt="Restaurant"><div class="ind-card-overlay"><div class="ind-card-label">Food &amp; Beverage</div><div class="ind-card-title">Restaurants</div></div><div class="ind-card-arrow">&#8594;</div></div>
+    <div class="ind-card" onclick="showPage('gym')"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80&auto=format&fit=crop" alt="Gym"><div class="ind-card-overlay"><div class="ind-card-label">Fitness</div><div class="ind-card-title">Gyms &amp; Studios</div></div><div class="ind-card-arrow">&#8594;</div></div>
+    <div class="ind-card" onclick="showPage('realestate')"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80&auto=format&fit=crop" alt="Real Estate"><div class="ind-card-overlay"><div class="ind-card-label">Property</div><div class="ind-card-title">Real Estate</div></div><div class="ind-card-arrow">&#8594;</div></div>
+    <div class="ind-card" onclick="showPage('retail')"><img src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=400&q=80&auto=format&fit=crop" alt="Retail"><div class="ind-card-overlay"><div class="ind-card-label">Commerce</div><div class="ind-card-title">Retail Stores</div></div><div class="ind-card-arrow">&#8594;</div></div>
+  </div>
+  <div class="home-stats-row">
+    <div class="home-stats-inner">
+      <div class="home-stat"><div class="home-stat-num">10,000+</div><div class="home-stat-label">Businesses Active</div></div>
+      <div class="home-stat"><div class="home-stat-num">92%</div><div class="home-stat-label">Avg Customer Retention</div></div>
+      <div class="home-stat"><div class="home-stat-num">&#8377;2Cr+</div><div class="home-stat-label">Revenue Generated</div></div>
+      <div class="home-stat"><div class="home-stat-num">4.9&#9733;</div><div class="home-stat-label">Average Rating</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="page ind-page" id="page-clinic" style="--pc:#0E56D9;--pc-light:#3B82F6;--pc-bg:#F0F5FF;--grad:linear-gradient(135deg,#0E56D9,#0ABFBC);">
+<div class="ind-hero">
+  <div class="ind-hero-left">
+    <div class="ind-pill" style="background:rgba(14,86,217,0.1);border:1.5px solid rgba(14,86,217,0.2);color:#0E56D9;">&#127973; Clinic &amp; Healthcare CRM</div>
+    <h1 class="ind-h1" style="font-family:'Instrument Serif',serif;">Retain more patients,<br><em style="color:#0E56D9;">automate the rest</em></h1>
+    <p class="ind-sub">India's smartest WhatsApp CRM for GPs, dental clinics, skin clinics, and specialty hospitals. Reduce no-shows by 40%.</p>
+    <div class="ind-cta-row"><button class="btn-ind" onclick="openAuth()">Start Free Trial</button><button class="btn-ind-ghost">See Demo &#8595;</button></div>
+    <div style="display:flex;flex-wrap:wrap;gap:20px;"><div style="font-size:13px;font-weight:600;color:#666;">&#10003; 500+ Clinics</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; HIPAA-aware</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; India-hosted</div></div>
+  </div>
+  <div class="ind-hero-right"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=85&auto=format&fit=crop" alt="Clinic"><div class="ind-float"><div class="ind-float-label">Patients This Month</div><div class="ind-float-value">1,247</div><div class="ind-float-trend" style="color:#16A34A;">&#8593; 18% vs last month</div></div></div>
+</div>
+<div class="ind-stats-strip"><div class="ind-stats-inner"><div class="ind-stat-item"><div class="ind-stat-num">40%</div><div class="ind-stat-lbl">Fewer No-shows</div></div><div class="ind-stat-item"><div class="ind-stat-num">4.7&#9733;</div><div class="ind-stat-lbl">Avg Google Rating</div></div><div class="ind-stat-item"><div class="ind-stat-num">3&#215;</div><div class="ind-stat-lbl">More Repeat Visits</div></div><div class="ind-stat-item"><div class="ind-stat-num">92%</div><div class="ind-stat-lbl">Patient Retention</div></div></div></div>
+<div class="ind-features-section"><div class="ind-feat-head"><div><div class="ind-feat-tag">Core Features</div><h2 class="ind-feat-h2" style="font-family:'Instrument Serif',serif;">Built for <em>every clinic</em></h2></div><p class="ind-feat-p">From GP to dental, skin, and eye clinics &#8212; sambandh.ai adapts to your specialty automatically.</p></div>
+<div class="ind-feat-grid">
+<div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(14,86,217,0.08);">&#128241;</div><h3>QR Patient Capture</h3><p>One QR at reception captures name, phone, and visit reason automatically via WhatsApp.</p></div>
+<div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(10,191,188,0.08);">&#128172;</div><h3>WhatsApp Reminders</h3><p>Auto-send appointment reminders 24hrs before. Reduce no-shows by up to 40%.</p></div>
+<div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(16,185,129,0.08);">&#128197;</div><h3>Smart Scheduling</h3><p>Patients book via WhatsApp. Auto-confirm and manage your daily load intelligently.</p></div>
+<div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(245,158,11,0.08);">&#11088;</div><h3>Review Automation</h3><p>Post-visit review requests boost your Google rating. Happy patients &#8594; more stars.</p></div>
+<div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(244,63,94,0.08);">&#127919;</div><h3>Patient Segmentation</h3><p>Auto-group: Chronic, New, Lapsed, VIP. Target each with relevant health tips.</p></div>
+<div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(124,58,237,0.08);">&#128202;</div><h3>Revenue Analytics</h3><p>Per-doctor, per-treatment revenue tracking. Predict next month's income.</p></div>
+</div></div>
+<div class="ind-hiw"><div class="ind-hiw-inner"><div class="ind-hiw-head"><div class="ind-hiw-tag">How It Works</div><h2 class="ind-hiw-h2" style="font-family:'Instrument Serif',serif;">Up and running in <em>15 minutes</em></h2></div>
+<div class="ind-steps"><div class="ind-step"><div class="ind-step-num">&#127973;</div><h4>Add Your Clinic</h4><p>Set up profile, specialties, and doctor roster in 5 minutes.</p></div><div class="ind-step"><div class="ind-step-num">&#128241;</div><h4>Print QR Standee</h4><p>Download and place at reception. Patients scan to register via WhatsApp.</p></div><div class="ind-step"><div class="ind-step-num">&#129302;</div><h4>AI Automates</h4><p>Reminders, follow-ups, and review requests go out automatically.</p></div><div class="ind-step"><div class="ind-step-num">&#128200;</div><h4>Practice Grows</h4><p>Watch retention and revenue improve on your clean dashboard.</p></div></div>
+</div></div>
+<div class="ind-photo-strip"><div class="ind-photo-strip-inner"><div class="ind-photo-grid">
+<div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=700&q=80&auto=format&fit=crop" alt=""></div>
+<div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=500&q=80&auto=format&fit=crop" alt=""></div>
+<div class="ind-photo-cell ind-color-block"><div><div style="font-size:36px;margin-bottom:12px;">&#129514;</div><h3 style="font-family:'Instrument Serif',serif;font-weight:400;">Hindi + 10 regional languages</h3><p style="font-size:13px;margin-top:8px;opacity:0.8;">Message patients in their preferred language automatically.</p></div><button class="ind-color-btn" onclick="openAuth()">Get Started &#8594;</button></div>
+<div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=500&q=80&auto=format&fit=crop" alt=""></div>
+<div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500&q=80&auto=format&fit=crop" alt=""></div>
+</div></div></div>
+<div class="ind-testi"><div class="ind-testi-inner"><div class="ind-testi-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Testimonials</div><h2 class="ind-feat-h2" style="font-family:'Instrument Serif',serif;">Doctors love <em>sambandh.ai</em></h2></div>
+<div class="ind-testi-grid">
+<div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"No-shows dropped 35% in one month. WhatsApp reminders are brilliant &#8212; my receptionist handles 2&#215; more patients now."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Dr. Rajesh Mehta</div><div class="ind-auth-role">GP, Jaipur</div></div></div></div>
+<div class="ind-testi-card feat-t"><div class="ind-stars" style="color:rgba(255,255,255,0.6);">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Google rating went from 3.9 to 4.7 in 60 days. Review automation is a game-changer &#8212; just one WhatsApp message."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Dr. Priya Sharma</div><div class="ind-auth-role">Dentist, Delhi</div></div></div></div>
+<div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Managing 3 branches was a nightmare before. Now all patients, appointments, and revenue live in one dashboard."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Dr. Anil Kapoor</div><div class="ind-auth-role">Dermatologist, Mumbai</div></div></div></div>
+</div></div></div>
+<div class="ind-pricing"><div class="ind-pricing-inner"><div class="ind-pricing-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Pricing</div><h2 class="ind-feat-h2" style="font-family:'Instrument Serif',serif;">Simple, <em>transparent plans</em></h2></div>
+<div class="ind-price-grid">
+<div class="ind-price-card"><div class="ind-plan-name">Starter</div><div class="ind-price-amt">&#8377;299</div><div class="ind-price-period">/month &#183; 500 patients</div><ul class="ind-price-feats"><li>QR patient capture</li><li>1,000 WhatsApp/month</li><li>Appointment scheduling</li><li>Basic analytics</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div>
+<div class="ind-price-card pop-p"><div class="ind-pop-badge">MOST POPULAR</div><div class="ind-plan-name">Growth</div><div class="ind-price-amt">&#8377;699</div><div class="ind-price-period">/month &#183; 2,000 patients</div><ul class="ind-price-feats"><li>Everything in Starter</li><li>AI booking bot</li><li>Unlimited WhatsApp</li><li>Review automation</li><li>Revenue reports</li><li>Priority 24/7 support</li></ul><button class="btn-price-white" onclick="openAuth()">Start Free Trial</button></div>
+<div class="ind-price-card"><div class="ind-plan-name">Enterprise</div><div class="ind-price-amt">&#8377;1,299</div><div class="ind-price-period">/month &#183; Unlimited</div><ul class="ind-price-feats"><li>Everything in Growth</li><li>Multi-branch support</li><li>POS integration</li><li>API access</li><li>Dedicated manager</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div>
+</div></div></div>
+<div class="ind-cta-banner"><div class="ind-cta-inner"><div><h2 class="ind-cta-h2" style="font-family:'Instrument Serif',serif;">Ready to transform<br><em>your clinic?</em></h2><p class="ind-cta-p">Join 500+ clinics. Setup in 15 minutes, results in 30 days.</p></div><div class="ind-cta-btns"><button class="btn-cta-w" onclick="openAuth()">Start Free Trial &#8594;</button><button class="btn-cta-g" onclick="openAuth()">Demo Login</button><span class="ind-cta-note">No credit card &#183; 14-day trial</span></div></div></div>
+<div class="ind-footer"><div class="ind-footer-inner"><div class="ind-footer-top"><div class="ind-footer-brand"><span>sambandh.ai</span><p>India's trusted WhatsApp CRM for healthcare practices.</p></div><div class="ind-footer-col"><h5>Product</h5><a href="#">Features</a><a href="#">Pricing</a><a href="#">Blog</a></div><div class="ind-footer-col"><h5>Clinic Types</h5><a href="#">General Physician</a><a href="#">Dental</a><a href="#">Skin Clinic</a><a href="#">Eye Care</a></div><div class="ind-footer-col"><h5>Company</h5><a href="#">About</a><a href="#">Privacy</a><a href="#">Contact</a></div></div><div class="ind-footer-bottom"><p>&#169; 2026 sambandh.ai &#183; Built in Jaipur, India</p><div class="ind-footer-badges"><span class="ind-footer-badge">&#128274; ENCRYPTED</span><span class="ind-footer-badge">&#127470;&#127475; INDIA-HOSTED</span></div></div></div></div>
+</div>
+
+<div class="page ind-page" id="page-salon" style="--pc:#BE185D;--pc-light:#EC4899;--pc-bg:#FFF0F8;--grad:linear-gradient(135deg,#BE185D,#F472B6)">
+<div class="ind-hero"><div class="ind-hero-left">
+  <div class="ind-pill" style="background:rgba(0,0,0,0.07);border:1.5px solid rgba(0,0,0,0.13);color:#BE185D;">&#128135; Salon & Beauty CRM</div>
+  <h1 class="ind-h1" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Turn every visit into<br><em style="color:#BE185D;">a loyal customer</em></h1>
+  <p class="ind-sub">Book appointments, run loyalty stamp cards, and send WhatsApp offers to salon, spa, and beauty clients.</p>
+  <div class="ind-cta-row"><button class="btn-ind" onclick="openAuth()">Start Free Trial</button><button class="btn-ind-ghost">See Demo &#8595;</button></div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;"><div style="font-size:13px;font-weight:600;color:#666;">&#10003; 2,000+ Salons</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Digital stamp cards</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Win-back campaigns</div></div>
+</div><div class="ind-hero-right"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&q=85&auto=format&fit=crop" alt=""><div class="ind-float"><div class="ind-float-label">Monthly Revenue</div><div class="ind-float-value">&#8377;1.4L</div><div class="ind-float-trend" style="color:#16A34A;">&#8593; 22% vs last month</div></div></div></div>
+<div class="ind-stats-strip"><div class="ind-stats-inner"><div class="ind-stat-item"><div class="ind-stat-num">87%</div><div class="ind-stat-lbl">Client Retention</div></div><div class="ind-stat-item"><div class="ind-stat-num">3&#215;</div><div class="ind-stat-lbl">Repeat Bookings</div></div><div class="ind-stat-item"><div class="ind-stat-num">4.8&#9733;</div><div class="ind-stat-lbl">Google Rating</div></div><div class="ind-stat-item"><div class="ind-stat-num">60%</div><div class="ind-stat-lbl">Win-back Rate</div></div></div></div>
+<div class="ind-features-section"><div class="ind-feat-head"><div><div class="ind-feat-tag">Core Features</div><h2 class="ind-feat-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Built for <em>salons & spas</em></h2></div><p class="ind-feat-p">From local parlours to premium salons &#8212; grow your client base with automated WhatsApp marketing.</p></div><div class="ind-feat-grid"><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128241;</div><h3>QR Client Capture</h3><p>Print QR at counter. Every walk-in gets added to WhatsApp list automatically.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127873;</div><h3>Digital Loyalty Cards</h3><p>Stamp cards that live on WhatsApp. 10 visits = 1 free service.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128148;</div><h3>Win-back Campaigns</h3><p>Auto-detect clients who haven't visited in 30 days. Send personalized offers.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128197;</div><h3>Appointment Booking</h3><p>WhatsApp booking with staff selection, service picker, and auto-confirmation.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127882;</div><h3>Festival Campaigns</h3><p>One-click Diwali, Holi, Eid offers. Pre-built templates included.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#11088;</div><h3>Review Automation</h3><p>Post-service review requests double your Google reviews within 30 days.</p></div></div></div>
+<div class="ind-hiw"><div class="ind-hiw-inner"><div class="ind-hiw-head"><div class="ind-hiw-tag">How It Works</div><h2 class="ind-hiw-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Setup in <em>15 minutes</em></h2></div><div class="ind-steps"><div class="ind-step"><div class="ind-step-num">&#128135;</div><h4>Add Your Salon</h4><p>Set up services, staff, and business hours.</p></div><div class="ind-step"><div class="ind-step-num">&#128241;</div><h4>Place QR Code</h4><p>Print our standee. Every customer scans to join.</p></div><div class="ind-step"><div class="ind-step-num">&#129302;</div><h4>Automation Runs</h4><p>Birthday offers, loyalty stamps, and win-backs go out automatically.</p></div><div class="ind-step"><div class="ind-step-num">&#128176;</div><h4>Revenue Grows</h4><p>Watch repeat bookings and revenue increase month on month.</p></div></div></div></div>
+<div class="ind-photo-strip"><div class="ind-photo-strip-inner"><div class="ind-photo-grid"><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=700&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell ind-color-block"><div><div style="font-size:36px;margin-bottom:12px;">&#127873;</div><h3 style="font-size:20px;">Loyalty cards that actually work</h3><p style="font-size:13px;margin-top:8px;opacity:0.8;">Digital stamp cards on WhatsApp &#8212; no app download needed.</p></div><button class="ind-color-btn" onclick="openAuth()">Get Started &#8594;</button></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=500&q=80&auto=format&fit=crop" alt=""></div></div></div></div>
+<div class="ind-testi"><div class="ind-testi-inner"><div class="ind-testi-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Testimonials</div><h2 class="ind-feat-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Our customers <em>love us</em></h2></div><div class="ind-testi-grid"><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Revenue went up &#8377;40,000/month after win-back campaigns. 60% of inactive clients came back within 2 weeks!"</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Priya Agarwal</div><div class="ind-auth-role">Salon Owner, Jaipur</div></div></div></div><div class="ind-testi-card feat-t"><div class="ind-stars" style="color:rgba(255,255,255,0.6);">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"The loyalty stamp card feature is brilliant. Clients come back specifically to complete their card. Repeat visits up 3&#215;."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Meena Sharma</div><div class="ind-auth-role">Beauty Parlour, Delhi</div></div></div></div><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Festival campaigns are amazing. Sent a Diwali offer to 200 clients, 60 booked within 48 hours. Best ROI ever."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Kavita Rathore</div><div class="ind-auth-role">Spa Owner, Mumbai</div></div></div></div></div></div></div>
+<div class="ind-pricing"><div class="ind-pricing-inner"><div class="ind-pricing-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Pricing</div><h2 class="ind-feat-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;"><em>Grow your salon</em></h2></div><div class="ind-price-grid"><div class="ind-price-card"><div class="ind-plan-name">Starter</div><div class="ind-price-amt">&#8377;299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>QR client capture</li><li>WhatsApp messaging</li><li>Appointment booking</li><li>Basic analytics</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card pop-p"><div class="ind-pop-badge">MOST POPULAR</div><div class="ind-plan-name">Growth</div><div class="ind-price-amt">&#8377;699</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Starter</li><li>Digital loyalty cards</li><li>Win-back campaigns</li><li>Festival templates</li><li>Google Review bot</li><li>Staff management</li></ul><button class="btn-price-white" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card"><div class="ind-plan-name">Enterprise</div><div class="ind-price-amt">&#8377;1,299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Growth</li><li>Multi-branch</li><li>API access</li><li>White-label</li><li>Dedicated manager</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div></div></div></div>
+<div class="ind-cta-banner"><div class="ind-cta-inner"><div><h2 class="ind-cta-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Ready to grow<br><em>your salon?</em></h2><p class="ind-cta-p">Join 2,000+ salons already using sambandh.ai.</p></div><div class="ind-cta-btns"><button class="btn-cta-w" onclick="openAuth()">Start Free Trial &#8594;</button><button class="btn-cta-g" onclick="openAuth()">Demo Login</button><span class="ind-cta-note">No credit card &#183; 14-day trial</span></div></div></div>
+<div class="ind-footer"><div class="ind-footer-inner"><div class="ind-footer-top"><div class="ind-footer-brand"><span>sambandh.ai</span><p>India's trusted CRM for salons, spas & beauty businesses.</p></div><div class="ind-footer-col"><h5>Product</h5><a href="#">Features</a><a href="#">Pricing</a><a href="#">Blog</a></div><div class="ind-footer-col"><h5>Business Types</h5><a href="#">Hair Salon</a><a href="#">Beauty Parlour</a><a href="#">Spa & Wellness</a><a href="#">Nail Studio</a></div><div class="ind-footer-col"><h5>Company</h5><a href="#">About</a><a href="#">Privacy</a><a href="#">Contact</a></div></div><div class="ind-footer-bottom"><p>&#169; 2026 sambandh.ai</p><div class="ind-footer-badges"><span class="ind-footer-badge">&#128274; ENCRYPTED</span><span class="ind-footer-badge">&#127470;&#127475; INDIA-HOSTED</span></div></div></div></div>
+</div>
+<div class="page ind-page" id="page-restaurant" style="--pc:#C2410C;--pc-light:#F97316;--pc-bg:#FFF7ED;--grad:linear-gradient(135deg,#C2410C,#FB923C)">
+<div class="ind-hero"><div class="ind-hero-left">
+  <div class="ind-pill" style="background:rgba(0,0,0,0.07);border:1.5px solid rgba(0,0,0,0.13);color:#C2410C;">&#127869; Restaurant & Cafe CRM</div>
+  <h1 class="ind-h1" style="font-family:'DM Serif Display',serif;">Fill more tables,<br><em style="color:#C2410C;">every single day</em></h1>
+  <p class="ind-sub">Turn first-time diners into regulars. Automate table bookings, festive offers, and loyalty rewards &#8212; all via WhatsApp.</p>
+  <div class="ind-cta-row"><button class="btn-ind" onclick="openAuth()">Start Free Trial</button><button class="btn-ind-ghost">See Demo &#8595;</button></div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;"><div style="font-size:13px;font-weight:600;color:#666;">&#10003; 1,500+ Restaurants</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Table reservations</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Festival campaigns</div></div>
+</div><div class="ind-hero-right"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85&auto=format&fit=crop" alt=""><div class="ind-float"><div class="ind-float-label">Covers This Week</div><div class="ind-float-value">342</div><div class="ind-float-trend" style="color:#16A34A;">&#8593; 28% vs last week</div></div></div></div>
+<div class="ind-stats-strip"><div class="ind-stats-inner"><div class="ind-stat-item"><div class="ind-stat-num">28%</div><div class="ind-stat-lbl">More Repeat Diners</div></div><div class="ind-stat-item"><div class="ind-stat-num">4.6&#9733;</div><div class="ind-stat-lbl">Google Rating</div></div><div class="ind-stat-item"><div class="ind-stat-num">90%</div><div class="ind-stat-lbl">Table Fill Rate</div></div><div class="ind-stat-item"><div class="ind-stat-num">3&#215;</div><div class="ind-stat-lbl">Festival ROI</div></div></div></div>
+<div class="ind-features-section"><div class="ind-feat-head"><div><div class="ind-feat-tag">Core Features</div><h2 class="ind-feat-h2" style="font-family:'DM Serif Display',serif;">Built for <em>restaurants</em></h2></div><p class="ind-feat-p">QSR, fine dining, cafe, cloud kitchen &#8212; sambandh.ai helps every food business build a loyal customer base.</p></div><div class="ind-feat-grid"><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128241;</div><h3>Table Reservations</h3><p>WhatsApp-based table booking with auto-confirmation and 2hr reminder.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127882;</div><h3>Festival Campaigns</h3><p>Pre-built Diwali, Eid, New Year templates. One click sends to all customers.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127873;</div><h3>Diner Loyalty</h3><p>Digital punch cards. 10 visits = free meal/dessert. Keeps them coming back.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128148;</div><h3>Win-back Campaigns</h3><p>Auto-detect diners inactive 21+ days. Send a personalized offer.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127983;</div><h3>Digital Vouchers</h3><p>Birthday, anniversary, and referral vouchers sent automatically via WhatsApp.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128202;</div><h3>Revenue Insights</h3><p>Peak hour analysis, top dishes, and monthly revenue trends.</p></div></div></div>
+<div class="ind-hiw"><div class="ind-hiw-inner"><div class="ind-hiw-head"><div class="ind-hiw-tag">How It Works</div><h2 class="ind-hiw-h2" style="font-family:'DM Serif Display',serif;">Setup in <em>15 minutes</em></h2></div><div class="ind-steps"><div class="ind-step"><div class="ind-step-num">&#127869;</div><h4>Add Your Restaurant</h4><p>Set up profile, menu categories, and seating in minutes.</p></div><div class="ind-step"><div class="ind-step-num">&#128241;</div><h4>Place QR at Tables</h4><p>Diners scan to register &#8212; perfect during the waiting/ordering moment.</p></div><div class="ind-step"><div class="ind-step-num">&#129302;</div><h4>Campaigns Auto-run</h4><p>Birthday offers, festival blasts, and win-backs send themselves.</p></div><div class="ind-step"><div class="ind-step-num">&#128200;</div><h4>Footfall Increases</h4><p>More repeat diners, higher table fill rate, better Google reviews.</p></div></div></div></div>
+<div class="ind-photo-strip"><div class="ind-photo-strip-inner"><div class="ind-photo-grid"><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=700&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell ind-color-block"><div><div style="font-size:36px;margin-bottom:12px;">&#127882;</div><h3 style="font-size:20px;">Festival campaigns that fill tables</h3><p style="font-size:13px;margin-top:8px;opacity:0.8;">Pre-built Diwali, Eid, and New Year templates ready to send.</p></div><button class="ind-color-btn" onclick="openAuth()">Get Started &#8594;</button></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=500&q=80&auto=format&fit=crop" alt=""></div></div></div></div>
+<div class="ind-testi"><div class="ind-testi-inner"><div class="ind-testi-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Testimonials</div><h2 class="ind-feat-h2" style="font-family:'DM Serif Display',serif;">Our customers <em>love us</em></h2></div><div class="ind-testi-grid"><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Our Holi campaign brought 80 new bookings in 2 days. Never thought WhatsApp marketing could be this effective."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Rahul Khandelwal</div><div class="ind-auth-role">Restaurant Owner, Jaipur</div></div></div></div><div class="ind-testi-card feat-t"><div class="ind-stars" style="color:rgba(255,255,255,0.6);">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Table reservations via WhatsApp have been a huge hit. No-shows reduced by 50% since we started sending reminders."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Arjun Malhotra</div><div class="ind-auth-role">Cafe Owner, Bangalore</div></div></div></div><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"The birthday voucher automation is genius. Customers feel special and always bring the whole family &#8212; table size doubled."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Vikram Singh</div><div class="ind-auth-role">Cloud Kitchen, Delhi</div></div></div></div></div></div></div>
+<div class="ind-pricing"><div class="ind-pricing-inner"><div class="ind-pricing-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Pricing</div><h2 class="ind-feat-h2" style="font-family:'DM Serif Display',serif;"><em>Simple pricing</em></h2></div><div class="ind-price-grid"><div class="ind-price-card"><div class="ind-plan-name">Starter</div><div class="ind-price-amt">&#8377;299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>QR diner capture</li><li>Table reservations</li><li>1,000 WhatsApp/mo</li><li>Basic analytics</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card pop-p"><div class="ind-pop-badge">MOST POPULAR</div><div class="ind-plan-name">Growth</div><div class="ind-price-amt">&#8377;699</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Starter</li><li>Festival campaigns</li><li>Loyalty punch cards</li><li>Birthday vouchers</li><li>Win-back automation</li><li>Revenue reports</li></ul><button class="btn-price-white" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card"><div class="ind-plan-name">Enterprise</div><div class="ind-price-amt">&#8377;1,299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Growth</li><li>Multi-outlet</li><li>POS integration</li><li>API access</li><li>Dedicated manager</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div></div></div></div>
+<div class="ind-cta-banner"><div class="ind-cta-inner"><div><h2 class="ind-cta-h2" style="font-family:'DM Serif Display',serif;">Fill more tables,<br><em>every night</em></h2><p class="ind-cta-p">Join 1,500+ restaurants already using sambandh.ai.</p></div><div class="ind-cta-btns"><button class="btn-cta-w" onclick="openAuth()">Start Free Trial &#8594;</button><button class="btn-cta-g" onclick="openAuth()">Demo Login</button><span class="ind-cta-note">No credit card &#183; 14-day trial</span></div></div></div>
+<div class="ind-footer"><div class="ind-footer-inner"><div class="ind-footer-top"><div class="ind-footer-brand"><span>sambandh.ai</span><p>India's trusted CRM for restaurants, cafes & cloud kitchens.</p></div><div class="ind-footer-col"><h5>Product</h5><a href="#">Features</a><a href="#">Pricing</a><a href="#">Blog</a></div><div class="ind-footer-col"><h5>Business Types</h5><a href="#">Restaurant</a><a href="#">Cafe</a><a href="#">Cloud Kitchen</a><a href="#">QSR</a></div><div class="ind-footer-col"><h5>Company</h5><a href="#">About</a><a href="#">Privacy</a><a href="#">Contact</a></div></div><div class="ind-footer-bottom"><p>&#169; 2026 sambandh.ai</p><div class="ind-footer-badges"><span class="ind-footer-badge">&#128274; ENCRYPTED</span><span class="ind-footer-badge">&#127470;&#127475; INDIA-HOSTED</span></div></div></div></div>
+</div>
+<div class="page ind-page" id="page-gym" style="--pc:#15803D;--pc-light:#22C55E;--pc-bg:#F0FFF4;--grad:linear-gradient(135deg,#15803D,#22C55E)">
+<div class="ind-hero"><div class="ind-hero-left">
+  <div class="ind-pill" style="background:rgba(0,0,0,0.07);border:1.5px solid rgba(0,0,0,0.13);color:#15803D;">&#128170; Gym & Fitness CRM</div>
+  <h1 class="ind-h1" style="font-family:'Raleway',sans-serif;font-weight:900;text-transform:uppercase;">Keep your members<br><em style="color:#15803D;">COMING BACK</em></h1>
+  <p class="ind-sub">Automate renewals, reduce member churn, and grow your gym with WhatsApp-powered CRM. For gyms, yoga studios, and fitness centers.</p>
+  <div class="ind-cta-row"><button class="btn-ind" onclick="openAuth()">Start Free Trial</button><button class="btn-ind-ghost">See Demo &#8595;</button></div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;"><div style="font-size:13px;font-weight:600;color:#666;">&#10003; 800+ Fitness Centers</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Renewal automation</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Attendance tracking</div></div>
+</div><div class="ind-hero-right"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=85&auto=format&fit=crop" alt=""><div class="ind-float"><div class="ind-float-label">Active Members</div><div class="ind-float-value">486</div><div class="ind-float-trend" style="color:#16A34A;">&#8593; 15% this quarter</div></div></div></div>
+<div class="ind-stats-strip"><div class="ind-stats-inner"><div class="ind-stat-item"><div class="ind-stat-num">45%</div><div class="ind-stat-lbl">Lower Churn Rate</div></div><div class="ind-stat-item"><div class="ind-stat-num">90%</div><div class="ind-stat-lbl">Renewal Rate</div></div><div class="ind-stat-item"><div class="ind-stat-num">2&#215;</div><div class="ind-stat-lbl">Referral Signups</div></div><div class="ind-stat-item"><div class="ind-stat-num">&#8377;8L</div><div class="ind-stat-lbl">Avg Monthly Revenue</div></div></div></div>
+<div class="ind-features-section"><div class="ind-feat-head"><div><div class="ind-feat-tag">Core Features</div><h2 class="ind-feat-h2" style="font-family:'Raleway',sans-serif;font-weight:900;text-transform:uppercase;">Built for <em>FITNESS</em></h2></div><p class="ind-feat-p">Gym, yoga studio, crossfit box, martial arts &#8212; sambandh.ai handles the entire member lifecycle.</p></div><div class="ind-feat-grid"><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128260;</div><h3>Renewal Reminders</h3><p>Auto-send WhatsApp reminders 7 days, 3 days, and 1 day before expiry.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128202;</div><h3>Attendance Analytics</h3><p>Track member patterns. Identify at-risk members before they quit.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127942;</div><h3>Member Milestones</h3><p>Auto-celebrate 30, 90, 180-day streaks. Gamification keeps members engaged.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128101;</div><h3>Referral Programs</h3><p>Automated referral rewards. Members who refer get a free week or month.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128148;</div><h3>Churn Prevention</h3><p>Members who haven't checked in for 10+ days get automatic win-back message.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128197;</div><h3>Class Scheduling</h3><p>WhatsApp-based class bookings with waitlist management and alerts.</p></div></div></div>
+<div class="ind-hiw"><div class="ind-hiw-inner"><div class="ind-hiw-head"><div class="ind-hiw-tag">How It Works</div><h2 class="ind-hiw-h2" style="font-family:'Raleway',sans-serif;font-weight:900;text-transform:uppercase;">Setup in <em>15 minutes</em></h2></div><div class="ind-steps"><div class="ind-step"><div class="ind-step-num">&#128170;</div><h4>Add Your Gym</h4><p>Set up membership tiers, classes, and trainer profiles.</p></div><div class="ind-step"><div class="ind-step-num">&#128241;</div><h4>QR at Entry</h4><p>Members scan at entry. New sign-ups get added automatically.</p></div><div class="ind-step"><div class="ind-step-num">&#129302;</div><h4>Automations Fire</h4><p>Renewal alerts, streak celebrations, and churn prevention run 24/7.</p></div><div class="ind-step"><div class="ind-step-num">&#128200;</div><h4>Retention Soars</h4><p>More renewals, lower churn, more referrals &#8212; every month.</p></div></div></div></div>
+<div class="ind-photo-strip"><div class="ind-photo-strip-inner"><div class="ind-photo-grid"><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=700&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell ind-color-block"><div><div style="font-size:36px;margin-bottom:12px;">&#127942;</div><h3 style="font-size:20px;">Milestone rewards that keep members hooked</h3><p style="font-size:13px;margin-top:8px;opacity:0.8;">Auto-celebrate every fitness milestone via WhatsApp.</p></div><button class="ind-color-btn" onclick="openAuth()">Get Started &#8594;</button></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&q=80&auto=format&fit=crop" alt=""></div></div></div></div>
+<div class="ind-testi"><div class="ind-testi-inner"><div class="ind-testi-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Testimonials</div><h2 class="ind-feat-h2" style="font-family:'Raleway',sans-serif;font-weight:900;text-transform:uppercase;">Our customers <em>love us</em></h2></div><div class="ind-testi-grid"><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Member renewals went from 60% to 90% in 3 months. The automated reminders are incredibly effective."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Arjun Yadav</div><div class="ind-auth-role">Gym Owner, Jaipur</div></div></div></div><div class="ind-testi-card feat-t"><div class="ind-stars" style="color:rgba(255,255,255,0.6);">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Churn dropped by 45%. The win-back campaign for members who hadn't visited in 2 weeks brought back 70% of them."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1503235930437-8c6293ba41f5?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Suresh Nair</div><div class="ind-auth-role">CrossFit Box, Bangalore</div></div></div></div><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"The referral program automation is amazing. Members bring their friends and get free weeks &#8212; word of mouth on autopilot."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1521119989659-a83eee488004?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Priya Nambiar</div><div class="ind-auth-role">Yoga Studio, Mumbai</div></div></div></div></div></div></div>
+<div class="ind-pricing"><div class="ind-pricing-inner"><div class="ind-pricing-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Pricing</div><h2 class="ind-feat-h2" style="font-family:'Raleway',sans-serif;font-weight:900;text-transform:uppercase;"><em>SIMPLE PRICING</em></h2></div><div class="ind-price-grid"><div class="ind-price-card"><div class="ind-plan-name">Starter</div><div class="ind-price-amt">&#8377;299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Member QR capture</li><li>Renewal reminders</li><li>Basic analytics</li><li>Email support</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card pop-p"><div class="ind-pop-badge">MOST POPULAR</div><div class="ind-plan-name">Growth</div><div class="ind-price-amt">&#8377;699</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Starter</li><li>Churn prevention AI</li><li>Milestone rewards</li><li>Referral automation</li><li>Class scheduling</li><li>Attendance analytics</li></ul><button class="btn-price-white" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card"><div class="ind-plan-name">Enterprise</div><div class="ind-price-amt">&#8377;1,299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Growth</li><li>Multi-location</li><li>API access</li><li>White-label app</li><li>Dedicated manager</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div></div></div></div>
+<div class="ind-cta-banner"><div class="ind-cta-inner"><div><h2 class="ind-cta-h2" style="font-family:'Raleway',sans-serif;font-weight:900;text-transform:uppercase;">STOP LOSING<br><em>MEMBERS</em></h2><p class="ind-cta-p">Join 800+ fitness businesses. Cut churn, boost renewals, grow faster.</p></div><div class="ind-cta-btns"><button class="btn-cta-w" onclick="openAuth()">Start Free Trial &#8594;</button><button class="btn-cta-g" onclick="openAuth()">Demo Login</button><span class="ind-cta-note">No credit card &#183; 14-day trial</span></div></div></div>
+<div class="ind-footer"><div class="ind-footer-inner"><div class="ind-footer-top"><div class="ind-footer-brand"><span>sambandh.ai</span><p>India's trusted CRM for gyms, studios & fitness businesses.</p></div><div class="ind-footer-col"><h5>Product</h5><a href="#">Features</a><a href="#">Pricing</a><a href="#">Blog</a></div><div class="ind-footer-col"><h5>Business Types</h5><a href="#">Gym</a><a href="#">Yoga Studio</a><a href="#">CrossFit</a><a href="#">Martial Arts</a></div><div class="ind-footer-col"><h5>Company</h5><a href="#">About</a><a href="#">Privacy</a><a href="#">Contact</a></div></div><div class="ind-footer-bottom"><p>&#169; 2026 sambandh.ai</p><div class="ind-footer-badges"><span class="ind-footer-badge">&#128274; ENCRYPTED</span><span class="ind-footer-badge">&#127470;&#127475; INDIA-HOSTED</span></div></div></div></div>
+</div>
+<div class="page ind-page" id="page-realestate" style="--pc:#92400E;--pc-light:#D97706;--pc-bg:#FFFBEB;--grad:linear-gradient(135deg,#92400E,#F59E0B)">
+<div class="ind-hero"><div class="ind-hero-left">
+  <div class="ind-pill" style="background:rgba(0,0,0,0.07);border:1.5px solid rgba(0,0,0,0.13);color:#92400E;">&#127968; Real Estate CRM</div>
+  <h1 class="ind-h1" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Nurture every lead<br><em style="color:#92400E;">into a closed deal</em></h1>
+  <p class="ind-sub">WhatsApp-powered lead nurturing, site visit scheduling, and follow-up automation for builders, brokers, and agents across India.</p>
+  <div class="ind-cta-row"><button class="btn-ind" onclick="openAuth()">Start Free Trial</button><button class="btn-ind-ghost">See Demo &#8595;</button></div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;"><div style="font-size:13px;font-weight:600;color:#666;">&#10003; 300+ Builders & Agents</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Auto lead nurturing</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Site visit scheduling</div></div>
+</div><div class="ind-hero-right"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=900&q=85&auto=format&fit=crop" alt=""><div class="ind-float"><div class="ind-float-label">Leads This Month</div><div class="ind-float-value">128</div><div class="ind-float-trend" style="color:#16A34A;">&#8593; 34% vs last month</div></div></div></div>
+<div class="ind-stats-strip"><div class="ind-stats-inner"><div class="ind-stat-item"><div class="ind-stat-num">3&#215;</div><div class="ind-stat-lbl">More Site Visits</div></div><div class="ind-stat-item"><div class="ind-stat-num">60%</div><div class="ind-stat-lbl">Lead Conversion</div></div><div class="ind-stat-item"><div class="ind-stat-num">&#8377;2Cr+</div><div class="ind-stat-lbl">Deals Tracked</div></div><div class="ind-stat-item"><div class="ind-stat-num">90%</div><div class="ind-stat-lbl">Follow-up Rate</div></div></div></div>
+<div class="ind-features-section"><div class="ind-feat-head"><div><div class="ind-feat-tag">Core Features</div><h2 class="ind-feat-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Built for <em>real estate</em></h2></div><p class="ind-feat-p">Residential builders, commercial brokers, or independent agents &#8212; sambandh.ai manages your entire lead funnel.</p></div><div class="ind-feat-grid"><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#129309;</div><h3>Lead Capture & Scoring</h3><p>Auto-capture leads from sites, portals, and referrals. Score by intent and follow-up automatically.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128197;</div><h3>Site Visit Scheduling</h3><p>Leads book site visits via WhatsApp. Auto-confirmation, reminder, and post-visit follow-up.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128172;</div><h3>WhatsApp Drip Campaigns</h3><p>Automated follow-up sequences: day 1, 3, 7, 14. Never lose a warm lead.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128202;</div><h3>Pipeline Dashboard</h3><p>See all leads at every stage &#8212; Inquiry, Site Visit, Negotiation, Closed.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127873;</div><h3>Referral Network</h3><p>Turn buyers into referral sources. Automated thank-you and referral incentives.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128247;</div><h3>Property Brochures</h3><p>Auto-send property PDFs, floor plans, and price sheets to inquiring leads.</p></div></div></div>
+<div class="ind-hiw"><div class="ind-hiw-inner"><div class="ind-hiw-head"><div class="ind-hiw-tag">How It Works</div><h2 class="ind-hiw-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Setup in <em>15 minutes</em></h2></div><div class="ind-steps"><div class="ind-step"><div class="ind-step-num">&#127968;</div><h4>Add Your Projects</h4><p>Set up your properties, pricing, and contact details.</p></div><div class="ind-step"><div class="ind-step-num">&#128241;</div><h4>Lead Comes In</h4><p>QR on hoarding or portal. Lead registers via WhatsApp instantly.</p></div><div class="ind-step"><div class="ind-step-num">&#129302;</div><h4>Drip Campaign Starts</h4><p>Automated follow-up begins. Brochures, site visit invite, and updates go out.</p></div><div class="ind-step"><div class="ind-step-num">&#129309;</div><h4>Deal Closes</h4><p>More site visits &#8212; more closures &#8212; more referrals from happy buyers.</p></div></div></div></div>
+<div class="ind-photo-strip"><div class="ind-photo-strip-inner"><div class="ind-photo-grid"><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1582407947304-fd86f28f1aed?w=700&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell ind-color-block"><div><div style="font-size:36px;margin-bottom:12px;">&#128202;</div><h3 style="font-size:20px;">Full pipeline visibility in one dashboard</h3><p style="font-size:13px;margin-top:8px;opacity:0.8;">Track every lead from inquiry to possession handover.</p></div><button class="ind-color-btn" onclick="openAuth()">Get Started &#8594;</button></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=500&q=80&auto=format&fit=crop" alt=""></div></div></div></div>
+<div class="ind-testi"><div class="ind-testi-inner"><div class="ind-testi-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Testimonials</div><h2 class="ind-feat-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Our customers <em>love us</em></h2></div><div class="ind-testi-grid"><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Our site visit rate tripled within 6 weeks. The automated follow-up drip campaign is the best sales investment we've made."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Deepak Agarwal</div><div class="ind-auth-role">Builder, Jaipur</div></div></div></div><div class="ind-testi-card feat-t"><div class="ind-stars" style="color:rgba(255,255,255,0.6);">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Lead conversion went from 8% to 22%. The WhatsApp drip campaign nurtures leads automatically while we close the hot ones."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Sandeep Joshi</div><div class="ind-auth-role">Real Estate Agent, Pune</div></div></div></div><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"The referral automation is brilliant. Happy buyers referred 40 new leads in 3 months &#8212; word of mouth on autopilot."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Rajendra Patil</div><div class="ind-auth-role">Developer, Navi Mumbai</div></div></div></div></div></div></div>
+<div class="ind-pricing"><div class="ind-pricing-inner"><div class="ind-pricing-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Pricing</div><h2 class="ind-feat-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;"><em>Transparent pricing</em></h2></div><div class="ind-price-grid"><div class="ind-price-card"><div class="ind-plan-name">Starter</div><div class="ind-price-amt">&#8377;299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Lead capture</li><li>Site visit scheduling</li><li>Basic follow-up</li><li>Email support</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card pop-p"><div class="ind-pop-badge">MOST POPULAR</div><div class="ind-plan-name">Growth</div><div class="ind-price-amt">&#8377;699</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Starter</li><li>14-day drip campaigns</li><li>Pipeline dashboard</li><li>Referral automation</li><li>Brochure auto-send</li><li>Revenue analytics</li></ul><button class="btn-price-white" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card"><div class="ind-plan-name">Enterprise</div><div class="ind-price-amt">&#8377;1,299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Growth</li><li>Multi-project</li><li>Team management</li><li>API & CRM sync</li><li>Dedicated manager</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div></div></div></div>
+<div class="ind-cta-banner"><div class="ind-cta-inner"><div><h2 class="ind-cta-h2" style="font-family:'Cormorant Garamond',serif;font-weight:600;">Close more deals,<br><em>automatically</em></h2><p class="ind-cta-p">Join 300+ builders and agents. More site visits, more conversions.</p></div><div class="ind-cta-btns"><button class="btn-cta-w" onclick="openAuth()">Start Free Trial &#8594;</button><button class="btn-cta-g" onclick="openAuth()">Demo Login</button><span class="ind-cta-note">No credit card &#183; 14-day trial</span></div></div></div>
+<div class="ind-footer"><div class="ind-footer-inner"><div class="ind-footer-top"><div class="ind-footer-brand"><span>sambandh.ai</span><p>India's trusted CRM for real estate builders and agents.</p></div><div class="ind-footer-col"><h5>Product</h5><a href="#">Features</a><a href="#">Pricing</a><a href="#">Blog</a></div><div class="ind-footer-col"><h5>Business Types</h5><a href="#">Residential Builder</a><a href="#">Commercial Agent</a><a href="#">Independent Broker</a><a href="#">Plot Developers</a></div><div class="ind-footer-col"><h5>Company</h5><a href="#">About</a><a href="#">Privacy</a><a href="#">Contact</a></div></div><div class="ind-footer-bottom"><p>&#169; 2026 sambandh.ai</p><div class="ind-footer-badges"><span class="ind-footer-badge">&#128274; ENCRYPTED</span><span class="ind-footer-badge">&#127470;&#127475; INDIA-HOSTED</span></div></div></div></div>
+</div>
+<div class="page ind-page" id="page-retail" style="--pc:#5B21B6;--pc-light:#8B5CF6;--pc-bg:#F5F3FF;--grad:linear-gradient(135deg,#5B21B6,#8B5CF6)">
+<div class="ind-hero"><div class="ind-hero-left">
+  <div class="ind-pill" style="background:rgba(0,0,0,0.07);border:1.5px solid rgba(0,0,0,0.13);color:#5B21B6;">&#128717; Retail & Store CRM</div>
+  <h1 class="ind-h1" style="font-family:'Instrument Serif',serif;">Turn shoppers into<br><em style="color:#5B21B6;">loyal regulars</em></h1>
+  <p class="ind-sub">Run loyalty programs, festive campaigns, and win-back offers for your retail shop &#8212; all via WhatsApp. No app needed.</p>
+  <div class="ind-cta-row"><button class="btn-ind" onclick="openAuth()">Start Free Trial</button><button class="btn-ind-ghost">See Demo &#8595;</button></div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;"><div style="font-size:13px;font-weight:600;color:#666;">&#10003; 3,000+ Retail Stores</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Loyalty programs</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; Festival campaigns</div></div>
+</div><div class="ind-hero-right"><img src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=900&q=85&auto=format&fit=crop" alt=""><div class="ind-float"><div class="ind-float-label">Revenue This Month</div><div class="ind-float-value">&#8377;3.2L</div><div class="ind-float-trend" style="color:#16A34A;">&#8593; 31% vs last month</div></div></div></div>
+<div class="ind-stats-strip"><div class="ind-stats-inner"><div class="ind-stat-item"><div class="ind-stat-num">4&#215;</div><div class="ind-stat-lbl">Campaign ROI</div></div><div class="ind-stat-item"><div class="ind-stat-num">78%</div><div class="ind-stat-lbl">Retention Rate</div></div><div class="ind-stat-item"><div class="ind-stat-num">3&#215;</div><div class="ind-stat-lbl">Repeat Purchases</div></div><div class="ind-stat-item"><div class="ind-stat-num">&#8377;5L+</div><div class="ind-stat-lbl">Monthly Revenue</div></div></div></div>
+<div class="ind-features-section"><div class="ind-feat-head"><div><div class="ind-feat-tag">Core Features</div><h2 class="ind-feat-h2" style="font-family:'Instrument Serif',serif;">Built for <em>retail stores</em></h2></div><p class="ind-feat-p">Clothing stores, electronics shops, jewellers, pharmacies &#8212; sambandh.ai turns every purchase into a relationship.</p></div><div class="ind-feat-grid"><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128241;</div><h3>Instant QR Signup</h3><p>Customers scan at billing counter. Auto-joins WhatsApp list with purchase data.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127885;</div><h3>Points & Loyalty</h3><p>Auto-accumulate loyalty points. Redeem via WhatsApp &#8212; no separate app needed.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127882;</div><h3>Festival Sale Blasts</h3><p>One-click Diwali, Holi, Eid, and seasonal sale campaigns to your entire list.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128140;</div><h3>Re-engagement Campaigns</h3><p>Auto-detect customers who haven't shopped in 45 days. Bring them back with offers.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#127983;</div><h3>Digital Vouchers</h3><p>Send birthday coupons, anniversary discounts, and referral rewards automatically.</p></div><div class="ind-feat-card"><div class="ind-feat-icon" style="background:rgba(0,0,0,0.05);">&#128202;</div><h3>Purchase Analytics</h3><p>Track top-selling products, peak shopping days, and customer lifetime value.</p></div></div></div>
+<div class="ind-hiw"><div class="ind-hiw-inner"><div class="ind-hiw-head"><div class="ind-hiw-tag">How It Works</div><h2 class="ind-hiw-h2" style="font-family:'Instrument Serif',serif;">Setup in <em>15 minutes</em></h2></div><div class="ind-steps"><div class="ind-step"><div class="ind-step-num">&#128717;</div><h4>Add Your Store</h4><p>Set up your product categories, loyalty rules, and offers.</p></div><div class="ind-step"><div class="ind-step-num">&#128241;</div><h4>QR at Billing</h4><p>Customer scans after purchase. Auto-joins and earns first points.</p></div><div class="ind-step"><div class="ind-step-num">&#129302;</div><h4>Campaigns Fire</h4><p>Birthday offers, festival blasts, and loyalty reminders go automatically.</p></div><div class="ind-step"><div class="ind-step-num">&#128176;</div><h4>Revenue Grows</h4><p>More repeat customers, higher basket size, better word-of-mouth.</p></div></div></div></div>
+<div class="ind-photo-strip"><div class="ind-photo-strip-inner"><div class="ind-photo-grid"><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=700&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell ind-color-block"><div><div style="font-size:36px;margin-bottom:12px;">&#127882;</div><h3 style="font-size:20px;">Festival campaigns that sell out</h3><p style="font-size:13px;margin-top:8px;opacity:0.8;">One click sends Diwali, Holi, and seasonal offers to your entire customer base.</p></div><button class="ind-color-btn" onclick="openAuth()">Get Started &#8594;</button></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500&q=80&auto=format&fit=crop" alt=""></div><div class="ind-photo-cell"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=500&q=80&auto=format&fit=crop" alt=""></div></div></div></div>
+<div class="ind-testi"><div class="ind-testi-inner"><div class="ind-testi-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Testimonials</div><h2 class="ind-feat-h2" style="font-family:'Instrument Serif',serif;">Our customers <em>love us</em></h2></div><div class="ind-testi-grid"><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Diwali campaign sent to 500 customers &#8212; 180 came back and bought. That's &#8377;2.4 lakh in 4 days from one WhatsApp blast!"</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Mukesh Goyal</div><div class="ind-auth-role">Clothing Store, Jaipur</div></div></div></div><div class="ind-testi-card feat-t"><div class="ind-stars" style="color:rgba(255,255,255,0.6);">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"Loyalty points via WhatsApp is genius. Customers check their points weekly and come in specifically to redeem. Repeat sales up 3&#215;."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Anita Bhatia</div><div class="ind-auth-role">Jewellery Shop, Delhi</div></div></div></div><div class="ind-testi-card"><div class="ind-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ind-quote">"The re-engagement campaign brought back 40% of customers who hadn't visited in 2 months. The voucher offer was the perfect hook."</p><div class="ind-author"><div class="ind-avatar"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=80&fit=crop" alt=""></div><div><div class="ind-auth-name">Rajan Mehta</div><div class="ind-auth-role">Electronics Store, Ahmedabad</div></div></div></div></div></div></div>
+<div class="ind-pricing"><div class="ind-pricing-inner"><div class="ind-pricing-head"><div class="ind-feat-tag" style="display:inline-block;margin-bottom:10px;">Pricing</div><h2 class="ind-feat-h2" style="font-family:'Instrument Serif',serif;"><em>Grow your store</em></h2></div><div class="ind-price-grid"><div class="ind-price-card"><div class="ind-plan-name">Starter</div><div class="ind-price-amt">&#8377;299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>QR customer capture</li><li>WhatsApp messaging</li><li>Basic campaigns</li><li>Email support</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card pop-p"><div class="ind-pop-badge">MOST POPULAR</div><div class="ind-plan-name">Growth</div><div class="ind-price-amt">&#8377;699</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Starter</li><li>Loyalty points system</li><li>Festival campaigns</li><li>Digital vouchers</li><li>Re-engagement AI</li><li>Revenue analytics</li></ul><button class="btn-price-white" onclick="openAuth()">Start Free Trial</button></div><div class="ind-price-card"><div class="ind-plan-name">Enterprise</div><div class="ind-price-amt">&#8377;1,299</div><div class="ind-price-period">/month</div><ul class="ind-price-feats"><li>Everything in Growth</li><li>Multi-store</li><li>POS integration</li><li>API access</li><li>White-label</li></ul><button class="btn-price-outline" onclick="openAuth()">Start Free Trial</button></div></div></div></div>
+<div class="ind-cta-banner"><div class="ind-cta-inner"><div><h2 class="ind-cta-h2" style="font-family:'Instrument Serif',serif;">More repeat customers,<br><em>starting today</em></h2><p class="ind-cta-p">Join 3,000+ retail stores. Higher revenue, loyal customers.</p></div><div class="ind-cta-btns"><button class="btn-cta-w" onclick="openAuth()">Start Free Trial &#8594;</button><button class="btn-cta-g" onclick="openAuth()">Demo Login</button><span class="ind-cta-note">No credit card &#183; 14-day trial</span></div></div></div>
+<div class="ind-footer"><div class="ind-footer-inner"><div class="ind-footer-top"><div class="ind-footer-brand"><span>sambandh.ai</span><p>India's trusted CRM for retail stores and local commerce.</p></div><div class="ind-footer-col"><h5>Product</h5><a href="#">Features</a><a href="#">Pricing</a><a href="#">Blog</a></div><div class="ind-footer-col"><h5>Business Types</h5><a href="#">Clothing Store</a><a href="#">Electronics</a><a href="#">Jewellery</a><a href="#">Pharmacy</a></div><div class="ind-footer-col"><h5>Company</h5><a href="#">About</a><a href="#">Privacy</a><a href="#">Contact</a></div></div><div class="ind-footer-bottom"><p>&#169; 2026 sambandh.ai</p><div class="ind-footer-badges"><span class="ind-footer-badge">&#128274; ENCRYPTED</span><span class="ind-footer-badge">&#127470;&#127475; INDIA-HOSTED</span></div></div></div></div>
+</div>
+<!-- AUTH MODAL -->
+<div class="auth-modal" id="authModal">
+<div class="auth-box">
+  <div class="auth-head"><h2 id="authTitle">Welcome Back</h2><button class="auth-close" onclick="closeAuth()">&#x2715;</button></div>
+  <div class="auth-tabs"><button class="auth-tab on" id="loginTab" onclick="switchAuthTab('login')">Login</button><button class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')">Sign Up</button></div>
+  <form id="loginForm" onsubmit="handleLogin(event)">
+    <div class="auth-field"><label>EMAIL ADDRESS</label><input type="email" id="loginEmail" placeholder="you@example.com" required></div>
+    <div class="auth-field"><label>PASSWORD</label><input type="password" id="loginPassword" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" required></div>
+    <button type="submit" class="btn-auth"><span id="loginBtnText">Login to Dashboard</span><span id="loginBtnLoading" class="hidden"><span class="loading-spin"></span></span></button>
+    <p class="auth-note">Demo: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e88c8d8587a89b89858a89868c80c68981">[email&#160;protected]</a> / demo123 &nbsp;&#183;&nbsp; Admin: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f091949d999eb083919d92919e9498de9199">[email&#160;protected]</a> / admin123</p>
+  </form>
+  <form id="signupForm" class="hidden" onsubmit="handleSignup(event)">
+    <div class="auth-field"><label>BUSINESS NAME *</label><input type="text" id="signupBusinessName" placeholder="My Clinic / Salon / Store" required></div>
+    <div class="auth-field"><label>BUSINESS TYPE *</label><select id="signupBusinessType" required><option value="">Select type</option><option value="clinic">Clinic / Healthcare</option><option value="salon">Salon / Beauty Parlour</option><option value="restaurant">Restaurant / Cafe</option><option value="gym">Gym / Fitness Center</option><option value="realestate">Real Estate</option><option value="retail">Retail Store</option><option value="other">Other</option></select></div>
+    <div class="auth-field"><label>OWNER NAME *</label><input type="text" id="signupOwnerName" placeholder="Your full name" required></div>
+    <div class="auth-field"><label>MOBILE *</label><input type="tel" id="signupMobile" placeholder="9876543210" required pattern="[0-9]{10}"></div>
+    <div class="auth-field"><label>EMAIL *</label><input type="email" id="signupEmail" placeholder="you@example.com" required></div>
+    <div class="auth-field"><label>PASSWORD *</label><input type="password" id="signupPassword" placeholder="Minimum 6 characters" required minlength="6"></div>
+    <div class="auth-field"><label>CITY *</label><input type="text" id="signupCity" placeholder="Jaipur" required></div>
+    <div class="auth-field"><label>PLAN *</label><select id="signupPlan"><option value="basic">Starter &#8212; &#8377;299/month</option><option value="pro" selected>Growth &#8212; &#8377;699/month (Recommended)</option><option value="premium">Enterprise &#8212; &#8377;1,299/month</option></select></div>
+    <button type="submit" class="btn-auth"><span id="signupBtnText">Start Free Trial (14 Days)</span><span id="signupBtnLoading" class="hidden"><span class="loading-spin"></span></span></button>
+    <p class="auth-note">No credit card required &#183; Cancel anytime</p>
+  </form>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard">
+<div style="padding-left:72px;">
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="dashboard-welcome"><h1 id="dashboardBusinessName">Welcome Back!</h1><p id="dashboardPlan">Growth Plan &#183; Active</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="openUpgradePlan()" class="btn">&#128142; Upgrade</button>
+      <button onclick="openWhatsAppConfig()" class="btn btn-secondary">&#128172; WhatsApp</button>
+      <button onclick="openSettings()" class="btn btn-outline">&#9881;&#65039;</button>
+      <button onclick="logout()" class="btn btn-outline">&#128682;</button>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div style="font-size:32px;margin-bottom:8px;">&#128101;</div><div class="stat-value" id="totalCustomers">0</div><div class="stat-label">Total Customers</div><div class="stat-trend up">&#8593; 12% this month</div></div>
+    <div class="stat-card"><div style="font-size:32px;margin-bottom:8px;">&#128200;</div><div class="stat-value" id="monthlyGrowth">0%</div><div class="stat-label">Monthly Growth</div><div class="stat-trend up">&#8593; On track</div></div>
+    <div class="stat-card"><div style="font-size:32px;margin-bottom:8px;">&#128232;</div><div class="stat-value" id="campaignsSent">0</div><div class="stat-label">Campaigns Sent</div><div class="stat-trend up">&#8593; 8 this week</div></div>
+    <div class="stat-card"><div style="font-size:32px;margin-bottom:8px;">&#11088;</div><div class="stat-value" id="retention">0%</div><div class="stat-label">Retention Rate</div><div class="stat-trend up">&#8593; Excellent</div></div>
+  </div>
+  <div class="dashboard-section">
+    <h2>&#9889; Quick Actions</h2>
+    <div class="action-grid">
+      <div class="action-card" onclick="openQRGenerator()"><div class="action-icon">&#128241;</div><h3>QR Code</h3><p>Generate customer capture QR</p></div>
+      <div class="action-card" onclick="openCampaignBuilder()"><div class="action-icon">&#128232;</div><h3>Campaigns</h3><p>WhatsApp blast to customers</p></div>
+      <div class="action-card" onclick="openAnalytics()"><div class="action-icon">&#128202;</div><h3>Analytics</h3><p>Reports &amp; insights</p></div>
+      <div class="action-card" onclick="openBookings()"><div class="action-icon">&#128197;</div><h3>Bookings</h3><p>Manage appointments</p></div>
+      <div class="action-card" onclick="openLoyalty()"><div class="action-icon">&#127873;</div><h3>Loyalty</h3><p>Rewards &amp; stamp cards</p></div>
+      <div class="action-card" onclick="openSettings()"><div class="action-icon">&#9881;&#65039;</div><h3>Settings</h3><p>Profile &amp; preferences</p></div>
+    </div>
+  </div>
+  <div class="dashboard-section">
+    <h2>&#128202; Recent Customers</h2>
+    <div class="table-container">
+      <table class="table" id="customersTable">
+        <thead><tr><th>Name</th><th>Phone</th><th>Last Visit</th><th>Visits</th><th>Revenue</th><th>Status</th></tr></thead>
+        <tbody id="customersTableBody"><tr><td colspan="6" style="text-align:center;padding:60px;color:#888;"><div style="font-size:48px;margin-bottom:12px;">&#128241;</div><div style="font-size:16px;font-weight:600;">No customers yet</div><div style="font-size:14px;margin-top:4px;">Share your QR code to start!</div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+<!-- Sidebar nav for dashboard -->
+<div class="dash-nav" id="dashNav">
+  <div class="dash-nav-logo"><img src="assets/logo.png" alt="sambandh" onerror="this.style.display='none'"></div>
+  <button class="dash-nav-toggle" onclick="toggleSidebar()" id="sidebarToggle">&#9776;</button>
+  <div class="dash-nav-items">
+    <button class="dash-nav-item active" onclick="setActiveNav(this)"><span class="dash-nav-icon">&#127968;</span><span class="dash-nav-label">Home</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openQRGenerator()"><span class="dash-nav-icon">&#128241;</span><span class="dash-nav-label">QR Code</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openCampaignBuilder()"><span class="dash-nav-icon">&#128232;</span><span class="dash-nav-label">Campaigns</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openAnalytics()"><span class="dash-nav-icon">&#128202;</span><span class="dash-nav-label">Analytics</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openBookings()"><span class="dash-nav-icon">&#128197;</span><span class="dash-nav-label">Bookings</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openLoyalty()"><span class="dash-nav-icon">&#127873;</span><span class="dash-nav-label">Loyalty</span></button>
+    <div class="dash-nav-divider"></div>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openSegmentation()"><span class="dash-nav-icon">&#128101;</span><span class="dash-nav-label">Segments</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openRevenueTracking()"><span class="dash-nav-icon">&#128176;</span><span class="dash-nav-label">Revenue</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openVouchers()"><span class="dash-nav-icon">&#127983;</span><span class="dash-nav-label">Vouchers</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openReports()"><span class="dash-nav-icon">&#128203;</span><span class="dash-nav-label">Reports</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openGrowthInsights()"><span class="dash-nav-icon">&#128200;</span><span class="dash-nav-label">Insights</span></button>
+    <div class="dash-nav-divider"></div>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openGoogleReview()"><span class="dash-nav-icon">&#11088;</span><span class="dash-nav-label">Reviews</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openWhatsAppConfig()"><span class="dash-nav-icon">&#128172;</span><span class="dash-nav-label">WhatsApp</span></button>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openUpgradePlan()"><span class="dash-nav-icon">&#128142;</span><span class="dash-nav-label">Upgrade</span></button>
+    <div class="dash-nav-divider"></div>
+    <button class="dash-nav-item" onclick="setActiveNav(this);openSettings()"><span class="dash-nav-icon">&#9881;&#65039;</span><span class="dash-nav-label">Settings</span></button>
+  </div>
+  <div class="dash-nav-logout"><button onclick="logout()"><span class="dash-nav-icon">&#128682;</span><span class="dash-nav-label">Logout</span></button></div>
+</div>
+<div class="dash-bottom-nav">
+  <div class="dash-bottom-items">
+    <button class="dash-bottom-item active" onclick="setBottomNav(this)"><span class="di">&#127968;</span>Home</button>
+    <button class="dash-bottom-item" onclick="setBottomNav(this);openQRGenerator()"><span class="di">&#128241;</span>QR</button>
+    <button class="dash-bottom-item" onclick="setBottomNav(this);openCampaignBuilder()"><span class="di">&#128232;</span>Campaign</button>
+    <button class="dash-bottom-item" onclick="setBottomNav(this);openBookings()"><span class="di">&#128197;</span>Bookings</button>
+    <button class="dash-bottom-item" onclick="setBottomNav(this);openLoyalty()"><span class="di">&#127873;</span>Loyalty</button>
+    <button class="dash-bottom-item" onclick="setBottomNav(this);openMoreMenu()"><span class="di">&#8943;</span>More</button>
+  </div>
+</div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="adminDashboard" class="dashboard">
+<div style="padding-left:72px;">
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="dashboard-welcome"><h1>&#128295; Admin Panel</h1><p>Platform Analytics &amp; Management</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="openPlatformAnalytics()" class="btn">&#128200; Analytics</button>
+      <button onclick="openAdminBilling()" class="btn btn-secondary">&#128179; Billing</button>
+      <button onclick="openModal('adminBroadcastModal')" class="btn btn-accent">&#128226; Broadcast</button>
+      <button onclick="logout()" class="btn btn-outline">&#128682;</button>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-value" id="adminTotalUsers">0</div><div class="stat-label">Total Businesses</div></div>
+    <div class="stat-card"><div class="stat-value" id="adminActiveUsers">0</div><div class="stat-label">Active Users</div></div>
+    <div class="stat-card"><div class="stat-value" id="adminMRR">&#8377;0</div><div class="stat-label">MRR</div></div>
+    <div class="stat-card"><div class="stat-value" id="adminARR">&#8377;0</div><div class="stat-label">ARR</div></div>
+  </div>
+  <div class="dashboard-section">
+    <h2>&#128202; All Users</h2>
+    <div class="table-container">
+      <table class="table" id="adminUsersTable">
+        <thead><tr><th>Business</th><th>Owner</th><th>Email</th><th>Plan</th><th>City</th><th>Customers</th><th>Joined</th></tr></thead>
+        <tbody id="adminUsersTableBody"><tr><td colspan="7" style="text-align:center;padding:60px;color:#888;">No users yet</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+<div class="dash-nav" id="adminDashNav">
+  <div class="dash-nav-logo"><img src="assets/logo.png" alt="sambandh" onerror="this.style.display='none'"></div>
+  <button class="dash-nav-toggle" onclick="toggleAdminSidebar()">&#9776;</button>
+  <div class="dash-nav-items">
+    <button class="dash-nav-item active"><span class="dash-nav-icon">&#128295;</span><span class="dash-nav-label">Dashboard</span></button>
+    <button class="dash-nav-item" onclick="setAdminNav(this);openPlatformAnalytics()"><span class="dash-nav-icon">&#128200;</span><span class="dash-nav-label">Analytics</span></button>
+    <button class="dash-nav-item" onclick="setAdminNav(this);openModal('adminBroadcastModal')"><span class="dash-nav-icon">&#128226;</span><span class="dash-nav-label">Broadcast</span></button>
+    <button class="dash-nav-item" onclick="setAdminNav(this);exportAllData()"><span class="dash-nav-icon">&#128229;</span><span class="dash-nav-label">Export</span></button>
+    <button class="dash-nav-item" onclick="setAdminNav(this);openAdminBilling()"><span class="dash-nav-icon">&#128179;</span><span class="dash-nav-label">Billing</span></button>
+  </div>
+  <div class="dash-nav-logout"><button onclick="logout()"><span class="dash-nav-icon">&#128682;</span><span class="dash-nav-label">Logout</span></button></div>
+</div>
+<div class="dash-bottom-nav">
+  <div class="dash-bottom-items">
+    <button class="dash-bottom-item active"><span class="di">&#128295;</span>Admin</button>
+    <button class="dash-bottom-item" onclick="openPlatformAnalytics()"><span class="di">&#128200;</span>Analytics</button>
+    <button class="dash-bottom-item" onclick="openModal('adminBroadcastModal')"><span class="di">&#128226;</span>Broadcast</button>
+    <button class="dash-bottom-item" onclick="exportAllData()"><span class="di">&#128229;</span>Export</button>
+    <button class="dash-bottom-item" onclick="openAdminBilling()"><span class="di">&#128179;</span>Billing</button>
+  </div>
+</div>
+</div>
+
+<!-- Firebase + App Scripts -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+<script>
+// ==================== FINAL OVERRIDES (runs after app.js) ====================
+// showPage and all nav functions are already defined in the early <script> block.
+// This block handles app.js-specific patches that need app.js to be loaded.
+
+// Aliases for app.js compatibility
+window.toggleMobileNav = window.toggleMobile;
+window.closeMobileNav = window.toggleMobile;
+window.closeMobileNavOnBg = window.closeMobileOnBg;
+
+// Sidebar toggle (re-declare here for safety)
+var _sidebarOpen = false;
+window.toggleSidebar = function() {
+    var nav = document.getElementById('dashNav');
+    var dash = document.getElementById('dashboard');
+    _sidebarOpen = !_sidebarOpen;
+    if (nav) nav.classList.toggle('expanded', _sidebarOpen);
+    if (dash) dash.classList.toggle('dashboard-sidebar-open', _sidebarOpen);
+    var btn = document.getElementById('sidebarToggle');
+    if (btn) btn.textContent = _sidebarOpen ? '✕' : '☰';
+};
+window.toggleAdminSidebar = function() {
+    var nav = document.getElementById('adminDashNav');
+    _sidebarOpen = !_sidebarOpen;
+    if (nav) nav.classList.toggle('expanded', _sidebarOpen);
+};
+window.setActiveNav = function(el) {
+    document.querySelectorAll('#dashNav .dash-nav-item').forEach(function(i) { i.classList.remove('active'); });
+    if (el) el.classList.add('active');
+};
+window.setAdminNav = function(el) {
+    document.querySelectorAll('#adminDashNav .dash-nav-item').forEach(function(i) { i.classList.remove('active'); });
+    if (el) el.classList.add('active');
+};
+window.setBottomNav = function(el) {
+    document.querySelectorAll('.dash-bottom-item').forEach(function(i) { i.classList.remove('active'); });
+    if (el) el.classList.add('active');
+};
+
+// Auth modal backdrop close
+document.addEventListener('DOMContentLoaded', function() {
+    var authModal = document.getElementById('authModal');
+    if (authModal) {
+        authModal.addEventListener('click', function(e) {
+            if (e.target === this) window.closeAuth();
+        });
+    }
+
+    // Create dummy #landingPage so app.js doesn't error on getElementById('landingPage')
+    if (!document.getElementById('landingPage')) {
+        var dummy = document.createElement('div');
+        dummy.id = 'landingPage';
+        dummy.style.cssText = 'display:none;position:absolute;pointer-events:none;';
+        document.body.appendChild(dummy);
+    }
+
+    // Patch showDashboard — hide SPA pages, show dashboard
+    var _origShowDash = window.showDashboard;
+    window.showDashboard = async function() {
+        document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+        if (window.closeAuth) window.closeAuth();
+        if (_origShowDash) {
+            try { await _origShowDash.call(window); } catch(e) { console.warn('showDashboard:', e); }
+        }
+    };
+
+    // Patch showAdminDashboard
+    var _origShowAdmin = window.showAdminDashboard;
+    window.showAdminDashboard = async function() {
+        document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+        if (window.closeAuth) window.closeAuth();
+        if (_origShowAdmin) {
+            try { await _origShowAdmin.call(window); } catch(e) { console.warn('showAdminDashboard:', e); }
+        }
+    };
+
+    // Patch logout — go back to home page
+    var _origLogout = window.logout;
+    window.logout = async function() {
+        if (_origLogout) {
+            try { await _origLogout.call(window); } catch(e) { console.warn('logout:', e); }
+        }
+        var d = document.getElementById('dashboard');
+        var a = document.getElementById('adminDashboard');
+        if (d) { d.classList.remove('active'); d.style.display = 'none'; }
+        if (a) { a.classList.remove('active'); a.style.display = 'none'; }
+        if (window.showPage) window.showPage('home');
+    };
+
+    // Re-affirm showHome override (in case app.js overwrote it after page load)
+    window.showHome = function() { window.showPage('home'); };
+
+    // Override auth modal functions for app.js compatibility
+    window.showLogin = function() { window.openAuth(); window.switchAuthTab('login'); };
+    window.showSignup = function() { window.openAuth(); window.switchAuthTab('signup'); };
+    window.signupWithPlan = function(plan) {
+        var el = document.getElementById('signupPlan');
+        if (el) el.value = plan;
+        window.openAuth();
+        window.switchAuthTab('signup');
+    };
+    window.closeAuthModal = window.closeAuth;
+    window.switchToLogin = function() { window.switchAuthTab('login'); };
+    window.switchToSignup = function() { window.switchAuthTab('signup'); };
+
+    console.log('✅ sambandh.ai multi-industry SPA ready');
+});
+</script>
+<script src="ai-admin-tools.js"></script>
 </body>
 </html>
