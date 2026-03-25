@@ -240,6 +240,48 @@ body{font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialias
 .loading-spin{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* ===================================================== DOCTOR ADMIN PANEL ===================================================== */
+.admin-panel{display:none;padding-top:68px;min-height:100vh;background:linear-gradient(135deg,#0A4B78 0%,#1565C0 100%);}
+.admin-panel.active{display:block!important;}
+.admin-header{background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);padding:24px 40px;margin:20px 40px;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.admin-welcome h1{font-family:'Instrument Serif',serif;font-size:32px;color:#0A0A0A;}
+.admin-welcome .admin-subtitle{color:#666;font-weight:600;margin-top:6px;font-size:14px;}
+.admin-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:0 40px 24px;}
+.admin-stat-card{background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-radius:18px;padding:28px;box-shadow:0 8px 24px rgba(0,0,0,0.1);transition:all 0.3s;}
+.admin-stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.15);}
+.admin-stat-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px;}
+.admin-stat-value{font-family:'Instrument Serif',serif;font-size:48px;color:#0A0A0A;line-height:1;margin-bottom:8px;}
+.admin-stat-label{font-size:13px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+.admin-stat-trend{font-size:12px;font-weight:700;margin-top:8px;}
+.admin-stat-trend.up{color:#15803D;}
+.admin-stat-trend.down{color:#DC2626;}
+.admin-main{padding:0 40px 40px;}
+.admin-section{background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-radius:20px;padding:32px;margin-bottom:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+.admin-section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.admin-section-title{font-family:'Instrument Serif',serif;font-size:26px;color:#0A0A0A;}
+.admin-section-subtitle{font-size:14px;color:#666;margin-top:4px;}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.admin-card{background:#F8FAFF;border:2px solid #E5E5E5;border-radius:16px;padding:24px;transition:all 0.25s;cursor:pointer;}
+.admin-card:hover{border-color:#1565C0;transform:translateY(-2px);box-shadow:0 8px 24px rgba(21,101,192,0.15);}
+.admin-card-icon{font-size:36px;margin-bottom:12px;}
+.admin-card-title{font-size:16px;font-weight:700;color:#0A0A0A;margin-bottom:6px;}
+.admin-card-desc{font-size:13px;color:#666;line-height:1.6;}
+.admin-quick-actions{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:32px;}
+.admin-quick-btn{background:rgba(255,255,255,0.95);border:2px solid #E5E5E5;border-radius:14px;padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.admin-quick-btn:hover{border-color:#1565C0;transform:translateY(-2px);}
+.admin-quick-btn .icon{font-size:32px;margin-bottom:8px;}
+.admin-quick-btn .label{font-size:12px;font-weight:700;color:#0A0A0A;}
+.admin-table{width:100%;border-collapse:separate;border-spacing:0;}
+.admin-table thead{background:#F8FAFF;}
+.admin-table th{padding:14px 16px;text-align:left;font-size:11px;font-weight:800;color:#666;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid #E5E5E5;}
+.admin-table td{padding:16px;border-bottom:1px solid #F0F0F0;}
+.admin-table tr:hover{background:#FAFBFF;}
+.admin-badge{display:inline-block;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.04em;}
+.admin-badge.active{background:rgba(21,128,61,0.1);color:#15803D;}
+.admin-badge.pending{background:rgba(234,88,12,0.1);color:#EA580C;}
+.admin-badge.inactive{background:rgba(107,114,128,0.1);color:#6B7280;}
+.admin-badge.critical{background:rgba(220,38,38,0.1);color:#DC2626;}
+
 /* ===================================================== DASHBOARD ===================================================== */
 .dashboard{display:none;padding-top:68px;min-height:100vh;background:#F5F7FF;}
 .dashboard.active{display:block!important;}
@@ -555,6 +597,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialias
       <p class="home-sub">India's most powerful WhatsApp CRM &#8212; purpose-built for every type of local business. Capture, engage, and retain customers effortlessly.</p>
       <div class="home-cta-row">
         <button class="btn-home-primary" onclick="openAuth()">Start Free &#8212; &#8377;0</button>
+        <button class="btn-home-ghost" onclick="showDoctorAdmin()" style="background:#1565C0;color:white;border-color:#1565C0;">🏥 View Doctor Admin Panel</button>
         <button class="btn-home-ghost" onclick="document.querySelector('.industry-grid').scrollIntoView({behavior:'smooth'})">Explore Industries &#8595;</button>
       </div>
     </div>
@@ -867,6 +910,424 @@ body{font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialias
 </div>
 </div>
 
+<!-- DOCTOR ADMIN PANEL -->
+<div id="doctorAdminPanel" class="admin-panel">
+  <div class="admin-header">
+    <div class="admin-welcome">
+      <h1>🏥 Doctor Admin Dashboard</h1>
+      <p class="admin-subtitle">Comprehensive Healthcare Management System</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button onclick="openDoctorSettings()" class="btn">⚙️ Settings</button>
+      <button onclick="showPage('home')" class="btn btn-outline">🏠 Home</button>
+      <button onclick="logout()" class="btn btn-outline">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="admin-stats-grid">
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background:rgba(59,130,246,0.1);color:#3B82F6;">👥</div>
+      <div class="admin-stat-value">2,847</div>
+      <div class="admin-stat-label">Total Patients</div>
+      <div class="admin-stat-trend up">↑ 12% vs last month</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background:rgba(16,185,129,0.1);color:#10B981;">📅</div>
+      <div class="admin-stat-value">124</div>
+      <div class="admin-stat-label">Today's Appointments</div>
+      <div class="admin-stat-trend up">↑ 8 pending</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background:rgba(245,158,11,0.1);color:#F59E0B;">💰</div>
+      <div class="admin-stat-value">₹4.2L</div>
+      <div class="admin-stat-label">This Month Revenue</div>
+      <div class="admin-stat-trend up">↑ 18% growth</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">⭐</div>
+      <div class="admin-stat-value">4.8</div>
+      <div class="admin-stat-label">Google Rating</div>
+      <div class="admin-stat-trend up">↑ 142 reviews</div>
+    </div>
+  </div>
+
+  <div class="admin-main">
+    <!-- Quick Actions -->
+    <div class="admin-quick-actions">
+      <div class="admin-quick-btn" onclick="openAddPatient()">
+        <div class="icon">➕</div>
+        <div class="label">Add Patient</div>
+      </div>
+      <div class="admin-quick-btn" onclick="openScheduleAppointment()">
+        <div class="icon">📅</div>
+        <div class="label">Schedule</div>
+      </div>
+      <div class="admin-quick-btn" onclick="openPrescription()">
+        <div class="icon">💊</div>
+        <div class="label">Prescription</div>
+      </div>
+      <div class="admin-quick-btn" onclick="openLabReports()">
+        <div class="icon">🔬</div>
+        <div class="label">Lab Reports</div>
+      </div>
+      <div class="admin-quick-btn" onclick="openBilling()">
+        <div class="icon">💵</div>
+        <div class="label">Billing</div>
+      </div>
+      <div class="admin-quick-btn" onclick="openInventory()">
+        <div class="icon">📦</div>
+        <div class="label">Inventory</div>
+      </div>
+    </div>
+
+    <!-- Patient Management -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Patient Management</div>
+          <div class="admin-section-subtitle">Manage patient records, appointments, and medical history</div>
+        </div>
+        <button class="btn" onclick="openPatientList()">View All Patients →</button>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openRegistration()">
+          <div class="admin-card-icon">📝</div>
+          <div class="admin-card-title">New Registration</div>
+          <div class="admin-card-desc">Register new patients with complete demographic and medical information</div>
+        </div>
+        <div class="admin-card" onclick="openPatientRecords()">
+          <div class="admin-card-icon">📋</div>
+          <div class="admin-card-title">Patient Records</div>
+          <div class="admin-card-desc">Access complete medical history, prescriptions, and treatment records</div>
+        </div>
+        <div class="admin-card" onclick="openMedicalHistory()">
+          <div class="admin-card-icon">🏥</div>
+          <div class="admin-card-title">Medical History</div>
+          <div class="admin-card-desc">View and update patient medical history, allergies, and chronic conditions</div>
+        </div>
+        <div class="admin-card" onclick="openFamilyHistory()">
+          <div class="admin-card-icon">👨‍👩‍👧‍👦</div>
+          <div class="admin-card-title">Family History</div>
+          <div class="admin-card-desc">Track family medical history and hereditary conditions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Appointment & Scheduling -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Appointment & Scheduling</div>
+          <div class="admin-section-subtitle">Manage appointments, calendar, and patient queue</div>
+        </div>
+        <button class="btn btn-secondary" onclick="openCalendar()">View Calendar →</button>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openAppointmentBooking()">
+          <div class="admin-card-icon">📞</div>
+          <div class="admin-card-title">Book Appointment</div>
+          <div class="admin-card-desc">Schedule new appointments with time slots and doctor availability</div>
+        </div>
+        <div class="admin-card" onclick="openQueue()">
+          <div class="admin-card-icon">🕐</div>
+          <div class="admin-card-title">Patient Queue</div>
+          <div class="admin-card-desc">Real-time queue management and waiting time tracking</div>
+        </div>
+        <div class="admin-card" onclick="openReminders()">
+          <div class="admin-card-icon">🔔</div>
+          <div class="admin-card-title">Reminders</div>
+          <div class="admin-card-desc">Automated WhatsApp/SMS reminders to reduce no-shows</div>
+        </div>
+        <div class="admin-card" onclick="openFollowUps()">
+          <div class="admin-card-icon">📲</div>
+          <div class="admin-card-title">Follow-ups</div>
+          <div class="admin-card-desc">Schedule and track patient follow-up appointments</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clinical Features -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Clinical Features</div>
+          <div class="admin-section-subtitle">Prescription, diagnosis, and treatment management</div>
+        </div>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openDigitalPrescription()">
+          <div class="admin-card-icon">📄</div>
+          <div class="admin-card-title">Digital Prescription</div>
+          <div class="admin-card-desc">Create, print, and share digital prescriptions via WhatsApp</div>
+        </div>
+        <div class="admin-card" onclick="openDiagnosis()">
+          <div class="admin-card-icon">🩺</div>
+          <div class="admin-card-title">Diagnosis & Notes</div>
+          <div class="admin-card-desc">Record diagnosis, clinical notes, and treatment plans</div>
+        </div>
+        <div class="admin-card" onclick="openVitals()">
+          <div class="admin-card-icon">❤️</div>
+          <div class="admin-card-title">Vitals Tracking</div>
+          <div class="admin-card-desc">Record BP, temperature, weight, and other vital signs</div>
+        </div>
+        <div class="admin-card" onclick="openLabIntegration()">
+          <div class="admin-card-icon">🧪</div>
+          <div class="admin-card-title">Lab Integration</div>
+          <div class="admin-card-desc">Order tests and receive digital lab reports</div>
+        </div>
+        <div class="admin-card" onclick="openImagingReports()">
+          <div class="admin-card-icon">🖼️</div>
+          <div class="admin-card-title">Imaging Reports</div>
+          <div class="admin-card-desc">Store and view X-rays, MRIs, CT scans, and ultrasound reports</div>
+        </div>
+        <div class="admin-card" onclick="openVaccination()">
+          <div class="admin-card-icon">💉</div>
+          <div class="admin-card-title">Vaccination Records</div>
+          <div class="admin-card-desc">Track immunization history and schedule upcoming vaccinations</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing & Finance -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Billing & Finance</div>
+          <div class="admin-section-subtitle">Revenue tracking, invoicing, and payment management</div>
+        </div>
+        <button class="btn" onclick="openFinancialReports()">View Reports →</button>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openInvoicing()">
+          <div class="admin-card-icon">🧾</div>
+          <div class="admin-card-title">Invoicing</div>
+          <div class="admin-card-desc">Generate and send professional invoices with payment links</div>
+        </div>
+        <div class="admin-card" onclick="openPayments()">
+          <div class="admin-card-icon">💳</div>
+          <div class="admin-card-title">Payment Tracking</div>
+          <div class="admin-card-desc">Track payments, dues, and insurance claims</div>
+        </div>
+        <div class="admin-card" onclick="openInsurance()">
+          <div class="admin-card-icon">🏛️</div>
+          <div class="admin-card-title">Insurance Management</div>
+          <div class="admin-card-desc">Process insurance claims and track approvals</div>
+        </div>
+        <div class="admin-card" onclick="openRevenue()">
+          <div class="admin-card-icon">📊</div>
+          <div class="admin-card-title">Revenue Analytics</div>
+          <div class="admin-card-desc">Detailed revenue reports and financial analytics</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory & Pharmacy -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Inventory & Pharmacy</div>
+          <div class="admin-section-subtitle">Medicine stock, suppliers, and expiry management</div>
+        </div>
+        <button class="btn btn-secondary" onclick="openStockReport()">Stock Report →</button>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openMedicineStock()">
+          <div class="admin-card-icon">💊</div>
+          <div class="admin-card-title">Medicine Stock</div>
+          <div class="admin-card-desc">Track medicine inventory, stock levels, and reorder points</div>
+        </div>
+        <div class="admin-card" onclick="openExpiryTracking()">
+          <div class="admin-card-icon">⏰</div>
+          <div class="admin-card-title">Expiry Management</div>
+          <div class="admin-card-desc">Alerts for medicines nearing expiry date</div>
+        </div>
+        <div class="admin-card" onclick="openSuppliers()">
+          <div class="admin-card-icon">🚚</div>
+          <div class="admin-card-title">Supplier Management</div>
+          <div class="admin-card-desc">Manage suppliers, purchase orders, and delivery tracking</div>
+        </div>
+        <div class="admin-card" onclick="openPurchaseHistory()">
+          <div class="admin-card-icon">📝</div>
+          <div class="admin-card-title">Purchase History</div>
+          <div class="admin-card-desc">Complete purchase history and supplier invoices</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Staff Management -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Staff Management</div>
+          <div class="admin-section-subtitle">Doctors, nurses, and support staff administration</div>
+        </div>
+        <button class="btn" onclick="openStaffList()">Manage Staff →</button>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openDoctorProfiles()">
+          <div class="admin-card-icon">👨‍⚕️</div>
+          <div class="admin-card-title">Doctor Profiles</div>
+          <div class="admin-card-desc">Manage doctor profiles, specializations, and schedules</div>
+        </div>
+        <div class="admin-card" onclick="openNurseStaff()">
+          <div class="admin-card-icon">👩‍⚕️</div>
+          <div class="admin-card-title">Nursing Staff</div>
+          <div class="admin-card-desc">Nurse roster, duties, and shift management</div>
+        </div>
+        <div class="admin-card" onclick="openAttendance()">
+          <div class="admin-card-icon">✅</div>
+          <div class="admin-card-title">Attendance</div>
+          <div class="admin-card-desc">Track staff attendance and working hours</div>
+        </div>
+        <div class="admin-card" onclick="openPayroll()">
+          <div class="admin-card-icon">💰</div>
+          <div class="admin-card-title">Payroll</div>
+          <div class="admin-card-desc">Manage staff salaries and payment records</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marketing & Engagement -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Marketing & Patient Engagement</div>
+          <div class="admin-section-subtitle">WhatsApp campaigns, reviews, and patient retention</div>
+        </div>
+        <button class="btn btn-accent" onclick="openCampaigns()">Create Campaign →</button>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openWhatsAppMarketing()">
+          <div class="admin-card-icon">💬</div>
+          <div class="admin-card-title">WhatsApp Campaigns</div>
+          <div class="admin-card-desc">Send health tips, appointment reminders, and promotional messages</div>
+        </div>
+        <div class="admin-card" onclick="openReviewManagement()">
+          <div class="admin-card-icon">⭐</div>
+          <div class="admin-card-title">Review Management</div>
+          <div class="admin-card-desc">Automated review requests to boost Google ratings</div>
+        </div>
+        <div class="admin-card" onclick="openHealthTips()">
+          <div class="admin-card-icon">📰</div>
+          <div class="admin-card-title">Health Tips</div>
+          <div class="admin-card-desc">Send automated health tips and seasonal advisories</div>
+        </div>
+        <div class="admin-card" onclick="openLoyaltyProgram()">
+          <div class="admin-card-icon">🎁</div>
+          <div class="admin-card-title">Loyalty Program</div>
+          <div class="admin-card-desc">Reward frequent patients with discounts and offers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports & Analytics -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Reports & Analytics</div>
+          <div class="admin-section-subtitle">Data-driven insights for clinic growth</div>
+        </div>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openPatientAnalytics()">
+          <div class="admin-card-icon">📈</div>
+          <div class="admin-card-title">Patient Analytics</div>
+          <div class="admin-card-desc">New vs returning patients, demographics, and trends</div>
+        </div>
+        <div class="admin-card" onclick="openRevenueReport()">
+          <div class="admin-card-icon">💵</div>
+          <div class="admin-card-title">Revenue Reports</div>
+          <div class="admin-card-desc">Daily, weekly, monthly revenue with trend analysis</div>
+        </div>
+        <div class="admin-card" onclick="openAppointmentAnalytics()">
+          <div class="admin-card-icon">📅</div>
+          <div class="admin-card-title">Appointment Insights</div>
+          <div class="admin-card-desc">No-show rates, peak hours, and booking patterns</div>
+        </div>
+        <div class="admin-card" onclick="openDiseaseStatistics()">
+          <div class="admin-card-icon">📊</div>
+          <div class="admin-card-title">Disease Statistics</div>
+          <div class="admin-card-desc">Common diagnoses and treatment effectiveness</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's Appointments Table -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <div>
+          <div class="admin-section-title">Today's Appointments</div>
+          <div class="admin-section-subtitle">Real-time appointment tracking</div>
+        </div>
+        <button class="btn" onclick="refreshAppointments()">🔄 Refresh</button>
+      </div>
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Patient Name</th>
+              <th>Contact</th>
+              <th>Doctor</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>09:00 AM</td>
+              <td>Ramesh Kumar</td>
+              <td>+91 98765 43210</td>
+              <td>Dr. Sharma</td>
+              <td>Consultation</td>
+              <td><span class="admin-badge active">Checked In</span></td>
+              <td><button class="btn" style="padding:6px 12px;font-size:12px;">View</button></td>
+            </tr>
+            <tr>
+              <td>09:30 AM</td>
+              <td>Priya Singh</td>
+              <td>+91 98765 43211</td>
+              <td>Dr. Verma</td>
+              <td>Follow-up</td>
+              <td><span class="admin-badge pending">Waiting</span></td>
+              <td><button class="btn" style="padding:6px 12px;font-size:12px;">View</button></td>
+            </tr>
+            <tr>
+              <td>10:00 AM</td>
+              <td>Amit Patel</td>
+              <td>+91 98765 43212</td>
+              <td>Dr. Sharma</td>
+              <td>Lab Review</td>
+              <td><span class="admin-badge pending">Confirmed</span></td>
+              <td><button class="btn" style="padding:6px 12px;font-size:12px;">View</button></td>
+            </tr>
+            <tr>
+              <td>10:30 AM</td>
+              <td>Sunita Devi</td>
+              <td>+91 98765 43213</td>
+              <td>Dr. Gupta</td>
+              <td>Vaccination</td>
+              <td><span class="admin-badge critical">Urgent</span></td>
+              <td><button class="btn" style="padding:6px 12px;font-size:12px;">View</button></td>
+            </tr>
+            <tr>
+              <td>11:00 AM</td>
+              <td>Rajesh Agarwal</td>
+              <td>+91 98765 43214</td>
+              <td>Dr. Verma</td>
+              <td>New Patient</td>
+              <td><span class="admin-badge pending">Confirmed</span></td>
+              <td><button class="btn" style="padding:6px 12px;font-size:12px;">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Firebase + App Scripts -->
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -939,11 +1400,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Patch showAdminDashboard - open in new window/tab
+    // Patch showAdminDashboard
     var _origShowAdmin = window.showAdminDashboard;
     window.showAdminDashboard = async function() {
-        // Open admin dashboard in a new window/tab
-        window.open(window.location.origin + window.location.pathname + '?admin=true', '_blank');
+        document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+        if (window.closeAuth) window.closeAuth();
+        if (_origShowAdmin) {
+            try { await _origShowAdmin.call(window); } catch(e) { console.warn('showAdminDashboard:', e); }
+        }
     };
 
     // Patch logout — go back to home page
@@ -962,16 +1426,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Re-affirm showHome override (in case app.js overwrote it after page load)
     window.showHome = function() { window.showPage('home'); };
 
-    // Check if page was opened with admin parameter
-    var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('admin') === 'true') {
-        // Remove SPA pages and show only admin dashboard
+    // Function to show doctor admin panel
+    window.showDoctorAdmin = function() {
         document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+        var d = document.getElementById('dashboard');
+        var a = document.getElementById('adminDashboard');
+        var da = document.getElementById('doctorAdminPanel');
+        if (d) { d.classList.remove('active'); d.style.display = 'none'; }
+        if (a) { a.classList.remove('active'); a.style.display = 'none'; }
+        if (da) { da.classList.add('active'); da.style.display = 'block'; }
         if (window.closeAuth) window.closeAuth();
-        if (_origShowAdmin) {
-            try { _origShowAdmin.call(window); } catch(e) { console.warn('Auto-load admin:', e); }
-        }
-    }
+    };
 
     // Override auth modal functions for app.js compatibility
     window.showLogin = function() { window.openAuth(); window.switchAuthTab('login'); };
