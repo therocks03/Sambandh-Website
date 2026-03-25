@@ -939,14 +939,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Patch showAdminDashboard
+    // Patch showAdminDashboard - open in new window/tab
     var _origShowAdmin = window.showAdminDashboard;
     window.showAdminDashboard = async function() {
-        document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-        if (window.closeAuth) window.closeAuth();
-        if (_origShowAdmin) {
-            try { await _origShowAdmin.call(window); } catch(e) { console.warn('showAdminDashboard:', e); }
-        }
+        // Open admin dashboard in a new window/tab
+        window.open(window.location.origin + window.location.pathname + '?admin=true', '_blank');
     };
 
     // Patch logout — go back to home page
@@ -964,6 +961,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Re-affirm showHome override (in case app.js overwrote it after page load)
     window.showHome = function() { window.showPage('home'); };
+
+    // Check if page was opened with admin parameter
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true') {
+        // Remove SPA pages and show only admin dashboard
+        document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+        if (window.closeAuth) window.closeAuth();
+        if (_origShowAdmin) {
+            try { _origShowAdmin.call(window); } catch(e) { console.warn('Auto-load admin:', e); }
+        }
+    }
 
     // Override auth modal functions for app.js compatibility
     window.showLogin = function() { window.openAuth(); window.switchAuthTab('login'); };
