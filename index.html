@@ -597,7 +597,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialias
       <p class="home-sub">India's most powerful WhatsApp CRM &#8212; purpose-built for every type of local business. Capture, engage, and retain customers effortlessly.</p>
       <div class="home-cta-row">
         <button class="btn-home-primary" onclick="openAuth()">Start Free &#8212; &#8377;0</button>
-        <button class="btn-home-ghost" onclick="showDoctorAdmin()" style="background:#1565C0;color:white;border-color:#1565C0;">🏥 View Doctor Admin Panel</button>
         <button class="btn-home-ghost" onclick="document.querySelector('.industry-grid').scrollIntoView({behavior:'smooth'})">Explore Industries &#8595;</button>
       </div>
     </div>
@@ -626,7 +625,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialias
     <div class="ind-pill" style="background:rgba(14,86,217,0.1);border:1.5px solid rgba(14,86,217,0.2);color:#0E56D9;">&#127973; Clinic &amp; Healthcare CRM</div>
     <h1 class="ind-h1" style="font-family:'Instrument Serif',serif;">Retain more patients,<br><em style="color:#0E56D9;">automate the rest</em></h1>
     <p class="ind-sub">India's smartest WhatsApp CRM for GPs, dental clinics, skin clinics, and specialty hospitals. Reduce no-shows by 40%.</p>
-    <div class="ind-cta-row"><button class="btn-ind" onclick="openAuth()">Start Free Trial</button><button class="btn-ind-ghost">See Demo &#8595;</button></div>
+    <div class="ind-cta-row">
+      <button class="btn-ind" onclick="openAuth()">Start Free Trial</button>
+      <button class="btn-ind" style="background:linear-gradient(135deg,#1565C0,#0EA5E9);" onclick="showDoctorAdmin()">🏥 View Doctor Features</button>
+      <button class="btn-ind-ghost">See Demo &#8595;</button>
+    </div>
     <div style="display:flex;flex-wrap:wrap;gap:20px;"><div style="font-size:13px;font-weight:600;color:#666;">&#10003; 500+ Clinics</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; HIPAA-aware</div><div style="font-size:13px;font-weight:600;color:#666;">&#10003; India-hosted</div></div>
   </div>
   <div class="ind-hero-right"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=85&auto=format&fit=crop" alt="Clinic"><div class="ind-float"><div class="ind-float-label">Patients This Month</div><div class="ind-float-value">1,247</div><div class="ind-float-trend" style="color:#16A34A;">&#8593; 18% vs last month</div></div></div>
@@ -914,13 +917,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialias
 <div id="doctorAdminPanel" class="admin-panel">
   <div class="admin-header">
     <div class="admin-welcome">
-      <h1>🏥 Doctor Admin Dashboard</h1>
-      <p class="admin-subtitle">Comprehensive Healthcare Management System</p>
+      <h1>🏥 Doctor Admin Features</h1>
+      <p class="admin-subtitle">Comprehensive Healthcare Management System for Clinics</p>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button onclick="openDoctorSettings()" class="btn">⚙️ Settings</button>
+      <button onclick="showPage('clinic')" class="btn btn-secondary">← Back to Clinic</button>
       <button onclick="showPage('home')" class="btn btn-outline">🏠 Home</button>
-      <button onclick="logout()" class="btn btn-outline">🚪 Logout</button>
+      <button onclick="openAuth()" class="btn">Start Free Trial</button>
     </div>
   </div>
 
@@ -953,302 +956,86 @@ body{font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialias
   </div>
 
   <div class="admin-main">
-    <!-- Quick Actions -->
-    <div class="admin-quick-actions">
-      <div class="admin-quick-btn" onclick="openAddPatient()">
-        <div class="icon">➕</div>
-        <div class="label">Add Patient</div>
-      </div>
-      <div class="admin-quick-btn" onclick="openScheduleAppointment()">
-        <div class="icon">📅</div>
-        <div class="label">Schedule</div>
-      </div>
-      <div class="admin-quick-btn" onclick="openPrescription()">
-        <div class="icon">💊</div>
-        <div class="label">Prescription</div>
-      </div>
-      <div class="admin-quick-btn" onclick="openLabReports()">
-        <div class="icon">🔬</div>
-        <div class="label">Lab Reports</div>
-      </div>
-      <div class="admin-quick-btn" onclick="openBilling()">
-        <div class="icon">💵</div>
-        <div class="label">Billing</div>
-      </div>
-      <div class="admin-quick-btn" onclick="openInventory()">
-        <div class="icon">📦</div>
-        <div class="label">Inventory</div>
-      </div>
-    </div>
-
-    <!-- Patient Management -->
+    <!-- Core Features Section -->
     <div class="admin-section">
       <div class="admin-section-header">
         <div>
-          <div class="admin-section-title">Patient Management</div>
-          <div class="admin-section-subtitle">Manage patient records, appointments, and medical history</div>
-        </div>
-        <button class="btn" onclick="openPatientList()">View All Patients →</button>
-      </div>
-      <div class="admin-grid">
-        <div class="admin-card" onclick="openRegistration()">
-          <div class="admin-card-icon">📝</div>
-          <div class="admin-card-title">New Registration</div>
-          <div class="admin-card-desc">Register new patients with complete demographic and medical information</div>
-        </div>
-        <div class="admin-card" onclick="openPatientRecords()">
-          <div class="admin-card-icon">📋</div>
-          <div class="admin-card-title">Patient Records</div>
-          <div class="admin-card-desc">Access complete medical history, prescriptions, and treatment records</div>
-        </div>
-        <div class="admin-card" onclick="openMedicalHistory()">
-          <div class="admin-card-icon">🏥</div>
-          <div class="admin-card-title">Medical History</div>
-          <div class="admin-card-desc">View and update patient medical history, allergies, and chronic conditions</div>
-        </div>
-        <div class="admin-card" onclick="openFamilyHistory()">
-          <div class="admin-card-icon">👨‍👩‍👧‍👦</div>
-          <div class="admin-card-title">Family History</div>
-          <div class="admin-card-desc">Track family medical history and hereditary conditions</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Appointment & Scheduling -->
-    <div class="admin-section">
-      <div class="admin-section-header">
-        <div>
-          <div class="admin-section-title">Appointment & Scheduling</div>
-          <div class="admin-section-subtitle">Manage appointments, calendar, and patient queue</div>
-        </div>
-        <button class="btn btn-secondary" onclick="openCalendar()">View Calendar →</button>
-      </div>
-      <div class="admin-grid">
-        <div class="admin-card" onclick="openAppointmentBooking()">
-          <div class="admin-card-icon">📞</div>
-          <div class="admin-card-title">Book Appointment</div>
-          <div class="admin-card-desc">Schedule new appointments with time slots and doctor availability</div>
-        </div>
-        <div class="admin-card" onclick="openQueue()">
-          <div class="admin-card-icon">🕐</div>
-          <div class="admin-card-title">Patient Queue</div>
-          <div class="admin-card-desc">Real-time queue management and waiting time tracking</div>
-        </div>
-        <div class="admin-card" onclick="openReminders()">
-          <div class="admin-card-icon">🔔</div>
-          <div class="admin-card-title">Reminders</div>
-          <div class="admin-card-desc">Automated WhatsApp/SMS reminders to reduce no-shows</div>
-        </div>
-        <div class="admin-card" onclick="openFollowUps()">
-          <div class="admin-card-icon">📲</div>
-          <div class="admin-card-title">Follow-ups</div>
-          <div class="admin-card-desc">Schedule and track patient follow-up appointments</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Clinical Features -->
-    <div class="admin-section">
-      <div class="admin-section-header">
-        <div>
-          <div class="admin-section-title">Clinical Features</div>
-          <div class="admin-section-subtitle">Prescription, diagnosis, and treatment management</div>
+          <div class="admin-section-title">Core Features</div>
+          <div class="admin-section-subtitle">Essential tools for modern clinic management</div>
         </div>
       </div>
       <div class="admin-grid">
-        <div class="admin-card" onclick="openDigitalPrescription()">
-          <div class="admin-card-icon">📄</div>
-          <div class="admin-card-title">Digital Prescription</div>
-          <div class="admin-card-desc">Create, print, and share digital prescriptions via WhatsApp</div>
+        <div class="admin-card" onclick="openQRPatientCapture()">
+          <div class="admin-card-icon" style="background:rgba(59,130,246,0.1);color:#3B82F6;">📱</div>
+          <div class="admin-card-title">QR Patient Capture</div>
+          <div class="admin-card-desc">One QR at reception captures name, phone, and visit reason automatically via WhatsApp.</div>
         </div>
-        <div class="admin-card" onclick="openDiagnosis()">
-          <div class="admin-card-icon">🩺</div>
-          <div class="admin-card-title">Diagnosis & Notes</div>
-          <div class="admin-card-desc">Record diagnosis, clinical notes, and treatment plans</div>
+        <div class="admin-card" onclick="openWhatsAppReminders()">
+          <div class="admin-card-icon" style="background:rgba(107,114,128,0.1);color:#6B7280;">💬</div>
+          <div class="admin-card-title">WhatsApp Reminders</div>
+          <div class="admin-card-desc">Auto-send appointment reminders 24hrs before. Reduce no-shows by up to 40%.</div>
         </div>
-        <div class="admin-card" onclick="openVitals()">
-          <div class="admin-card-icon">❤️</div>
-          <div class="admin-card-title">Vitals Tracking</div>
-          <div class="admin-card-desc">Record BP, temperature, weight, and other vital signs</div>
+        <div class="admin-card" onclick="openSmartScheduling()">
+          <div class="admin-card-icon" style="background:rgba(16,185,129,0.1);color:#10B981;">🗓️</div>
+          <div class="admin-card-title">Smart Scheduling</div>
+          <div class="admin-card-desc">Patients book via WhatsApp. Auto-confirm and manage your daily load intelligently.</div>
         </div>
-        <div class="admin-card" onclick="openLabIntegration()">
-          <div class="admin-card-icon">🧪</div>
-          <div class="admin-card-title">Lab Integration</div>
-          <div class="admin-card-desc">Order tests and receive digital lab reports</div>
+        <div class="admin-card" onclick="openReviewAutomation()">
+          <div class="admin-card-icon" style="background:rgba(245,158,11,0.1);color:#F59E0B;">⭐</div>
+          <div class="admin-card-title">Review Automation</div>
+          <div class="admin-card-desc">Post-visit review requests boost your Google rating. Happy patients → more stars.</div>
         </div>
-        <div class="admin-card" onclick="openImagingReports()">
-          <div class="admin-card-icon">🖼️</div>
-          <div class="admin-card-title">Imaging Reports</div>
-          <div class="admin-card-desc">Store and view X-rays, MRIs, CT scans, and ultrasound reports</div>
+        <div class="admin-card" onclick="openPatientSegmentation()">
+          <div class="admin-card-icon" style="background:rgba(239,68,68,0.1);color:#EF4444;">🎯</div>
+          <div class="admin-card-title">Patient Segmentation</div>
+          <div class="admin-card-desc">Auto-group: Chronic, New, Lapsed, VIP. Target each with relevant health tips.</div>
         </div>
-        <div class="admin-card" onclick="openVaccination()">
-          <div class="admin-card-icon">💉</div>
-          <div class="admin-card-title">Vaccination Records</div>
-          <div class="admin-card-desc">Track immunization history and schedule upcoming vaccinations</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Billing & Finance -->
-    <div class="admin-section">
-      <div class="admin-section-header">
-        <div>
-          <div class="admin-section-title">Billing & Finance</div>
-          <div class="admin-section-subtitle">Revenue tracking, invoicing, and payment management</div>
-        </div>
-        <button class="btn" onclick="openFinancialReports()">View Reports →</button>
-      </div>
-      <div class="admin-grid">
-        <div class="admin-card" onclick="openInvoicing()">
-          <div class="admin-card-icon">🧾</div>
-          <div class="admin-card-title">Invoicing</div>
-          <div class="admin-card-desc">Generate and send professional invoices with payment links</div>
-        </div>
-        <div class="admin-card" onclick="openPayments()">
-          <div class="admin-card-icon">💳</div>
-          <div class="admin-card-title">Payment Tracking</div>
-          <div class="admin-card-desc">Track payments, dues, and insurance claims</div>
-        </div>
-        <div class="admin-card" onclick="openInsurance()">
-          <div class="admin-card-icon">🏛️</div>
-          <div class="admin-card-title">Insurance Management</div>
-          <div class="admin-card-desc">Process insurance claims and track approvals</div>
-        </div>
-        <div class="admin-card" onclick="openRevenue()">
-          <div class="admin-card-icon">📊</div>
+        <div class="admin-card" onclick="openRevenueAnalytics()">
+          <div class="admin-card-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">📊</div>
           <div class="admin-card-title">Revenue Analytics</div>
-          <div class="admin-card-desc">Detailed revenue reports and financial analytics</div>
+          <div class="admin-card-desc">Per-doctor, per-treatment revenue tracking. Predict next month's income.</div>
         </div>
       </div>
     </div>
 
-    <!-- Inventory & Pharmacy -->
+    <!-- AI-Powered Features -->
     <div class="admin-section">
       <div class="admin-section-header">
         <div>
-          <div class="admin-section-title">Inventory & Pharmacy</div>
-          <div class="admin-section-subtitle">Medicine stock, suppliers, and expiry management</div>
-        </div>
-        <button class="btn btn-secondary" onclick="openStockReport()">Stock Report →</button>
-      </div>
-      <div class="admin-grid">
-        <div class="admin-card" onclick="openMedicineStock()">
-          <div class="admin-card-icon">💊</div>
-          <div class="admin-card-title">Medicine Stock</div>
-          <div class="admin-card-desc">Track medicine inventory, stock levels, and reorder points</div>
-        </div>
-        <div class="admin-card" onclick="openExpiryTracking()">
-          <div class="admin-card-icon">⏰</div>
-          <div class="admin-card-title">Expiry Management</div>
-          <div class="admin-card-desc">Alerts for medicines nearing expiry date</div>
-        </div>
-        <div class="admin-card" onclick="openSuppliers()">
-          <div class="admin-card-icon">🚚</div>
-          <div class="admin-card-title">Supplier Management</div>
-          <div class="admin-card-desc">Manage suppliers, purchase orders, and delivery tracking</div>
-        </div>
-        <div class="admin-card" onclick="openPurchaseHistory()">
-          <div class="admin-card-icon">📝</div>
-          <div class="admin-card-title">Purchase History</div>
-          <div class="admin-card-desc">Complete purchase history and supplier invoices</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Staff Management -->
-    <div class="admin-section">
-      <div class="admin-section-header">
-        <div>
-          <div class="admin-section-title">Staff Management</div>
-          <div class="admin-section-subtitle">Doctors, nurses, and support staff administration</div>
-        </div>
-        <button class="btn" onclick="openStaffList()">Manage Staff →</button>
-      </div>
-      <div class="admin-grid">
-        <div class="admin-card" onclick="openDoctorProfiles()">
-          <div class="admin-card-icon">👨‍⚕️</div>
-          <div class="admin-card-title">Doctor Profiles</div>
-          <div class="admin-card-desc">Manage doctor profiles, specializations, and schedules</div>
-        </div>
-        <div class="admin-card" onclick="openNurseStaff()">
-          <div class="admin-card-icon">👩‍⚕️</div>
-          <div class="admin-card-title">Nursing Staff</div>
-          <div class="admin-card-desc">Nurse roster, duties, and shift management</div>
-        </div>
-        <div class="admin-card" onclick="openAttendance()">
-          <div class="admin-card-icon">✅</div>
-          <div class="admin-card-title">Attendance</div>
-          <div class="admin-card-desc">Track staff attendance and working hours</div>
-        </div>
-        <div class="admin-card" onclick="openPayroll()">
-          <div class="admin-card-icon">💰</div>
-          <div class="admin-card-title">Payroll</div>
-          <div class="admin-card-desc">Manage staff salaries and payment records</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Marketing & Engagement -->
-    <div class="admin-section">
-      <div class="admin-section-header">
-        <div>
-          <div class="admin-section-title">Marketing & Patient Engagement</div>
-          <div class="admin-section-subtitle">WhatsApp campaigns, reviews, and patient retention</div>
-        </div>
-        <button class="btn btn-accent" onclick="openCampaigns()">Create Campaign →</button>
-      </div>
-      <div class="admin-grid">
-        <div class="admin-card" onclick="openWhatsAppMarketing()">
-          <div class="admin-card-icon">💬</div>
-          <div class="admin-card-title">WhatsApp Campaigns</div>
-          <div class="admin-card-desc">Send health tips, appointment reminders, and promotional messages</div>
-        </div>
-        <div class="admin-card" onclick="openReviewManagement()">
-          <div class="admin-card-icon">⭐</div>
-          <div class="admin-card-title">Review Management</div>
-          <div class="admin-card-desc">Automated review requests to boost Google ratings</div>
-        </div>
-        <div class="admin-card" onclick="openHealthTips()">
-          <div class="admin-card-icon">📰</div>
-          <div class="admin-card-title">Health Tips</div>
-          <div class="admin-card-desc">Send automated health tips and seasonal advisories</div>
-        </div>
-        <div class="admin-card" onclick="openLoyaltyProgram()">
-          <div class="admin-card-icon">🎁</div>
-          <div class="admin-card-title">Loyalty Program</div>
-          <div class="admin-card-desc">Reward frequent patients with discounts and offers</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Reports & Analytics -->
-    <div class="admin-section">
-      <div class="admin-section-header">
-        <div>
-          <div class="admin-section-title">Reports & Analytics</div>
-          <div class="admin-section-subtitle">Data-driven insights for clinic growth</div>
+          <div class="admin-section-title">🤖 AI-Powered Features</div>
+          <div class="admin-section-subtitle">Advanced automation for next-level clinic management</div>
         </div>
       </div>
       <div class="admin-grid">
-        <div class="admin-card" onclick="openPatientAnalytics()">
-          <div class="admin-card-icon">📈</div>
-          <div class="admin-card-title">Patient Analytics</div>
-          <div class="admin-card-desc">New vs returning patients, demographics, and trends</div>
+        <div class="admin-card" onclick="openAIBookingBot()">
+          <div class="admin-card-icon" style="background:rgba(59,130,246,0.1);color:#3B82F6;">🤖</div>
+          <div class="admin-card-title">AI Booking Bot</div>
+          <div class="admin-card-desc">24/7 WhatsApp bot books appointments, answers FAQs, and confirms availability automatically.</div>
         </div>
-        <div class="admin-card" onclick="openRevenueReport()">
-          <div class="admin-card-icon">💵</div>
-          <div class="admin-card-title">Revenue Reports</div>
-          <div class="admin-card-desc">Daily, weekly, monthly revenue with trend analysis</div>
+        <div class="admin-card" onclick="openSmartFollowUp()">
+          <div class="admin-card-icon" style="background:rgba(16,185,129,0.1);color:#10B981;">🔔</div>
+          <div class="admin-card-title">Smart Follow-up</div>
+          <div class="admin-card-desc">AI detects patients needing follow-up based on diagnosis and auto-schedules reminders.</div>
         </div>
-        <div class="admin-card" onclick="openAppointmentAnalytics()">
-          <div class="admin-card-icon">📅</div>
-          <div class="admin-card-title">Appointment Insights</div>
-          <div class="admin-card-desc">No-show rates, peak hours, and booking patterns</div>
+        <div class="admin-card" onclick="openPredictiveAnalytics()">
+          <div class="admin-card-icon" style="background:rgba(245,158,11,0.1);color:#F59E0B;">📈</div>
+          <div class="admin-card-title">Predictive Analytics</div>
+          <div class="admin-card-desc">AI forecasts patient volume, peak hours, and revenue trends for better planning.</div>
         </div>
-        <div class="admin-card" onclick="openDiseaseStatistics()">
-          <div class="admin-card-icon">📊</div>
-          <div class="admin-card-title">Disease Statistics</div>
-          <div class="admin-card-desc">Common diagnoses and treatment effectiveness</div>
+        <div class="admin-card" onclick="openPersonalizedHealthTips()">
+          <div class="admin-card-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">💡</div>
+          <div class="admin-card-title">Personalized Health Tips</div>
+          <div class="admin-card-desc">AI sends customized health tips based on patient's medical history and conditions.</div>
+        </div>
+        <div class="admin-card" onclick="openNoShowPrediction()">
+          <div class="admin-card-icon" style="background:rgba(239,68,68,0.1);color:#EF4444;">🎯</div>
+          <div class="admin-card-title">No-Show Prediction</div>
+          <div class="admin-card-desc">ML model predicts high-risk no-shows and sends targeted reminder campaigns.</div>
+        </div>
+        <div class="admin-card" onclick="openVoiceAssistant()">
+          <div class="admin-card-icon" style="background:rgba(107,114,128,0.1);color:#6B7280;">🎙️</div>
+          <div class="admin-card-title">Voice Assistant</div>
+          <div class="admin-card-desc">Voice-based appointment booking and prescription dictation in Hindi & English.</div>
         </div>
       </div>
     </div>
